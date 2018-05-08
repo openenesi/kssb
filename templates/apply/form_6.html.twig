@@ -5,11 +5,11 @@
         <!-- First Step -->
         <div class="row setup-content-3" id="step-5">
             <div class="col-md-12">
-                <h3 class="font-weight-bold pl-0 my-4"><strong>Attestation!</strong></h3>
+                <h3 class="font-weight-bold pl-0 my-4"><strong>Certification!</strong></h3>
                 {% if attempted== true %}
                     <div class='alert alert-warning' role='alert'>Oops... something went wrong!</div>
                 {% endif %}
-                By clicking on the submit button you testify that all information provided are yours <br /><br />
+                By clicking on the submit button below you certify that all information provided is true and to the best of your knowledge.<br /><br />
                 <a href='{{path('form_5')}}' class='btn btn-secondary'>Previous</a> 
                 <a id="testify" href="{{path('form_6', {'testified':'testified'})}}" class='btn btn-primary'>Submit</a><br /><br />               
             </div>
