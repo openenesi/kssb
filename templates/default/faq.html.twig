@@ -1,0 +1,86 @@
+{# empty Twig template #}
+{% extends "base.html.twig"%}
+{% block css %}
+    <style type='text/css'>
+        p.a {
+            display:none;
+            padding-left: 30px;
+            background-color: #e3e5fb;
+            position:relative;
+            left: 5%;
+            width: 95%;
+        }
+    </style>
+{% endblock css %}
+{% block content %}
+    {% set c = 1 %}
+    <div class="row">
+        <div class="col-12">
+            <h4>Frequently Asked Questions (FAQ)</h4>
+            <hr />
+            <p>
+                <a href="javascript:void(0);" class="q" id="q{{c}}">
+                    I am not from Kogi state. Do i need to apply?
+                </a>
+            <p class="a" id="a{{c}}">
+                NO.
+            </p>
+            {% set c = c+1 %}
+            </p>
+            <p>
+                <a href="javascript:void(0);" class="q" id="q{{c}}">Can I register for bursary or scholarship without correct BVN?</a>
+            <p class="a" id="a{{c}}">
+                NO.
+            </p>
+            {% set c = c+1 %}
+            </p>
+            <p>
+                <a href="javascript:void(0);" class="q" id="q{{c}}">What are my chances of gaining bursary or scholarship?</a>
+            <p class="a" id="a{{c}}">
+                As long as you meet all the requirements, you are eligible for the bursary or scholarship.
+            </p>
+            {% set c = c+1 %}
+            </p>
+            <p>
+                <a href="javascript:void(0);" class="q" id="q{{c}}">How do i change my email address.</a>
+            <p class="a" id="a{{c}}">
+                If payment has not been made within 24 hours the account will be deleted so that a new one can be created. 
+                However, if you want to change your email after payment, contact the support team.
+            </p>
+            {% set c = c+1 %}
+            </p>
+            <p>
+                <a href="javascript:void(0);" class="q" id="q{{c}}">I paid online but i still cannot proceed with the application.</a>
+            <p class="a" id="a{{c}}">
+                Contact the support team. They will take necessary action.
+            </p>
+            {% set c = c+1 %}
+            </p>
+            <p>
+                <a href="javascript:void(0);" class="q" id="q{{c}}">Can i make changes to the information i supplied?</a>
+            <p class="a" id="a{{c}}">
+                If you have not generated your form id you can change any information you wish to change.
+            </p>
+            {% set c = c+1 %}
+            </p>
+            <p>
+                <a href="javascript:void(0);" class="q" id="q{{c}}">I signed up but i haven't got an email of my login details.</a>
+            <p class="a" id="a{{c}}">
+                Automated emails may not arrive instantly. You can give more time or wait for 24 hours so that you can start a fresh application.
+            </p>
+            {% set c = c+1 %}
+            </p>
+        </div>
+    </div>
+{% endblock content %}
+{% block js %}
+    {{parent()}}
+    <script type="text/javascript">
+        //$(".a").hide();
+        $(document).on("click", ".q", function (event) {
+            var id = $(this).attr("id");
+            id= id.substring(1);
+            $("#a" + id).toggle();
+        });
+    </script>
+{% endblock js %}

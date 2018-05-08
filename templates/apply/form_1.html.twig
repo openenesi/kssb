@@ -1,0 +1,85 @@
+{% extends 'form_general.html.twig' %}
+
+{% block formbody %}
+    {% if (resend is defined) %}
+        <!-- First Step -->
+        <div class="row setup-content-3" id="step-5">
+            <div class="col-md-12">
+                <h3 class="font-weight-bold pl-0 my-4"><strong>Account Details Resent!</strong></h3>
+                    Your login details have been emailed to "<i>{{user.getEmail()}}</i>". If you do not get the mail give some time and also check your spam or junk folder.<br /><br />
+                <div class='alert alert-info' role='alert'>This account will be deleted if payment is not made within 24 hours.</div><br /><br />
+                <a href ="{{path('login')}}" class="btn btn-sm btn-primary">Login to proceed</a>
+            </div>
+        </div>
+    {% elseif (exists is defined) %}
+        <!-- First Step -->
+        <div class="row setup-content-3" id="step-5">
+            <div class="col-md-12">
+                <h3 class="font-weight-bold pl-0 my-4"><strong>Account Aready Exists!</strong></h3>
+                An account with the information you supplied already exists. If you recently created the account please <a href="{{path('login')}}" class="btn btn-sm btn-primary">login here</a>. Click <a href='{{path('resendcredentials', {'maddr':user.getEmail()})}}'>here</a> to resend the mail (with new password)<br /><br />
+                <div class='alert alert-info' role='alert'>For complains contact support team <a href="">here</a></div><br /><br />               
+            </div>
+        </div>
+    {% elseif (user is defined) %}
+        <!-- First Step -->
+        <div class="row setup-content-3" id="step-5">
+            <div class="col-md-12">
+                <h3 class="font-weight-bold pl-0 my-4"><strong>Account Created!</strong></h3>
+                Your account has been successfully created and your login details emailed to "<i>{{user.getEmail()}}</i>". If you do not get the mail give some time and also check your spam or junk folder.<br /><br />
+                <div class='alert alert-info' role='alert'>This account will be deleted if payment is not made within 24 hours.</div><br /><br />
+                <a href ="{{path('login')}}" class="btn btn-sm btn-primary">Login to proceed</a>
+            </div>
+        </div>
+    {% else %}
+        <!-- First Step -->
+        <div class="row setup-content-3" id="step-5">
+            <div class="col-md-12">
+                <h3 class="font-weight-bold pl-0 my-4"><strong>Create Account</strong></h3>
+                {#{{form(form, {'attr': {'novalidate': 'novalidate'}})}}#}
+                {{form_start(form, {'attr': {'novalidate': 'novalidate'}})}}
+                {{form_errors(form)}}
+                <div class='row'>
+                    <div class='col-sm-12 col-md-5'>
+                        {{form_row(form.matricNo)}}
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-12 col-md-5'>
+                        {{form_row(form.bvn)}}
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-12 col-md-5'>
+                        {{form_row(form.email)}}
+                    </div>
+                    <div class='col-sm-12 col-md-5'>
+                        {{form_row(form.email2)}}
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-12 col-md-5'>
+                        {{form_row(form.mobileNo)}}
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-sm-12 col-md-5'>
+                        {{form_row(form.create)}}
+                    </div>
+                    <div class='col-sm-12 col-md-5'>
+                        Aready have an account? Continue <a href="{{path('login')}}">here...</a>
+                    </div>
+                </div>
+                {{form_end(form)}}
+            </div>
+        </div>
+    {% endif %}
+{% endblock formbody %}
+{% block js %}
+    {{parent()}}
+    <script type='text/javascript'>
+        
+        $(document).on('copy paste', '#user_email2', function (event) {
+            event.preventDefault();
+        });
+    </script>
+{% endblock js %}

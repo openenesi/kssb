@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+    <!-- First Step -->
+    <div class="row">
+        <div class="col-md-12">
+            <h3 class="font-weight-bold pl-0 my-4"><strong>{{(is_granted('ROLE_CANDIDATE'))?("Welcome Back..."):("Lets Begin...")}}</strong></h3>
+
+            <div class="row">
+                {% if not(is_granted('ROLE_CANDIDATE')) %}
+                <div class="col-md-3">
+                    <a href="{{path('form_1')}}" class="btn btn-primary btn-sm">Start Fresh Application </a>
+                </div>
+                {% endif %}
+                <div class="col-md-3">
+                    <a href="{{path('form_6')}}" class="btn btn-primary btn-sm">Continue Application</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endblock content %}

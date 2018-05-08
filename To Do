@@ -1,0 +1,34 @@
+
+Profile pix (completed)
+
+Make the navbar fixed when scrolling (completed)
+
+Payment status getPaid (completed)
+
+user password as pyramid
+
+rewrite generateAppId() to use application year instead of static year (completed)
+
+pages for error (completed)
+
+send email after payment (completed)
+
+send email after application is complete (completed)
+
+prevent auto-fill in login and other relevant form field
+
+add institution not listed link 
+
+uncomment the reference parameter in the PaymentController
+rewrite the callback_url in the PaymentController
+
+change all test private secret keys on deployment
+verify subaccounts on deployment
+
+remove no-validate on forms
+
+add smooth scrolling to the top nav bar when the page loads (completed)
+
+verify CSRF protection on create account page when in production
+
+MISSION STATEMENT:To raise the standard and quality of Education in kogi state which is a veritable tool for Development. VISION STATEMENT : To create Educational access through scholarship.

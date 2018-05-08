@@ -1,0 +1,7 @@
+
+{% if (wards is defined and wards|length>0) %}
+                {% for ward in wards %}
+                    <option value="{{ward.Id}}">{{ward.wardName}}</option>
+        {% endfor %}
+{% endif %}
+

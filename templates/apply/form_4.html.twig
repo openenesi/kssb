@@ -1,0 +1,96 @@
+{% extends 'form_general.html.twig' %}
+
+{% block formbody %}
+        <!-- First Step -->
+        <div class="row setup-content-3" id="step-5">
+            <div class="col-md-12">
+                <h3 class="font-weight-bold pl-0 my-4"><strong>Academic Details </strong></h3>
+                {#{{form(form, {'attr': {'novalidate': 'novalidate'}})}}#}
+                {{form_start(form, {'attr': {'novalidate': 'novalidate'}})}}
+                    {{form_errors(form)}}
+                    {% if save is defined %}
+                        <div class="alert alert-success alert-dismissible" role="alert">
+                            Your changes were saved!
+                        </div>
+                    {% endif %}
+                    <div class='row'>
+                        <div class='col-sm-12 col-md-5'>
+                            {{form_row(form.matricNo)}}                            
+                        </div>                    
+                    </div>
+                    <div class='row'>
+                        <div class='col-sm-12 col-md-5'>
+                            {{form_row(form.institutionCategory)}}                            
+                        </div>                    
+                        <div class='col-sm-12 col-md-5'>
+                            {{form_row(form.institution)}}                            
+                        </div>                    
+                    </div>
+                    <div class='row'>
+                        <div class='col-sm-12 col-md-10'>
+                            {{form_row(form.institutionAddr)}}                            
+                        </div>                    
+                    </div>
+                    <div class='row'>
+                        <div class='col-sm-12 col-md-5'>
+                            {{form_row(form.faculty)}}                            
+                        </div>                    
+                        <div class='col-sm-12 col-md-5'>
+                            {{form_row(form.department)}}                            
+                        </div>                    
+                    </div>
+                    <div class='row'>
+                        <div class='col-sm-12 col-md-5'>
+                            {{form_row(form.courseOfStudy)}}                            
+                        </div>                    
+                    </div>
+                    <div class='row'>
+                        <div class='col-sm-12 col-md-5'>
+                            {{form_row(form.level)}}                            
+                        </div>                    
+                        <div class='col-sm-12 col-md-5'>
+                            {{form_row(form.courseDuration)}}                            
+                        </div>                    
+                    </div>
+                    <div class='row'>
+                        <div class='col-sm-12 col-md-5'>
+                            {{form_row(form.admissionDate)}}                            
+                        </div>                    
+                        <div class='col-sm-12 col-md-5'>
+                            {{form_row(form.graduationYear)}}                            
+                        </div>                    
+                    </div>
+                    <div class='row'>
+                        <div class='col-sm-12 col-md-5'>
+                            {{form_row(form.accommodationType)}}                            
+                        </div>                    
+                    </div>
+                <div class='row'>
+                    <div class='col-sm-12 col-md-5 lefty'>
+                        <a href='{{path('form_3')}}' class='btn btn-secondary'>Previous</a>
+                    </div>
+                    <div class='col-sm-12 col-md-5 righty'>
+                        {{form_row(form.save)}}
+                    </div>
+                </div>
+                </div>
+                {{form_end(form)}}
+            </div>
+{% endblock formbody %}
+{% block js %}
+    {{parent()}}
+    <script type="text/javascript">
+        
+        $(document).on("change","#candidate_institution_institutionCategory",function(event){
+            //alert("here");
+            var dis = $(this);
+            $("#candidate_institution_institution").html("<option value = ''>Loading...</option>");
+            $.ajax({
+                'url':"{{path('institution_options', {'category':"-"})}}"+dis.val(),
+                'method':'GET'
+            }).done(function(data){ //alert(data);
+                $("#candidate_institution_institution").html("<option value = ''>Select Institution</option>"+data);
+            });
+        });
+    </script>
+{% endblock js %}

@@ -1,0 +1,38 @@
+{% extends 'form_general.html.twig' %}
+
+{% block formbody %}
+    {% if (testified == false) %}
+        <!-- First Step -->
+        <div class="row setup-content-3" id="step-5">
+            <div class="col-md-12">
+                <h3 class="font-weight-bold pl-0 my-4"><strong>Attestation!</strong></h3>
+                {% if attempted== true %}
+                    <div class='alert alert-warning' role='alert'>Oops... something went wrong!</div>
+                {% endif %}
+                By clicking on the submit button you testify that all information provided are yours <br /><br />
+                <a href='{{path('form_5')}}' class='btn btn-secondary'>Previous</a> 
+                <a id="testify" href="{{path('form_6', {'testified':'testified'})}}" class='btn btn-primary'>Submit</a><br /><br />               
+            </div>
+        </div>
+    {% else %}
+        <!-- First Step -->
+        <div class="row setup-content-3" id="step-5">
+            <div class="col-md-12">
+                <h3 class="font-weight-bold pl-0 my-4"><strong>Application Completed!</strong></h3>
+                Your application for the {{session.getScholarshipSession()~'/'~ (session.getScholarshipSession()+1)}} KSSB scholarship programme is successfully completed. Your application Form No. is <strong>{{appId}}</strong><br /><br />
+                <a href ="" class="btn btn-sm btn-primary">Print Application Form</a> 
+                <a href ="{{path('logout')}}" class="btn btn-sm btn-outline-dark">Logout</a>
+            </div>
+        </div>
+    {% endif %}
+{% endblock formbody %}
+{% block js %}
+    {{parent()}}
+    <script type="text/javascript">
+        $(document).on("click", "#testify", function (event) {
+            if(!window.confirm("This is your final submission. Changes will not be allowed.")){
+                event.preventDefault();
+            }
+        });
+    </script>
+{% endblock js %}

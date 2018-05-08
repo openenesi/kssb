@@ -1,0 +1,65 @@
+{% extends 'form_general.html.twig' %}
+
+{% block formbody %}
+
+        <!-- First Step -->
+        <div class="row setup-content-3" id="step-5">
+            <div class="col-md-12">
+                <h3 class="font-weight-bold pl-0 my-4"><strong>Bank Details </strong></h3>
+                {#{{form(form, {'attr': {'novalidate': 'novalidate'}})}}#}
+                {{form_start(form, {'attr': {'novalidate': 'novalidate'}})}}
+                {{form_errors(form)}}
+                {% if save is defined %}
+                    <div class="alert alert-success alert-dismissible" role="alert">
+                        Your changes were saved!
+                    </div>
+                {% endif %}
+                <div class='row'>
+                    <div class='col-sm-12 col-md-5'>
+                        {{form_row(form.bvn)}}                            
+                    </div>                    
+                    <div class='col-sm-12 col-md-5'>
+                        {{form_row(form.bank)}}                            
+                    </div>                    
+                </div>
+                <div class='row'>
+                    <div class='col-sm-12 col-md-5'>
+                        {{form_row(form.accountNo)}}                            
+                    </div>                    
+                    <div class='col-sm-12 col-md-5'>
+                        {{form_row(form.accountNo2)}}                            
+                    </div>                    
+                </div>
+                <div class='row'>
+                    <div class='col-sm-12 col-md-5'>
+                        {{form_row(form.accountName)}}                            
+                    </div>
+                    <div class='col-sm-12 col-md-5'>
+                        {{form_row(form.accountType)}}                            
+                    </div> 
+                </div>
+                <div class='row'>
+                    <div class='col-sm-12 col-md-5'>
+                        {{form_row(form.sortCode)}}                            
+                    </div>                    
+                </div>
+                <div class='row'>
+                    <div class='col-sm-12 col-md-5 lefty'>
+                        <a href='{{path('form_4')}}' class='btn btn-secondary'>Previous</a>
+                    </div>                    
+                    <div class='col-sm-12 col-md-5 righty'>
+                        {{form_row(form.save)}}                            
+                    </div>                    
+                </div>
+                {{form_end(form)}}
+            </div>
+        </div>
+{% endblock formbody %}
+{% block js %}
+    {{parent()}}
+    <script type="text/javascript">
+        $(document).on("copy paste", "#candidate_bank_accountNo2", function (event) {
+            event.preventDefault()
+        });
+    </script>
+{% endblock js %}

@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+    <div class='row'>
+        <div class='col'>
+            <h1>Kogi State Scholarship, {{session.getScholarshipSession()~"/"~ (session.getScholarshipSession()+1)}}</h1>
+            <hr />
+            <div class="lead">The Kogi State Government under the leadership of His Excellency, the Executive Governor Alh. Yahaya Adoza Bello 
+                had redeemed his pledged by paying 300%  increment of {{session.getScholarshipSession()~"/"~ (session.getScholarshipSession()+1)}} Bursary allowance to deserving Kogi State Indigenes 
+                in all tertiary institutions across the country at the levels of undergraduate.
+            </div>
+            <br />
+            <br />
+
+            <h2>How To Apply</h2>
+            <hr />
+            <ul>
+                <li>Visit <a href="{{path('scholarship')}}">{{url('scholarship')}}</a> and read the instructions shown in the page.</li>
+                <li>Applicants are to click on the <a href="{{path('choice')}}">Apply Here</a> link to commence registration.</li>
+                <li>If you have not created an account, you will be asked to do so. Otherwise click on <a href="{{path('form_6')}}">Continue Application</a>.</li>
+                <li>Applicants are to fill the first stage to "Sign up". Information to be provided are Matric Number, E-mail, Confirmation of E-mail, BVN and Phone Number.</li>
+                <li>An email containing username & password  and a link to continue with the application will be sent to the email address provided during sign up.</li>
+                <li>Follow the link and provide the username and password to proceed to payment.</li>
+                <li>If the payment is successful, a notification of payment will be sent to the candidate’s email as a confirmation that Kogi state Scholarship Board has received the payment of &#8358;{{session.getRegistrationCost()|number_format(2,'.',',')}}.</li>
+                <li>Click on "Proceed" to fill in Personal, Institution and Bank details.</li>
+                <li>An application is complete when the candidate finally clicks on "Submit" button to get a unique Form Id.</li>
+                <li>An email will be sent confirming the completion of the application.</li>
+                <li>Finally download and print your completed form.</li>
+            </ul>
+            <div class="alert alert-warning" role="alert">
+                Multiple applications will be cancelled. Do NOT apply more than once.
+            </div>
+            <div class="alert alert-info" role="alert">
+                <h4 class="alert-heading">Fraud Prevention Tips</h4>
+                <ol>
+                    <li>Never reveal any of your personal or financial information (PINs, Passwords, Card Numbers, Security Questions etc) in an email, text, person or over the phone.</li>
+                    <li>Always pay attention to the website's URL (www.kssb.kg.gov.ng). Hover over any links to see where they lead. Rather than click on suspicious links.</li>
+                </ol>
+            </div>
+
+
+
+            <p>
+                <strong>Note:</strong> Send email to: {{session.getEmail()}} for any application problems, issues, and enquiry.
+            </p>
+
+            <div class="text-center">
+                <a href="{{path('choice')}}" class="btn btn-sm btn-primary">Apply Here</a>
+            </div>
+        </div>
+    </div>
+{% endblock content%}

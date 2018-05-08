@@ -1,0 +1,32 @@
+{# empty Twig template #}
+{% extends "base.html.twig"%}
+{% block css %}
+    <style type='text/css'>
+    </style>
+{% endblock css %}
+{% block content %}
+    <div class="row">
+        <div class="col-sm-12 col-md-5">
+            <h3>Our Address:</h3>
+            <strong >Kogi State Scholarship Board<br /> Lokoja-Kogi State<br /></strong>
+            <strong><i class="fa fa-envelope"> </i> </strong> {{session.getEmail()}} <br />
+            <strong><i class="fa fa-phone"> </i> </strong> {{session.getMobileNo()}} <br />
+            <hr class='d-block d-md-none' />
+        </div>
+        <div class="col-sm-12 col-md-7">
+            <h3>Send Us An Email:</h3>
+            {% for flash_msg in app.session.flashbag.get("msg_sent") %}
+                <div class='alert alert-info' role='alert'>
+                    {{flash_msg}}
+                </div>
+            {% endfor %}
+            
+            {{form(form)}}
+        </div>
+    </div>
+{% endblock content %}
+{% block js %}
+    {{parent()}}
+    <script type="text/javascript">
+    </script>
+{% endblock js %}

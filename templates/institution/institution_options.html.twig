@@ -1,0 +1,7 @@
+
+{% if (institutions is defined and institutions|length>0) %}
+                {% for institution in institutions %}
+                    <option value="{{institution.Id}}">{{institution.institutionName}}</option>
+        {% endfor %}
+{% endif %}
+

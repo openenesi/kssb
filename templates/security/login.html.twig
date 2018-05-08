@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Login::KSSB{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-sm-12 col-md-5">
+            <h3>Don't have an account?</h3>
+            <a href='{{path('form_1')}}' class='btn btn-primary btn-sm'>Start here</a>
+        </div>
+        <div class="col-sm-12 col-md-7">
+    <h1> Login </h1>
+    {% if loginerror is defined %}
+        {{ render_esi(url('login_form', {'last_username':last_username, 'loginerror':loginerror})) }}
+    {% elseif last_username is defined %}
+        {{ render_esi(url('login_form', {'last_username':last_username})) }}
+    {% else %}
+        {{ render_esi(url('login_form')) }}
+    {% endif %}
+        </div>
+    </div>       
+    
+{% endblock content %}

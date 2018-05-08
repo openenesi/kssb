@@ -1,0 +1,24 @@
+{# empty Twig template #}
+<form name="user" action="{{path('login')}}" method="post">
+    <div class ="row">
+        <div class="col-8">
+            {% if loginerror is defined %}
+                <div class="alert alert-danger" role ="alert">
+                    <div>{{ loginerror }}</div>
+                </div>
+            {% endif %}
+            <div class="form-group">
+                <label for="username" class="form-control-label required">Username: </label>
+                <input type="text" id="username" name="_username" required="required" value="{{ last_username is defined?(last_username):("") }}" placeholder="your email" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="password" class="form-control-label required">Password: </label>
+                <input type="password" id="password" name="_password" required="required" placeholder="your password" class="form-control" />
+            </div>
+            <input type="hidden" name="_csrf_token" value="{{csrf_token('authenticate')}}" />
+            <div class="form-group">
+                <button type="submit" id="login" name="login" class="btn-secondary btn">Login</button>
+            </div>
+        </div>
+    </div>
+</form>

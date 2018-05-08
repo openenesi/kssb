@@ -1,0 +1,10 @@
+{# empty Twig template #}
+{% extends 'email_general.html.twig' %}
+{% block content %}
+    <h1 style="text-align:center;">Application Completed!</h1>
+    <div style="text-align: center;"><img src="{{absolute_url(asset('site_images/credential.png'))}}" style="width:150px; height: 150px;"/></div>
+    <div style="padding-left:20px;">
+        You have successfully completed your application for the {{session.getScholarshipSession()~"/"~ (session.getScholarshipSession()+1)}} KSSB scholarship program. Your application form id is {{appId}}
+           <p>Click <a href="{{url("form_6")}}">here</a> to print your application form. </p>
+    </div>
+{% endblock content %}

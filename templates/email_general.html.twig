@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+    <head>        
+            
+    </head>
+    <body style="background-color:#e7e9f1;
+				color:#666666;">
+     
+            <div id="kssb-body" style="width:70%;
+				margin-left:auto;
+				margin-right:auto;
+				background-color:#ffffff;
+				font-family: arial;
+				font-size:1em;
+				box-shadow:1px 1px 2px 1px #cccccc;">
+                <div id="kssb-heading" style="background:linear-gradient(180deg, #f3f6fd, #002a80); 
+				height:150px;
+				width:100%;
+				text-align:center;
+				box-shadow:0px 2px 1px 1px #cccccc;">
+			<br />
+			<h1 style="color:#282b35;">Kogi State Scholarship Board</h1> <span style="color:#f74e0d; font-size:1.4em;">Lokoja-Kogi State</span>
+                </div>
+                <div id="kssb-content" style="padding:10px;">
+                    {% block content %}
+                    
+                    {% endblock content %}
+                </div>
+                <div id="kssb-footer" style="padding:10px;
+				text-align:center;
+				font-size:0.8em;">
+			<hr id='footer-hr' style="width:70%;
+				border-width:0.1em;
+				border-color:#cccccc;	
+				border-style:solid;"/>
+			For support request please contact us by going through our <a href="">support page</a><br />
+			This e-mail has been sent to you by Kogi State Scholarship Board (KSSB) Lokoja-Kogi.<br />
+			Copyright &copy; {{"now"|format("Y")}} KSSB
+			
+                    
+                </div>
+            </div>        
+    </body>
+</html>

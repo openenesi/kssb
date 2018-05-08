@@ -1,0 +1,15 @@
+{# empty Twig template #}
+{% extends 'email_general.html.twig' %}
+{% block content %}
+    <h1 style="text-align:center;">Payment Notification</h1>
+    <div style="text-align: center;"><img src="{{absolute_url(asset('site_images/credential.png'))}}" style="width:150px; height: 150px;"/></div>
+    <div style="padding-left:20px;">
+        This is to confirm your payment for the {{session.getScholarshipSession()~"/"~(session.getScholarshipSession()+1)}} scholarship application.
+        <div style="padding-left:20px;">
+            <p><b>Amount Paid:</b> &#8358;{{(amount/100)|number_format(2,'.',',')}} </p>
+            <p><b>Date Paid:</b> {{datePaid|date('Y-m-d H:i:s a')}} </p>
+
+            <p>Click <a href="{{url("form_3")}}">here</a> to continue with your application. </p>
+        </div>
+    </div>
+{% endblock content %}

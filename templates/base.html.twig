@@ -1,0 +1,193 @@
+{% if page is not defined %}
+    {% set page = 'undefined' %}
+{% endif %}
+<!doctype html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>{% block title %}Kogi State Scholarship Board{% endblock title %}</title>
+        <!-- Bootstrap CSS -->
+        {% block stylesheets %}
+            <link rel="stylesheet" href="{{asset('bootstrap/css/bootstrap.min.css')}}"/>
+            <link rel="stylesheet" href="{{asset('fontawesome/css/fontawesome-all.min.css')}}" />
+            <link href="{{asset('open-iconic/font/css/open-iconic-bootstrap.css')}}" rel="stylesheet" />
+
+
+            {% block links %}
+                <link rel="stylesheet" href="{{asset('navigataur/navigataur.css')}}"/>
+            {% endblock links %}
+            <style type='text/css'>
+                body{
+                    color:#3c3c3c;
+                    font-size: .9em;
+                }
+                #title-bar{
+                    background:linear-gradient(180deg, #f3f6fd, #002a80); 
+                }
+                .navbar{
+                    height: 100px;
+                }
+                .sticky {
+                    position: fixed;
+                    top: 0;
+                    width: 100%
+                }
+
+                .sticky + .content {
+                    padding-top: 100px;
+                }
+
+
+                @include media-breakpoint-up(sm) {
+                    #pageheadingtitle {
+                        font-size: 1.2rem;
+                    }
+                }
+
+                @include media-breakpoint-up(md) {
+                    #pageheadingtitle {
+                        font-size: 1.4rem;
+                    }
+                }
+
+                @include media-breakpoint-up(lg) {
+                    #pageheadingtitle {
+                        font-size: 1.6rem;
+                    }
+                }
+
+
+            </style>
+            {% block css %}
+
+            {% endblock css %}
+        {% endblock stylesheets %}
+
+    </head>
+    <body>
+        {% block body %}
+            <div id='title-bar'>
+                <div class='container'>
+                    <div class='row'>
+                        <div class='col-6 col-md-2'>
+                            <img src='{{asset('site_images/coat_of_arms.png')}}' class="img-fluid" />
+                        </div>
+                        <div class='col-6 col-md-2 d-block d-md-none'>
+                            <img src='{{asset('site_images/state_logo.png')}}' class="img-fluid"/>
+                        </div>
+                        <div class='col-sm-12 col-md-8 align-self-center' id="pageheadingtitle">                    
+                            <h3 class='display-5 text-center' style="color:#282b35;">KOGI STATE SCHOLARSHIP BOARD</h3>
+                            <p style="text-align:center; color:#f74e0d; font-size:1.4em;">Lokoja Kogi State</p>
+                        </div>
+                        <div class='col-sm-12 col-md-2 d-none d-md-block'>
+                            <img src='{{asset('site_images/state_logo.png')}}' class="img-fluid"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <nav id='topnavbar' class='hd navbar fixed-top navbar-light bg-light'>
+                <input type="checkbox" id="toggle" />
+                <div>
+                    <label for="toggle" class="toggle" data-open="Menu" data-close="Close" onclick></label>
+                    <ul class="menu">
+                        <li><a href="{{path('home')}}" class="{{(page!='home')?:'active '}}">Home</a></li>
+                        <li><a href="#">About Us</a></li>		
+                        <li><a href="#">Board</a></li>	
+                        <li><a href="{{path('contactus')}}" class="{{(page!='contactus')?:'active '}}">Contact Us</a></li>
+                        <li><a href="{{path('faq')}}" class="{{(page!='faq')?:'active '}}">FAQ</a></li>
+                        <li><a href="{{path('scholarship')}}" class="{{(page!='scholarship')?:'active '}}}">Scholarship</a></li>
+                        <li><a href="#">News</a></li>
+                    </ul>
+                </div>
+                {% if is_granted('ROLE_CANDIDATE') %}
+                    <a href="{{path('logout')}}" class='btn btn-outline-dark btn-sm'>Logout</a>
+                {% endif %}
+            </nav>
+            <div class="container-fluid content">
+                <div class="row">
+                    <div class='col-2'>
+                    </div>
+                    <div class='col-sm-10 col-md-8'>
+                        <div style="min-height:300px; padding-top:20px;">
+                            {% block content %}
+                            {% endblock content %}
+                        </div>
+
+                    </div>
+                    <div class='col-sm-1 col-md-2'>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class='row'>
+                    <div class='col-sm-1 col-md-2'>
+                    </div>
+                    <div class='col-sm-10 col-md-8'>
+                        <footer style='margin-top: 20px; background-color:#002a80; padding:20px; padding-bottom: 0px; color:lightblue; font-size: 0.8em; box-shadow:1px 1px 2px 1px #cccccc;'>
+                            <div class='row'>
+                                <div class='col-12'>
+                                    <p class='text-center'>&copy;{{ "now"|date('Y')}} Kogi State Bursary and Scholarship Board (KSSB).</p>
+                                </div>
+                            </div>
+                            {% if session is defined %}
+                                <div class='row'>
+                                    <div class='col-12'>
+                                        <p class='text-center'><strong>Help Line: </strong> <i class="fa fa-envelope"> </i> {{session.getEmail()}} <i class="fa fa-phone"> </i> {{session.getMobileNo()}}.</p>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            <div class='row'>
+                                <div class='col-sm-12 col-md-8'>
+                                    <p class='text-center'>
+                                        <strong>Powered by:</strong> Maso Consultancy Service Limited.
+                                    </p>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <p class='text-center'><strong>Designed by: </strong> <a href="http://www.bitssense.com.ng" target='_blank' style="background-color:#ffffff; padding-left:3px; padding-right: 3px; text-shadow: 0px 0px 0.2px #ffffff;"><b style="color:black; ">Bits</b><b style="color: #1388da;">Sense</b></a> Ltd</p>
+                                </div>
+                            </div>
+                        </footer>
+                    </div>
+                    <div class='col-sm-1 col-md-2'>
+                    </div>
+                </div>
+            </div>
+        {% endblock body %}
+        {% block javascripts %}
+            <script src="{{asset('jquery/jquery-3.3.1.min.js')}}"></script>
+            <script src="{{asset('popper/popper.min.js')}}"></script>
+            <script src="{{asset('bootstrap/js/bootstrap.min.js')}}"></script>
+
+            {% block scripts %}
+            {% endblock scripts %}
+            {% block js %}
+                <script type='text/javascript'>
+
+                    window.onscroll = function () {
+                        myFunction()
+                    };
+
+                    var navbar = document.getElementById("topnavbar");
+                    var sticky = navbar.offsetTop;
+
+                    function myFunction() {
+                        if (window.pageYOffset >= sticky) {
+                            navbar.classList.add("sticky")
+                        } else {
+                            navbar.classList.remove("sticky");
+                        }
+                    }
+                    
+                    function scrollTo(target) {
+                        $('html, body').stop().animate({
+                            scrollTop: target.offset().top
+                        }, 1000);
+
+                    }
+                </script>
+            {% endblock js %}
+        {% endblock javascripts %}
+    </body>
+</html>

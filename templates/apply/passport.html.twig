@@ -1,0 +1,65 @@
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Passport</title>
+        <!-- Bootstrap CSS -->
+        {% block stylesheets %}
+            <link rel="stylesheet" href="{{asset('bootstrap/css/bootstrap.min.css')}}"/>
+            <style type='text/css'>
+                body{
+                    max-width: 400px;
+                    max-height: 60px;
+                    padding: 20px;
+                }
+                #form_upload{
+                    display:none;
+                }
+                .invalid-feedback{
+                    padding-top:10px;
+                }
+            </style>
+        {% endblock stylesheets %}
+    </head>
+    <body>
+        {{form_start(form, {'attr': {'novalidate': 'novalidate', 'id':'passportfrm'}})}}
+        {{form_errors(form)}}
+
+        <div class='row'>            
+            <div class='col-11'>
+
+                {{form_row(form.passport)}}  
+
+            </div>
+            <div class='col-1'>
+            </div>
+        </div>
+        <div class='row'>
+            <div class='col-12'>
+                {{form_row(form.upload)}}                
+            </div>
+        </div>
+        {{form_end(form)}}
+
+        <script src="{{asset('jquery/jquery-3.3.1.min.js')}}"></script>
+
+        <script type ='text/javascript'>
+            
+            $("#image", window.parent.document).removeClass("imageToChange");
+            $("#loaderparent", window.parent.document).addClass("spinner");
+
+            $(document).on('change', '#form_passport', function (event) {
+                $("#image", window.parent.document).addClass("imageToChange");
+                $("#loaderparent", window.parent.document).removeClass("spinner");
+                $('#passportfrm').trigger("submit");
+            });
+
+            {% if passport is defined and passport is not null %}
+                $('#image', window.parent.document).attr('src', '{{asset('passport/'~passport)}}?timestamp={{"now"|date('U')}}');
+                $('#candidate_personal_passport', window.parent.document).val('{{passport}}');
+
+            {% endif %}
+        </script>
+    </body>
+</html>
