@@ -46,6 +46,9 @@ class CandidatePersonalController extends Controller {
             $arrOpt['lga'] = $candidatepersonal->getWard()->getLga();
             //var_dump($candidatepersonal->getWard()->getLga()); exit();
         }
+        
+        $arr_data = array('page' => 'scholarship', 'step' => 'personal', 'candidate' => $user, 'session' => $session);
+        
         $form = $this->createForm(CandidatePersonalType::class, $candidatepersonal, $arrOpt);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -62,10 +65,14 @@ class CandidatePersonalController extends Controller {
         }
         if ($form->isSubmitted() && !$form->isValid()) {
             $form->addError(new \Symfony\Component\Form\FormError("Fix this error(s)!"));
+            if(!$user->getCandidatePersonal() || $user->getCandidatePersonal()->getPassport()== null){
+                $arr_data['passporterror']= true;
+            }
         }
 
+        $arr_data['form']= $form->createView();
 
-        return $this->render('apply/form_3.html.twig', array('page' => 'scholarship', 'step' => 'personal', 'form' => $form->createView(), 'candidate' => $user, 'session' => $session));
+        return $this->render('apply/form_3.html.twig', $arr_data);
     }
 
     /**

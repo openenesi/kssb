@@ -17,7 +17,7 @@
                     <tr><th>Full Name:</th><td>{{candidate.getCandidatePersonal().getFullName()}}</td></tr>
                     {% endif %}
                     <tr><th>Email:</th><td>{{candidate.getEmail()}}</td></tr>
-                    <tr><th>Amount:</th><td>&#8358;{{session.getRegistrationCost()|number_format(2,'.',',')}} <span class="badge badge-info">Payment gateway service charge included</span></td></tr>
+                    <tr><th>Amount:</th><td>&#8358;{{session.getRegistrationCost()|number_format(2,'.',',')}} <span class="badge badge-info">Paystack charge included</span></td></tr>
                 </table>
                 <form action="{{url('form_2')}}" method="post">
                     <input type="hidden" name="pay" value="pay" />
@@ -31,7 +31,7 @@
                         <tr><th>Full Name:</th><td>{{candidate.getCandidatePersonal().getFullName()}}</td></tr>
                     {% endif %}
                     <tr><th>Email:</th><td>{{candidate.getEmail()}}</td></tr>
-                    <tr><th>Amount:</th><td>&#8358;{{session.getRegistrationCost()|number_format(2,'.',',')}} <span class="badge badge-info">Payment gateway service charge included</span></td></tr>
+                    <tr><th>Amount:</th><td>&#8358;{{session.getRegistrationCost()|number_format(2,'.',',')}} <span class="badge badge-info">Paystack charge included</span></td></tr>
                 </table>
                 <div class="text-right"><a href ="{{path('form_3')}}" class="btn btn-primary btn-sm">Proceed</a></div>
 

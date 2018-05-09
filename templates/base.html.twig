@@ -22,6 +22,12 @@
                 body{
                     color:#3c3c3c;
                     font-size: .9em;
+                    background-image:url({{asset('site_images/kogi_new_direction_transparent.png')}});
+                    background-repeat:no-repeat;
+                    background-position:90% 80%;
+                    background-size:150px 120px;
+                    background-attachment: fixed;
+
                 }
                 #title-bar{
                     background:linear-gradient(180deg, #f3f6fd, #002a80); 
@@ -39,25 +45,58 @@
                     padding-top: 100px;
                 }
 
-
-                @include media-breakpoint-up(sm) {
-                    #pageheadingtitle {
-                        font-size: 1.2rem;
-                    }
+                #title-bar{
+                    background-image: url('{{asset('site_images/blueish.jpeg')}}');
                 }
 
-                @include media-breakpoint-up(md) {
-                    #pageheadingtitle {
-                        font-size: 1.4rem;
-                    }
+                div#pageheadingtitle h2{
+                    color: #e3e4fa;
+                    font-family: arial;
+                    font-weight:900;
+                }
+                div#pageheadingtitle p#kssbaddr{
+                    text-align:center; 
+                    color:#ef6947; 
+                    font-size:1.4em;
+                    font-weight:600;
                 }
 
-                @include media-breakpoint-up(lg) {
-                    #pageheadingtitle {
-                        font-size: 1.6rem;
-                    }
+                .righty{
+                    text-align: right;
+                }
+                .lefty{
+                    text-align: left;
+                    padding-bottom: 10px;
                 }
 
+                @media only screen and (max-width: 768px){
+                    #imgstatelogo, #imgcoatofarms {
+                        width:70%;
+                        height:70%;
+                    }
+                    .imgtitlebar{
+                        text-align:center;
+                    }
+                    div#pageheadingtitle h3{
+                        font-size:1.8em !important;
+                    }
+                    #title-bar{
+                        background-size:cover;
+                    }
+
+                    .righty{
+                        text-align: center;
+                    }
+                    .lefty{
+                        text-align: center;
+                    }
+                    #sidenav{
+                        padding-left:35px;
+                    }
+                }
+                span.alert.alert-danger{
+                    display:block;
+                }
 
             </style>
             {% block css %}
@@ -71,18 +110,18 @@
             <div id='title-bar'>
                 <div class='container'>
                     <div class='row'>
-                        <div class='col-6 col-md-2'>
-                            <img src='{{asset('site_images/coat_of_arms.png')}}' class="img-fluid" />
+                        <div class='col-6 col-md-2 imgtitlebar'>
+                            <img id='imgcoatofarms' src='{{asset('site_images/kogi_map_small.png')}}' />
                         </div>
-                        <div class='col-6 col-md-2 d-block d-md-none'>
-                            <img src='{{asset('site_images/state_logo.png')}}' class="img-fluid"/>
+                        <div class='col-6 col-md-2 d-block d-md-none imgtitlebar'>
+                            <img id='imgstatelogo' src='{{asset('site_images/state_logo.png')}}'/>
                         </div>
                         <div class='col-sm-12 col-md-8 align-self-center' id="pageheadingtitle">                    
-                            <h3 class='display-5 text-center' style="color:#282b35;">KOGI STATE SCHOLARSHIP BOARD</h3>
-                            <p style="text-align:center; color:#f74e0d; font-size:1.4em;">Lokoja Kogi State</p>
+                            <h2 class='text-center' >KOGI STATE SCHOLARSHIP BOARD</h2>
+                            <p id='kssbaddr'>Lokoja Kogi State</p>
                         </div>
                         <div class='col-sm-12 col-md-2 d-none d-md-block'>
-                            <img src='{{asset('site_images/state_logo.png')}}' class="img-fluid"/>
+                            <img id='imgstatelogo' src='{{asset('site_images/state_logo.png')}}' class="img-fluid"/>
                         </div>
                     </div>
                 </div>
@@ -90,7 +129,7 @@
             <nav id='topnavbar' class='hd navbar fixed-top navbar-light bg-light'>
                 <input type="checkbox" id="toggle" />
                 <div>
-                    <label for="toggle" class="toggle" data-open="Menu" data-close="Close" onclick></label>
+                    <label for="toggle" class="toggle" data-open="KSSB" data-close="Hide" onclick></label>
                     <ul class="menu">
                         <li><a href="{{path('home')}}" class="{{(page!='home')?:'active '}}">Home</a></li>
                         <li><a href="#">About Us</a></li>		
@@ -140,12 +179,12 @@
                             {% endif %}
                             <div class='row'>
                                 <div class='col-sm-12 col-md-8'>
-                                    <p class='text-center'>
+                                    <p class='lefty'>
                                         <strong>Powered by:</strong> Maso Consultancy Service Limited.
                                     </p>
                                 </div>
                                 <div class="col-sm-12 col-md-4">
-                                    <p class='text-center'><strong>Designed by: </strong> <a href="http://www.bitssense.com.ng" target='_blank' style="background-color:#ffffff; padding-left:3px; padding-right: 3px; text-shadow: 0px 0px 0.2px #ffffff;"><b style="color:black; ">Bits</b><b style="color: #1388da;">Sense</b></a> Ltd</p>
+                                    <p class='righty'><strong>Designed by: </strong> <a href="http://www.bitssense.com.ng" target='_blank' style="border-radius: 2px; background-color:#ffffff; padding-left:3px; padding-right: 3px; text-shadow: 0px 0px 0.2px #ffffff;"><b style="color:black; ">Bits</b><b style="color: #1388da;">Sense</b></a> Ltd</p>
                                 </div>
                             </div>
                         </footer>
@@ -164,6 +203,7 @@
             {% endblock scripts %}
             {% block js %}
                 <script type='text/javascript'>
+                    $('form').attr('autocomplete', 'off');
 
                     window.onscroll = function () {
                         myFunction()
@@ -179,7 +219,7 @@
                             navbar.classList.remove("sticky");
                         }
                     }
-                    
+
                     function scrollTo(target) {
                         $('html, body').stop().animate({
                             scrollTop: target.offset().top

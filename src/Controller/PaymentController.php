@@ -71,14 +71,14 @@ class PaymentController extends Controller {
             if ($err) {
                 //var_dump($err); exit();
                 // there was an error contacting the Paystack API
-                return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'candidate' => $user, 'error' => true, 'errmsg'=>$err."-err", 'session' => $session));
+                return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'candidate' => $user, 'error' => true, 'errmsg'=>$err, 'session' => $session));
             }
 
             $tranx = json_decode($response, true);
             //var_dump($tranx);
             if (!$tranx['status']) {
                 // there was an error from the API
-                return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'candidate' => $user, 'error' => true, 'errmsg'=>"--err", 'session' => $session));
+                return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'candidate' => $user, 'error' => true, 'errmsg'=>"Internal server error", 'session' => $session));
             }
 
             // comment out this line if you want to redirect the user to the payment page

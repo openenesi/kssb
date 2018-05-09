@@ -127,4 +127,11 @@ class DefaultController extends Controller {
         return $this->render('apply/form_6.html.twig', array('page' => 'scholarship', 'step' => 'finish', 'testified' => false, 'attempted' => false, 'candidate' => $user, 'session' => $session));
     }
 
+    /**
+     * @Route("/apply/appform", name="appform")
+     */
+    public function appform(Request $request) {
+        return $this->render('apply/appform.html.twig');
+    }
+
 }

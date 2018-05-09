@@ -17,7 +17,7 @@
         .spinner{
             display: none;
         }
-        
+
         #loaderparent{
             width:0px;
             height: 0px;
@@ -69,7 +69,7 @@
             {% endif %}
             <div class='row'>
                 <div class='col-12 col-md-4'>
-                    <img id='image' src='{% if candidate.candidatePersonal is defined %}{{asset('passport/'~candidate.candidatePersonal.getPassport())}}{% else %}{{asset('passport/default.jpg')}}{% endif%}?timestamp={{"now"|date('U')}}' class="img-thumbnail" style='width:150px; height:170px;'/>
+                    <img id='image' src='{% if candidate.candidatePersonal is defined and candidate.candidatePersonal is not null %}{{asset('passport/'~candidate.candidatePersonal.getPassport())}}{% else %}{{asset('passport/default.jpg')}}{% endif%}?timestamp={{"now"|date('U')}}' class="img-thumbnail" style='width:150px; height:170px;'/>
                     <br /><br />
                     <div id='loaderparent' class='spinner'><div class="loader"></div></div>
                 </div>
@@ -78,7 +78,7 @@
                     <iframe scrolling='no' id ='imageview' src = '{{path('handlepassport')}}'>  </iframe>
                 </div>
             </div>
-
+                
             <div class='row'>
                 <div class='col-sm-12 col-md-3'>
                     {{form_row(form.title)}}

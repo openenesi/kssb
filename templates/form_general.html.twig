@@ -4,6 +4,7 @@
     <link rel="stylesheet" href="{{asset('bootstrap_datepicker/css/bootstrap-datepicker.min.css')}}"/>
 {% endblock links %}
 {% block css %}
+    {{parent()}}
     <style type="text/css">
         .steps-form-3 {
             width: 2px;
@@ -53,10 +54,13 @@
             border: 2px solid #ffffff;
             background-color: #59698D !important;
             color: #ffffff !important;
-            border-radius: 50%;
-            -webkit-border-radius: 50%;
-            -moz-border-radius: 50%;
-            padding: 18px 18px 15px 15px; }
+            border-radius: 50% !important;
+            -moz-border-radius: 50% !important;
+            -webkit-border-radius: 50% !important;
+            -o-border-radius:50% !important;
+            padding: 18px 18px 15px 15px; 
+        }
+        
         .steps-form-3 .steps-row-3 .steps-step-3 .btn-circle-3:hover {
             border: 2px solid #4285F4;
             color: #4285F4 !important;
@@ -75,25 +79,7 @@
             opacity: 1;
         }
 
-        .righty{
-            text-align: right;
-        }
-        .lefty{
-            text-align: left;
-            padding-bottom: 10px;
-        }
 
-        @media only screen and (max-width: 768px){
-            .righty{
-                text-align: center;
-            }
-            .lefty{
-                text-align: center;
-            }
-            #sidenav{
-                padding-left:35px;
-            }
-        }
     </style>
 {% endblock css %}
 {% block content %}
