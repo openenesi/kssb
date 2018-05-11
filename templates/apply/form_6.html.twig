@@ -9,7 +9,7 @@
                 {% if attempted== true %}
                     <div class='alert alert-warning' role='alert'>Oops... something went wrong!</div>
                 {% endif %}
-                By clicking on the submit button below, you certify that all information provided is true and to the best of your knowledge.<br /><br />
+                By clicking on the submit button below, you "<span style="font-weight: bold; text-decoration: underline; font-style: italic;">{{candidate.getCandidatePersonal().getFullName()}}</span>" hereby declare that all the information given in this application is to the best of your knowledge and belief, correct.<br /><br />
                 <a href='{{path('form_5')}}' class='btn btn-secondary'>Previous</a> 
                 <a id="testify" href="{{path('form_6', {'testified':'testified'})}}" class='btn btn-primary'>Submit</a><br /><br />               
             </div>
@@ -20,7 +20,7 @@
             <div class="col-md-12">
                 <h3 class="font-weight-bold pl-0 my-4"><strong>Application Completed!</strong></h3>
                 Your application for the {{session.getScholarshipSession()~'/'~ (session.getScholarshipSession()+1)}} KSSB scholarship programme is successfully completed. Your application Form No. is <strong>{{appId}}</strong><br /><br />
-                <a href ="" class="btn btn-sm btn-primary">Print Application Form</a> 
+                <a href ="{{path('appform')}}" target='_blank' class="btn btn-sm btn-primary">Print Application Form</a> 
                 <a href ="{{path('logout')}}" class="btn btn-sm btn-outline-dark">Logout</a>
             </div>
         </div>

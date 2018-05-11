@@ -21,7 +21,7 @@ trait Utils {
     }
 
     public static function getUtilTitles() {
-        return array("Mr", "Mrs", "Mallam", "Mallama", "Hajiya", "Alhaji", "Miss");
+        return array("Mr.", "Mrs.", "Mallam", "Mallama", "Hajiya", "Alhaji", "Miss");
     }
 
     public static function getUtilBankAccTypes() {
@@ -33,7 +33,7 @@ trait Utils {
     }
 
     public static function getUtilAccommodationTypes() {
-        return array("Off-Campus" => "offcampus", "Hostel" => "hostel");
+        return array("Off-Campus" => "off-campus", "Hostel" => "hostel");
     }
 
     public static function getUtilInstitutionCategories() {

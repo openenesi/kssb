@@ -3,71 +3,516 @@
     <head>
         <!-- Required meta tags -->
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>Application Form::KSSB </title>
+        <title>Application Form::KSSB {{session.getScholarshipSession()}} </title>
         <!-- Bootstrap CSS -->
         {% block stylesheets %}
             <link rel="stylesheet" href="{{asset('bootstrap/css/bootstrap.min.css')}}"/>
+            <link href="{{asset('open-iconic/font/css/open-iconic-bootstrap.css')}}" rel="stylesheet" />
             <style type='text/css'>
                 body {
                     width: 100%;
                     height: 100%;
                     margin: 0;
                     padding: 0;
-                    background-color:#ffffff;                
+                    background-color:#ffffff;  
                 }
 
-                * {
-                    box-sizing: border-box;
+                #backgrounddiv{
+
+                    width:850px;
+                    height:800px;
+                    margin-left:auto;
+                    margin-right:auto;
+                    z-index: -1000000;
+                }
+                #backgrounddiv div{
+                    text-align:center;
+                    width:850px;
+                    height:800px;
+                    margin-left:auto;
+                    margin-right:auto;
+                    padding-left:150px;
+                    background-color:white;
+                    opacity:.8;
+                    z-index: -5000;
+                }
+
+                html {
+                    -webkit-box-sizing: border-box;
                     -moz-box-sizing: border-box;
+                    box-sizing: border-box;
                 }
-
-                #page {
-                    width: 210mm;
-                    min-height: 297mm;
-                    margin: 1mm auto;
-                    margin-top:10mm;
-                }
-                #content {
-                    padding: 1cm;
-                    height: 257mm;
-                    border-width:1px;
-                    border-style:solid;
-                    border-color:black;
+                *, *:before, *:after {
+                    -webkit-box-sizing: inherit;
+                    -moz-box-sizing: inherit;
+                    box-sizing: inherit;
                 }
 
                 @page {
                     size: A4;
                     margin: 0;
                 }
+                p.title{
+                    padding:0px;
+                    margin:0px;
+                    border-width:0px;
+                    border-style:none;
+                    padding-bottom: 10px;
+                    line-height:20px;
+                    font-weight: 900;
+                }
+                p.entry2{
+                    padding:0px; 
+                    margin:0px;
+                    line-height: 35px;
+                    border-width: 0px;
+                    border-style: none;
+                }
+                #heading{
+                    border-style: none;
+                    border-width: 0px;
+                    border-bottom-color:black;
+                    border-bottom-style:solid;
+                    border-bottom-width:3px;
+                    margin:0px;
+                    padding:0px;
+                    height: 133px;
+                    width: 850px;
+                    margin-left: auto;
+                    margin-right: auto;
+                    margin-top:50px;
+                    z-index:99999999;
+                }
+                .formsection{
+                    position: absolute;
+                    border-style: none;
+                    border-width: 0px;
+                    margin:0px;
+                    padding:0px;
+                    width:100%;
+                }
+                .formsection .formsectioncontent{
+                    padding:0px;
+                    padding-left: 40px;
+                    padding-right: 40px;
+                    padding-top:20px;
+                    width: 850px;
+                    margin:0px;
+                    margin-left: auto;
+                    margin-right: auto;
+                }
 
-                @media print {
-                    html, body {
-                        width: 210mm;
-                        height: 297mm;        
-                    }
-                    .page {
-                        margin: 0;
-                        border: initial;
-                        border-radius: initial;
-                        width: initial;
-                        min-height: initial;
-                        box-shadow: initial;
-                        background: initial;
-                        page-break-after: always;
+                span.entryname{
+                    font-size:0.9em;
+                    font-weight: 900;
+                }
+
+                .entry span{
+                    margin: 0px; 
+                    padding:0px;
+                    border-width: 0px;
+                    border-style: none;
+                    line-height: 35px;                     
+
+                }
+                .printfnx{
+                    text-align: center;
+                    border-width: 0px;
+                    border-style: none;
+                    padding:0px;
+                    margin:0px;
+                    position:fixed;
+                    top: 200px;
+                    left:30px;
+                }
+            </style>
+            <style type='text/css'>
+                /* Individual position of each entry value */
+                .entryvalue{
+                    font-size:1em; 
+                    position:absolute; 
+                    overflow-wrap: normal;
+                    line-height: 35px;
+                    margin:0px; 
+                    padding:0px;
+                    border-width: 0px;
+                    border-style: none;
+                    word-break: normal; 
+                    word-wrap: normal;
+                }
+                .entry{ 
+                    overflow-wrap: break-word;                     
+                    word-wrap: break-word; 
+                    word-break: break-all; 
+                    margin: 0px; 
+                    padding:0px;
+                    border-width: 0px;
+                    border-style: none;
+                    line-height: 35px;
+
+
+                }
+
+                #name{
+                    top:45px;
+                    text-indent: 100px;
+                }
+                #homeaddr{
+                    top:80px;
+                    text-indent: 120px;
+                    width:600px;
+                }
+                #dob{
+                    top:151px;
+                    text-indent: 110px;
+                    width:310px;
+                }
+                #sex{
+                    top:151px;
+                    text-indent: 370px;
+                    width:500px;
+                }
+                #mstatus{
+                    top:186px;
+                    text-indent: 120px;
+                    width:300px;
+                }
+                #gsm{
+                    top:186px;
+                    text-indent: 560px;
+                    width:650px;
+                }
+                #soo{
+                    top:223px;
+                    text-indent: 125px;
+                    width:650px;
+                }
+                #lga{
+                    top:223px;
+                    text-indent: 305px;
+                    width:350px;
+                }
+                #ward{
+                    top:222px;
+                    text-indent: 545px;
+                    width:730px;
+                }
+                #email{
+                    top:258px;
+                    text-indent: 130px;
+                    width:400px;
+                }
+                #nokname{
+                    top:293px;
+                    text-indent: 130px;
+                    width:405px;
+                }
+                #nokaddr{
+                    top:293px;
+                    text-indent: 585px;
+                    width:740px;
+                }
+                #institution{
+                    top:45px;
+                    text-indent: 160px;
+                    width:340px;
+                }
+                #matric{
+                    top:45px;
+                    text-indent: 460px;
+                    width:750px;
+                }
+                #nameofinstitution{
+                    top:80px;
+                    text-indent: 145px;
+                    width:750px;
+                }
+                #institutionaddr{
+                    top:115px;
+                    text-indent: 155px;
+                    width:750px;
+                }
+                #doa{
+                    top:151px;
+                    text-indent: 160px;
+                    width:340px;
+                }
+                #gradyear{
+                    top:151px;
+                    text-indent: 610px;
+                    width:750px;                    
+                }
+                #fac{
+                    top:187px;
+                    text-indent: 115px;
+                    width:340px;
+                }
+                #course{
+                    top:187px;
+                    text-indent: 490px;
+                    font-size: 0.8em;   /*add Conditionals here */  
+                    /*width:750px;*/
+                }
+                #level{
+                    top:223px;
+                    text-indent: 80px;
+                    width:340px;
+                }
+                #coursedur{
+                    top:223px;
+                    text-indent: 505px;
+                    width:750px;
+                }
+                #accommodation{
+                    top:258px;
+                    text-indent: 130px;
+                    width:340px;
+                }
+                #dept{
+                    top:258px;
+                    text-indent: 460px; /*add Conditionals here */ 
+                    /*width:750px;*/
+                }
+                #bvn{
+                    top:45px;
+                    text-indent: 60px;
+                    width:340px;
+                }
+                #accname{
+                    top:45px;
+                    text-indent: 480px; /*add Conditionals here */ 
+                }
+                #accno{
+                    top:80px;
+                    text-indent: 110px;
+                    width:380px;
+                }
+                #bank{
+                    top:80px;
+                    text-indent: 420px; /*add Conditionals here */ 
+                }
+                #declarant{
+                    top:118px;
+                    text-indent: 20px;
+                }
+                #candidateimage{
+                    position:absolute;
+                    top:10px;
+                    left:850px;
+                    width:150px; 
+                    height:170px;
+                }
+                @media only screen and (max-width: 768px){
+                    .printfnx{
+                        display:none;
                     }
                 }
+                @media print {
+                    #candidateimage{
+                        position:absolute;
+                        top:6px;
+                        left:720px;
+                        width:150px; 
+                        height:170px;
+                    }
+                    .printfnx{
+                        display:none;
+                    }
+                }
+
+
             </style>
         {% endblock stylesheets %}
     </head>
     <body>
-        <div id="page">
-            <div id="content">
-                <div id="heading">
+        {% set cp = candidate.getCandidatePersonal() %}
+        {% set ci = candidate.getCandidateInstitution() %}
+        {% set cb = candidate.getCandidateBank() %}
+
+        <div id="heading">
+            <div class="row">
+                <div class="col-2">
+                    <img src="{{asset('site_images/coat_of_arms.png')}}" style="height:111px;"/>
                 </div>
-                <div id ="formcontent">
+                <div class="col-8">
+                    <p style="padding:0px; padding-top:30px; text-align:center; font-family: Arial Black, Arial Bold, Gadget, sans-serif; font-weight: 900; font-size: 26px; margin:0px;">KOGI STATE SCHOLARSHIP BOARD</p>
+                    <p style="text-align:center; font-weight: bold; font-family:Calibri Body,Candara,Segoe,Segoe UI,Optima,Arial,sans-serif; color:#ef6947;">Lokoja-Kogi State</p>
+                </div>
+                <div class="col-2">
+                    <img src="{{asset('site_images/state_logo.png')}}" style="height:111px;"/>
+                </div>
+            </div>
+            <p style="margin:0px;padding-bottom:0px; padding-left: 20px; font-size:.7em; font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;">
+                <span style="font-size:1.3em; text-decoration:underline;font-weight: bold;">INSTRUCTION:</span> 
+                Please, Study this form carefully before filling. Use CAPITAL LETTERS throughout.
+                <span style="font-weight: bold; font-size: 1.5em; float:right;">Form No.:{{appId}}</span>
+            </p>
+        </div>
+        <div style='height:0px; overflow:visible; width:100%;'><div id='backgrounddiv'><div>
+                    <img src='{{asset('site_images/state_logo.png')}}' style='opacity:.2; width:400px; height:370px;'/>
+                </div></div></div>
+        <div class='formsection' style='top:180px;' >
+            <div class='formsectioncontent'>
+                <p class='title'>A. PERSONAL DATA</p>
+                <div class='entry'>
+                    <p class="entry2"><span class='entryname'>Name:</span>
+                        ..........................................................................................................................................................</p>
+                    <p class='entryvalue' id='name'>{{(cp.getTitle()~" "~ cp.getFullName())|upper}} </p>
+                </div>
+                <div class='entry'>
+                    <p class="entry2"><span class='entryname'>Home Address:</span>
+                        ............................................................................................................................................</p>
+                    <p class="entry2">.....................................................................................................................................................................</p>
+                    <p class='entryvalue' id='homeaddr'> {{cp.getHomeAddr()}} </p>
+                </div>
+                <div class='entry'>
+                    <p class="entry2"><span class='entryname'>Date of Birth:</span>
+                        .................................................
+                        <span class='entryname'>Sex:</span>
+                        .................................................</p>
+                    <p class='entryvalue' id='dob'>{{cp.getDob()|date('d-F-Y')|upper}}</p>
+                    <p class='entryvalue' id='sex'> {{cp.getGender()|capitalize}}</p>
+                </div>
+                <div class='entry'>
+                    <p class="entry2"><span class='entryname'>Marital Status:</span>
+                        ..............................................
+                        <span style='color:#ffffff;'>....................................</span>
+                        <span class='entryname'>GSM No.:</span>
+                        ...............................................</p>
+                    <p class='entryvalue' id='mstatus'>{{cp.getMaritalStatus()|capitalize}}</p>
+                    <p class='entryvalue' id='gsm'>{{cp.getMobileNo()}}</p>
+                </div>
+                <div class='entry'>
+                    <p class="entry2"><span class='entryname'>State of Origin:</span>
+                        ...........................
+                        <span style='color:#ffffff;'>...</span>
+                        <span class='entryname'>L.G.A.:</span>
+                        ......................................
+                        <span style='color:#ffffff;'>...</span>
+                        <span class='entryname'>Ward:</span>
+                        .................................................</p>
+                    <p class='entryvalue' id='soo'> Kogi</p>
+                    <p class='entryvalue' id='lga'> {{cp.getWard().getLga().getLgaName()|upper}}</p>
+                    <p class='entryvalue' id='ward'>{{cp.getWard().getWardName()|upper}}</p>
+                </div>
+                <div class='entry'>
+                    <p class="entry2"><span class='entryname'>Email Address:</span>
+                        .........................................................</p>
+                    <p class='entryvalue' id='email'>{{cp.getEmail()}}</p>
+                </div>
+                <div class='entry'>
+                    <p class="entry2"><span class='entryname'>Next of Kin Name:</span>
+                        ................................................................
+                        <span style='color:#ffffff;'>...</span>
+                        <span class='entryname'>Next of Kin Address:</span>
+                        ......................................</p>
+                    <p class="entry2">..........................................................................................................................................................................</p>
+                    <p class='entryvalue' id='nokname'>{{cp.getNokName()}}</p>
+                    <p class='entryvalue' id='nokaddr'>{{cp.getNokAddr()}}</p>
+                </div>
+                <img id='candidateimage' src='{{asset('passport/'~cp.getPassport())}}' class='img-thumbnail' />
+            </div>
+        </div>
+        <div class='formsection' style='top:560px;' >
+            <div class='formsectioncontent'>
+                <p class='title'>B. ACADEMIC INFORMATION</p>
+                <div class='entry'>
+                    <p class="entry2"><span class='entryname'>Institution Category:</span>
+                        ...........................................
+                        <span style='color:#ffffff;'>.....</span>
+                        <span class='entryname'>Matric No.:</span>
+                        ....................................................................</p>
+                    <p class='entryvalue' id='institution'>{{ci.getInstitution().getInstitutionCategory()|capitalize}}</p>
+                    <p class='entryvalue' id='matric'>{{ci.getMatricNo()}}</p>
+                </div>
+                <div class='entry'>
+                    <p class="entry2"><span class='entryname'>Name of Institution:</span>
+                        ..........................................................................................................................................</p>
+                    <p class='entryvalue' id='nameofinstitution'>{{ci.getInstitution().getInstitutionName()}}</p>
+                </div>
+                <div class='entry'>
+                    <p class="entry2"><span class='entryname'>Address of Insitution:</span>
+                        .......................................................................................................................................</p>
+                    <p class='entryvalue' id='institutionaddr'>{{ci.getInstitutionAddr()}}</p>
+                </div>
+                <div class='entry'>
+                    <p class="entry2"><span class='entryname'>Date of Admission:</span>
+                        .............................................
+                        <span style='color:#ffffff;'>.....</span>
+                        <span class='entryname'>Expected Year of Graduation.:</span>
+                        .......................................</p>
+                    <p class='entryvalue' id='doa'>{{ci.getAdmissionDate()|date('F, Y')|upper}}</p>
+                    <p class='entryvalue' id='gradyear'>{{ci.getGraduationYear()}}</p>
+                </div>
+                <div class='entry'>
+                    <p class="entry2"><span class='entryname'>Faculty/School:</span>
+                        ..................................................
+                        <span style='color:#ffffff;'>.....</span>
+                        <span class='entryname'>Course of Study:</span>
+                        ...........................................................</p>
+                    <p class='entryvalue' id='fac'>{{ci.getFaculty()}}</p>
+                    <p class='entryvalue' id='course' style="font-size:">{{ci.getCourseOfStudy()|upper}}</p>
+                </div>
+                <div class='entry'>
+                    <p class="entry2"><span class='entryname'>Level:</span>
+                        .................................................................
+                        <span style='color:#ffffff;'>.....</span>
+                        <span class='entryname'>Course Duration:</span>
+                        ...........................................................</p>
+                    <p class='entryvalue' id='level'>{{ci.getLevel()}}</p>
+                    <p class='entryvalue' id='coursedur'>{{ci.getCourseDuration()}} {{(ci.getCourseDuration()>1)?('Years'):('Year')}}</p>
+                </div>
+                <div class='entry'>
+                    <p class="entry2"><span class='entryname'>Accommodation:</span>
+                        ................................................
+                        <span style='color:#ffffff;'>.....</span>
+                        <span class='entryname'>Department:</span>
+                        ..................................................................</p>
+                    <p class='entryvalue' id='accommodation'>{{ci.getAccommodationType()|capitalize}}</p>
+                    <p class='entryvalue' id='dept'>{{ci.getDepartment()|upper}}</p>
                 </div>
             </div>
         </div>
+        <div class='formsection' style='top:860px;' >
+            <div class='formsectioncontent'>
+                <p class='title'>C. ACCOUNT INFORMATION</p>
+                <div class='entry'>
+                    <span class='entryname'>BVN:</span>
+                    .................................................................
+                    <span style='color:#ffffff;'>.....</span>
+                    <span class='entryname'>Account Name:</span>
+                    ............................................................
+                    <p class='entryvalue' id='bvn'>{{cb.getBvn}}</p>
+                    <p class='entryvalue' id='accname'>{{cb.getAccountName()|upper}}</p>
+                </div>
+                <div class='entry'>
+                    <span class='entryname'>Account No.:</span>
+                    .....................................................
+                    <span style='color:#ffffff;'>.....</span>
+                    <span class='entryname'>Bank:</span>
+                    ...........................................................................
+                    <p class='entryvalue' id='accno'>{{cb.getAccountNo()}}</p>
+                    <p class='entryvalue' id='bank'>{{cb.getBank().getBankName()}}</p>
+                </div>
+                <div class='entry'>
+                    <p style="
+                       overflow-wrap: normal;                     
+                       word-wrap: normal; 
+                       word-break: normal;
+                       font-size: 0.8em;
+                       line-height: 10px;"> 
+                        I, <span style='font-size: 1.5em;'>.......................................................................</span>
+                        hereby declare that all the information given in this form is, to the best of my knowledge and belief, correct.
+                    <p class='entryvalue' id='declarant'>{{(cp.getTitle()~" "~ cp.getFullName())|upper}}</p>
+                </div>
+                <p style='text-align: right; font-size: 0.8em; line-height: 15px;'>
+                    <strong style='font-size: 1.1em;'>Sign: Yahaya Mohammed Lawal</strong><br />
+                    Executive Secretary<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><br />
+                    Kogi State Scholarship Board<span>&nbsp;&nbsp;</span>
+                </p>
+            </div>
+        </div>
+        <div class='printfnx'><a href='javascript:print();' class='btn btn-sm btn-primary'><i class="oi oi-print" title="Print" aria-hidden="true"></i> Print</a></div>
+
     </body>
 </html>

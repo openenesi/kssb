@@ -14,11 +14,14 @@
                 {% endif %}
                 <table class="table table-bordered table-sm table-active">
                     {% if candidate.getCandidatePersonal() is not null %}
-                    <tr><th>Full Name:</th><td>{{candidate.getCandidatePersonal().getFullName()}}</td></tr>
-                    {% endif %}
+                        <tr><th>Full Name:</th><td>{{candidate.getCandidatePersonal().getFullName()}}</td></tr>
+                            {% endif %}
                     <tr><th>Email:</th><td>{{candidate.getEmail()}}</td></tr>
                     <tr><th>Amount:</th><td>&#8358;{{session.getRegistrationCost()|number_format(2,'.',',')}} <span class="badge badge-info">Paystack charge included</span></td></tr>
                 </table>
+                <div class="alert alert-info" role="alert">
+                    If you recently made payment and it has not reflected, click <a href="{{path('paid')}}?reference=KSSB{{candidate.getId()}}">here</a>
+                </div>
                 <form action="{{url('form_2')}}" method="post">
                     <input type="hidden" name="pay" value="pay" />
                     <div class="text-center"><input type="submit" class="btn btn-primary btn-sm" name="paysecurely" value="Pay Securely" /> <br /><br /><img src="{{asset("site_images/paystack_cards.png")}}"style="width:200px; height:60px;"/> </div>
@@ -29,9 +32,15 @@
                 <table class="table table-sm table-bordered table-success">
                     {% if candidate.getCandidatePersonal() is not null %}
                         <tr><th>Full Name:</th><td>{{candidate.getCandidatePersonal().getFullName()}}</td></tr>
-                    {% endif %}
+                            {% endif %}
                     <tr><th>Email:</th><td>{{candidate.getEmail()}}</td></tr>
-                    <tr><th>Amount:</th><td>&#8358;{{session.getRegistrationCost()|number_format(2,'.',',')}} <span class="badge badge-info">Paystack charge included</span></td></tr>
+                    <tr><th>Amount:</th><td>&#8358;{{(paymentlog is defined)?(paymentlog.getAmount()/100):(session.getRegistrationCost())|number_format(2,'.',',')}} <span class="badge badge-info">Paystack charge included</span></td></tr>
+                            {% if paymentlog is defined %}
+                        <tr><th>Transaction Date:</th><td>{{paymentlog.getTrxnDate()|date('Y-m-d H:i:s a')}}</td></tr>
+                        <tr><th>Payment Method:</th><td>{{paymentlog.getChannel()|upper}}</td></tr>
+                        <tr><th>Card Type:</th><td>{{paymentlog.getCardType()}}</td></tr>
+                        <tr><th>Payer's Bank:</th><td>{{paymentlog.getBank()}}</td></tr>
+                            {% endif %}
                 </table>
                 <div class="text-right"><a href ="{{path('form_3')}}" class="btn btn-primary btn-sm">Proceed</a></div>
 

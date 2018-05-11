@@ -131,7 +131,13 @@ class DefaultController extends Controller {
      * @Route("/apply/appform", name="appform")
      */
     public function appform(Request $request) {
-        return $this->render('apply/appform.html.twig');
+        $user = $this->getUser();
+        if($user->getAppId()==null){
+            return $this->redirectToRoute('form_6'); 
+        }
+        $session = $this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
+        $appId = $this->generateAppId($user->getAppId(), $session);
+        return $this->render('apply/appform.html.twig', array('a'=>$user->getAppId(), 'candidate'=>$user, 'session'=>$session, 'appId'=>$appId));
     }
 
 }

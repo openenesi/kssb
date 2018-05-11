@@ -30,6 +30,8 @@ class PaymentController extends Controller {
         }
 
         $user = $this->getUser();
+        $ref = "KSSB" . $user->getId();
+        $ref = 'xyvdo5errj';
 
         if ((null !== $request->request->get("pay")) && $request->request->get("pay") == "pay") {
 
@@ -39,7 +41,7 @@ class PaymentController extends Controller {
             //$amount = round(($session->getRegistrationCost() / 1.015), 2)* 100;  //the amount in kobo.
             $amount = $session->getRegistrationCost() * 100;  //the amount in kobo.
             //$email_reference = str_replace("@", "", str_replace("_", "=", $email));
-            $ref = "KSSB" . $user->getId();
+
 
             curl_setopt_array($curl, array(
                 CURLOPT_URL => "https://api.paystack.co/transaction/initialize",
@@ -59,7 +61,7 @@ class PaymentController extends Controller {
                     ),
                 ]),
                 CURLOPT_HTTPHEADER => [
-                    "authorization: Bearer sk_test_91726061c53146047a0a2bcb129303ba39a8bbb9", //replace this with your own test key
+                    "authorization: Bearer " . $this->getParameter('paystack_secret_key'), //replace this with your own test key
                     "content-type: application/json",
                     "cache-control: no-cache"
                 ],
@@ -71,14 +73,15 @@ class PaymentController extends Controller {
             if ($err) {
                 //var_dump($err); exit();
                 // there was an error contacting the Paystack API
-                return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'candidate' => $user, 'error' => true, 'errmsg'=>$err, 'session' => $session));
+                return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'candidate' => $user, 'error' => true, 'errmsg' => $err, 'session' => $session));
             }
 
             $tranx = json_decode($response, true);
             //var_dump($tranx);
             if (!$tranx['status']) {
                 // there was an error from the API
-                return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'candidate' => $user, 'error' => true, 'errmsg'=>"Internal server error", 'session' => $session));
+                //var_dump($tranx); exit();
+                return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'candidate' => $user, 'error' => true, 'errmsg' => "Internal server error", 'session' => $session));
             }
 
             // comment out this line if you want to redirect the user to the payment page
@@ -89,8 +92,13 @@ class PaymentController extends Controller {
             exit();
         }
         //if($user == null) echo "eds"; exit();
+        $rep = $this->getDoctrine()->getRepository(\App\Entity\TransactionLog::class);
+        $log = $rep->findByReference($ref);
+        $log = (isset($log) && is_array($log) && (count($log) >0))?($log[0]):(null);
+        if ($log) {
+            return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'candidate' => $user, 'paymentlog'=>$log, 'session' => $session));
+        }
         return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'candidate' => $user, 'session' => $session));
-        
     }
 
     /**
@@ -121,7 +129,7 @@ class PaymentController extends Controller {
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HTTPHEADER => [
                 "accept: application/json",
-                "authorization: Bearer sk_test_91726061c53146047a0a2bcb129303ba39a8bbb9",
+                "authorization: Bearer " . $this->getParameter("paystack_secret_key"),
                 "cache-control: no-cache"
             ],
         ));
@@ -175,7 +183,7 @@ class PaymentController extends Controller {
                             $em->persist($user);
                             $em->flush();
 
-                            $message = (new \Swift_Message('Payment Confirmation (KSSB ' . $session->getScholarshipSession().'/'.($session->getScholarshipSession()+1) . ')'))
+                            $message = (new \Swift_Message('Payment Confirmation (KSSB ' . $session->getScholarshipSession() . '/' . ($session->getScholarshipSession() + 1) . ')'))
                                     ->setFrom($session->getEmail())
                                     ->setTo($user->getEmail())
                                     ->setBody(
@@ -185,7 +193,6 @@ class PaymentController extends Controller {
                                     ), 'text/html'
                             );
                             $mailer->send($message);
-                            
                         } catch (Exception $e) {
                             return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'candidate' => $user, 'error' => true, 'errmsg' => "Server error", 'session' => $session));
                         }
@@ -235,7 +242,7 @@ class PaymentController extends Controller {
             exit();
         }
 
-        define('PAYSTACK_SECRET_KEY', 'sk_test_91726061c53146047a0a2bcb129303ba39a8bbb9');
+        define('PAYSTACK_SECRET_KEY', $this->getParameter("paystack_secret_key"));
 // confirm the event's signature
         if ($signature !== hash_hmac('sha512', $body, PAYSTACK_SECRET_KEY)) {
             // silently forget this ever happened
@@ -271,7 +278,7 @@ class PaymentController extends Controller {
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_HTTPHEADER => [
                         "accept: application/json",
-                        "authorization: Bearer sk_test_91726061c53146047a0a2bcb129303ba39a8bbb9",
+                        "authorization: Bearer " . $this->getParameter("paystack_secret_key"),
                         "cache-control: no-cache"
                     ],
                 ));

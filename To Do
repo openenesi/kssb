@@ -20,12 +20,14 @@ prevent auto-fill in login and other relevant form field (completed)
 add institution not listed link 
 
 uncomment the reference parameter in the PaymentController
-rewrite the callback_url in the PaymentController
+rewrite the callback_url in the PaymentController(completed)
 
 change all test private secret keys on deployment
 verify subaccounts on deployment
 
 remove no-validate on forms
+validate payments in two tables (candidate and transactionlog)
+animate bitssense
 
 add smooth scrolling to the top nav bar when the page loads (completed)
 
