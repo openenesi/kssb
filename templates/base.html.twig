@@ -13,6 +13,8 @@
             <link rel="stylesheet" href="{{asset('bootstrap/css/bootstrap.min.css')}}"/>
             <link rel="stylesheet" href="{{asset('fontawesome/css/fontawesome-all.min.css')}}" />
             <link href="{{asset('open-iconic/font/css/open-iconic-bootstrap.css')}}" rel="stylesheet" />
+            <link href="https://fonts.googleapis.com/css?family=Raleway:300" rel="stylesheet"> 
+            <link href="https://fonts.googleapis.com/css?family=Raleway:100" rel="stylesheet"> 
 
 
             {% block links %}
@@ -27,8 +29,15 @@
                     background-position:90% 80%;
                     background-size:150px 120px;
                     background-attachment: fixed;
+                    font-family:Raleway, san-serif;
 
                 }
+                
+                h1,h2,h3,h4,h5,h6, .display-1, .display-2, .display-3, .display-4{
+                    font-family:Raleway,san-serif;
+                    font-weight:100;
+                }
+                
                 #title-bar{
                     background:linear-gradient(180deg, #f3f6fd, #002a80); 
                 }
@@ -132,7 +141,7 @@
                     <label for="toggle" class="toggle" data-open="KSSB" data-close="Hide" onclick></label>
                     <ul class="menu">
                         <li><a href="{{path('home')}}" class="{{(page!='home')?:'active '}}">Home</a></li>
-                        <li><a href="#">About Us</a></li>		
+                        <li><a href="{{path('aboutus')}}" class="{{(page!='aboutus')?:'active '}}">About Us</a></li>		
                         <li><a href="#">Board</a></li>	
                         <li><a href="{{path('contactus')}}" class="{{(page!='contactus')?:'active '}}">Contact Us</a></li>
                         <li><a href="{{path('faq')}}" class="{{(page!='faq')?:'active '}}">FAQ</a></li>

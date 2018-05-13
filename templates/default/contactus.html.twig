@@ -2,16 +2,26 @@
 {% extends "base.html.twig"%}
 {% block css %}
     <style type='text/css'>
+        {{parent()}}
+        #map{
+            width:100%;
+            min-height:400px;
+        }
     </style>
 {% endblock css %}
 {% block content %}
     <div class="row">
         <div class="col-sm-12 col-md-5">
             <h3>Our Address:</h3>
-            <strong >Kogi State Scholarship Board<br /> Lokoja-Kogi State<br /></strong>
-            <strong><i class="fa fa-envelope"> </i> </strong> {{session.getEmail()}} <br />
-            <strong><i class="fa fa-phone"> </i> </strong> {{session.getMobileNo()}} <br />
+            <address>
+                <strong >Kogi State Scholarship Board<br /> Lokoja-Kogi State<br /></strong>
+                <strong><i class="fa fa-envelope"> </i> </strong> {{session.getEmail()}} <br />
+                <strong><i class="fa fa-phone"> </i> </strong> {{session.getMobileNo()}} <br />
+            </address>
             <hr class='d-block d-md-none' />
+            <div id="map">
+            </div>
+            <br />
         </div>
         <div class="col-sm-12 col-md-7">
             <h3>Send Us An Email:</h3>
@@ -20,13 +30,28 @@
                     {{flash_msg}}
                 </div>
             {% endfor %}
-            
+
             {{form(form)}}
         </div>
     </div>
+    <br />
+    <br />
 {% endblock content %}
+{% block scripts %}
+    {{parent()}}
+
+{% endblock scripts %}
 {% block js %}
     {{parent()}}
     <script type="text/javascript">
+        function myMap() {
+            var mapOptions = {
+                center: new google.maps.LatLng(51.5, -0.12),
+                zoom: 10,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            }
+            var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+        }
     </script>
+    <script src="https://maps.googleapis.com/maps/api/js?callback=myMap"></script> 
 {% endblock js %}

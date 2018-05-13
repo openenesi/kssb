@@ -31,7 +31,7 @@ class PaymentController extends Controller {
 
         $user = $this->getUser();
         $ref = "KSSB" . $user->getId();
-        $ref = 'xyvdo5errj';
+        
 
         if ((null !== $request->request->get("pay")) && $request->request->get("pay") == "pay") {
 
@@ -118,8 +118,9 @@ class PaymentController extends Controller {
          */
         $rep = $this->getDoctrine()->getRepository(\App\Entity\TransactionLog::class);
         $log = $rep->findByReference($ref);
+        $log = (isset($log)&& is_array($log) && (count($log)>0))?($log[0]):(null);
         if ($log) {
-            return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'candidate' => $user, 'session' => $session));
+            return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'paymentlog'=> $log, 'candidate' => $user, 'session' => $session));
         }
 
         $curl = curl_init();
@@ -197,7 +198,7 @@ class PaymentController extends Controller {
                             return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'candidate' => $user, 'error' => true, 'errmsg' => "Server error", 'session' => $session));
                         }
 
-                        return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'candidate' => $user, 'session' => $session));
+                        return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'transactionlog'=>$trxnlog, 'candidate' => $user, 'session' => $session));
                         //echo "Transaction was successful";
                     } else {
                         // the transaction was not successful, do not deliver value'

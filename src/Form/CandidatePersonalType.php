@@ -106,7 +106,7 @@ class CandidatePersonalType extends AbstractType {
                 ->add('mobileNo', TelType::class, array("data" => $options['candidate']->getMobileNo(), "label" => "Mobile No.: ", "attr" => array("placeholder" => "08012345678")))
                 //->add('mobileNo', HiddenType::class, array("label" => "Mobile No.: ", "data"=>$options['candidate']->getMobileNo(), "attr" => array("placeholder" => "08012345678")))
                 ->add('homeAddr', TextareaType::class, array("label" => "Home Address: ", "attr" => array("placeholder" => "Full address")))
-                ->add('nokName', TextType::class, array("label" => "Next of Kin Name: ", "attr" => array("placeholder" => "Eg. Mikailu")))
+                ->add('nokName', TextType::class, array("label" => "Next of Kin Name: ", "attr" => array("placeholder" => "Eg. Mikailu Abu")))
                 ->add('nokAddr', TextareaType::class, array("label" => "Next of Kin Address: ", "attr" => array("placeholder" => "Full address of next of kin")))
                 ->add('nokNo', TelType::class, array("label" => "NoK Mobile No.: ", "required" => false, "attr" => array("placeholder" => "08012345678")))
                 //->add('save2', SubmitType::class, array("label" => "Save"))

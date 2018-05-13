@@ -38,6 +38,13 @@ class DefaultController extends Controller {
     }
 
     /**
+     * @Route("/aboutus", name="aboutus")
+     */
+    public function aboutUs(Request $request) {
+        return $this->render('default/about.html.twig', array("page" => "aboutus"));
+    }
+
+    /**
      * @Route("/contactus", name="contactus")
      */
     public function contactUs(Request $request, \Swift_Mailer $mailer) {
@@ -132,12 +139,20 @@ class DefaultController extends Controller {
      */
     public function appform(Request $request) {
         $user = $this->getUser();
-        if($user->getAppId()==null){
-            return $this->redirectToRoute('form_6'); 
+        if ($user->getAppId() == null) {
+            return $this->redirectToRoute('form_6');
         }
         $session = $this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
         $appId = $this->generateAppId($user->getAppId(), $session);
-        return $this->render('apply/appform.html.twig', array('a'=>$user->getAppId(), 'candidate'=>$user, 'session'=>$session, 'appId'=>$appId));
+        return $this->render('apply/appform.html.twig', array('a' => $user->getAppId(), 'candidate' => $user, 'session' => $session, 'appId' => $appId));
+    }
+
+    /**
+     * @Route("/apply/tempemail", name="tempemail")
+     */
+    public function tempEmail(Request $request) {
+        $session = $this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
+        return $this->render('emails/applicationcomplete.html.twig', array('appId' => 'SIP/201700003', 'session' => $session));
     }
 
 }

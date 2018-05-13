@@ -38,7 +38,7 @@
                             {% if paymentlog is defined %}
                         <tr><th>Transaction Date:</th><td>{{paymentlog.getTrxnDate()|date('Y-m-d H:i:s a')}}</td></tr>
                         <tr><th>Payment Method:</th><td>{{paymentlog.getChannel()|upper}}</td></tr>
-                        <tr><th>Card Type:</th><td>{{paymentlog.getCardType()}}</td></tr>
+                        <tr><th>Card Type:</th><td>{{(paymentlog.getChannel()|lower == 'card')?(paymentlog.getCardType()):('-')}}</td></tr>
                         <tr><th>Payer's Bank:</th><td>{{paymentlog.getBank()}}</td></tr>
                             {% endif %}
                 </table>
