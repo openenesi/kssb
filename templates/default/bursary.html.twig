@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+    <div class='row'>
+        <div class='col'>
+            <h1>Kogi State Scholarship, {{session.getScholarshipSession()~"/"~ (session.getScholarshipSession()+1)}}</h1>
+            <hr />
+            <div class="lead">The Kogi State Government under the leadership of His Excellency, the Executive Governor Alh. Yahaya Adoza Bello 
+                had redeemed his pledged by paying 300%  increment of {{session.getScholarshipSession()~"/"~ (session.getScholarshipSession()+1)}} Bursary allowance to deserving Kogi State Indigenes 
+                in all tertiary institutions across the country at the levels of undergraduate.
+            </div>
+            <br />
+            <br />
+            <div class='alert alert-info' role='alert'>
+                Registration for {{session.getScholarshipSession()~"/"~ (session.getScholarshipSession()+1)}} has commenced!<br />
+                <div class='text-center'> <a class='btn btn-sm btn-primary' href='{{path('scholarship')}}'>Apply Now</a></div>
+            </div>
+
+        </div>
+    </div>
+{% endblock content%}

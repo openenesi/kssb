@@ -33,7 +33,7 @@ class UserController extends Controller {
 
         $arr_data = array('page' => 'scholarship', 'step' => 'candidate', 'session' => $session);
         $user = new User();
-        $plainPassword = "pyramid"; //substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 6);
+        $plainPassword = /*"pyramid"; //*/substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 6);
         $encoded = $encoder->encodePassword($user, $plainPassword);
 
         $user->setPassword($encoded);
@@ -43,9 +43,16 @@ class UserController extends Controller {
 
         //check if account already exists
         $rep = $this->getDoctrine()->getRepository(User::class);
-        if ($rep->findBy(array("email" => $user->getEmail(), "bvn" => $user->getBvn(), "mobileNo" => $user->getMobileNo()))) {
+        $repuser = $rep->findBy(array("email" => $user->getEmail(), "bvn" => $user->getBvn(), "mobileNo" => $user->getMobileNo()));
+        if(is_array($repuser) && count($repuser)>0){
+            $repuser= $repuser[0];
+        }
+        else{
+            $repuser= null;
+        }
+        if ($repuser) {
             $arr_data['exists'] = true;
-            $arr_data['user'] = $user;
+            $arr_data['user'] = $repuser;
             return $this->render('apply/form_1.html.twig', $arr_data);
         }
 
@@ -82,9 +89,9 @@ class UserController extends Controller {
     }
 
     /**
-     * @Route("/apply/rc/{maddr}", name="resendcredentials")
+     * @Route("/apply/rc/{id}", name="resendcredentials")
      */
-    public function resendCred(\Swift_Mailer $mailer, UserPasswordEncoderInterface $encoder, $maddr) {
+    public function resendCred(Request $request, \Swift_Mailer $mailer, UserPasswordEncoderInterface $encoder, $id) {
         //echo "here"; exit();
         $session = $this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
         if ($session->getApplicationSessionStatus() == "closed") {
@@ -96,10 +103,11 @@ class UserController extends Controller {
 
         $arr_data = array('page' => 'scholarship', 'step' => 'candidate', 'session' => $session);
         $rep = $this->getDoctrine()->getRepository(\App\Entity\User::class);
-        $user = $rep->findByEmail($maddr);
-        $user= $user[0];
+        $user = $rep->find($id);
+        if(is_array($user) && count($user)>0)
+            $user= $user[0];
         $arr_data['user']= $user;
-        $plainPassword =  "pyramid"; //substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 6);
+        $plainPassword =  /*"pyramid"; //*/substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 6);
         $encoded = $encoder->encodePassword($user, $plainPassword);
 
         $user->setPassword($encoded);

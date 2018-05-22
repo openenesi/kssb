@@ -9,11 +9,11 @@
             <div class="row">
                 {% if not(is_granted('ROLE_CANDIDATE')) %}
                 <div class="col-md-3">
-                    <a href="{{path('form_1')}}" class="btn btn-primary btn-sm">Start Fresh Application </a>
+                    <a href="{{path('form_1')}}" class="btn btn-primary btn-sm" style='margin-bottom: 10px;'>Start Fresh Application </a>
                 </div>
                 {% endif %}
                 <div class="col-md-3">
-                    <a href="{{path('form_6')}}" class="btn btn-primary btn-sm">Continue Application</a>
+                    <a href="{{path('form_6')}}" class="btn btn-primary btn-sm" style='margin-bottom: 10px;'>Continue Application</a>
                 </div>
             </div>
         </div>

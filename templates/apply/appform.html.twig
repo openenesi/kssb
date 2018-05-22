@@ -302,11 +302,15 @@
                     width:150px; 
                     height:170px;
                 }
+                span.hiddenline{
+                    visibility:hidden;
+                }
                 @media only screen and (max-width: 768px){
                     .printfnx{
                         display:none;
                     }
                 }
+                
                 @media print {
                     #candidateimage{
                         position:absolute;
@@ -376,7 +380,7 @@
                 <div class='entry'>
                     <p class="entry2"><span class='entryname'>Marital Status:</span>
                         ..............................................
-                        <span style='color:#ffffff;'>....................................</span>
+                        <span class='hiddenline' style='color:#ffffff;'>....................................</span>
                         <span class='entryname'>GSM No.:</span>
                         ...............................................</p>
                     <p class='entryvalue' id='mstatus'>{{cp.getMaritalStatus()|capitalize}}</p>
@@ -385,10 +389,10 @@
                 <div class='entry'>
                     <p class="entry2"><span class='entryname'>State of Origin:</span>
                         ...........................
-                        <span style='color:#ffffff;'>...</span>
+                        <span class='hiddenline' style='color:#ffffff;'>...</span>
                         <span class='entryname'>L.G.A.:</span>
                         ......................................
-                        <span style='color:#ffffff;'>...</span>
+                        <span class='hiddenline' style='color:#ffffff;'>...</span>
                         <span class='entryname'>Ward:</span>
                         .................................................</p>
                     <p class='entryvalue' id='soo'> Kogi</p>
@@ -403,7 +407,7 @@
                 <div class='entry'>
                     <p class="entry2"><span class='entryname'>Next of Kin Name:</span>
                         ................................................................
-                        <span style='color:#ffffff;'>...</span>
+                        <span class='hiddenline' style='color:#ffffff;'>...</span>
                         <span class='entryname'>Next of Kin Address:</span>
                         ......................................</p>
                     <p class="entry2">..........................................................................................................................................................................</p>
@@ -419,7 +423,7 @@
                 <div class='entry'>
                     <p class="entry2"><span class='entryname'>Institution Category:</span>
                         ...........................................
-                        <span style='color:#ffffff;'>.....</span>
+                        <span class='hiddenline' style='color:#ffffff;'>.....</span>
                         <span class='entryname'>Matric No.:</span>
                         ....................................................................</p>
                     <p class='entryvalue' id='institution'>{{ci.getInstitution().getInstitutionCategory()|capitalize}}</p>
@@ -438,7 +442,7 @@
                 <div class='entry'>
                     <p class="entry2"><span class='entryname'>Date of Admission:</span>
                         .............................................
-                        <span style='color:#ffffff;'>.....</span>
+                        <span class='hiddenline' style='color:#ffffff;'>.....</span>
                         <span class='entryname'>Expected Year of Graduation.:</span>
                         .......................................</p>
                     <p class='entryvalue' id='doa'>{{ci.getAdmissionDate()|date('F, Y')|upper}}</p>
@@ -447,7 +451,7 @@
                 <div class='entry'>
                     <p class="entry2"><span class='entryname'>Faculty/School:</span>
                         ..................................................
-                        <span style='color:#ffffff;'>.....</span>
+                        <span class='hiddenline' style='color:#ffffff;'>.....</span>
                         <span class='entryname'>Course of Study:</span>
                         ...........................................................</p>
                     <p class='entryvalue' id='fac'>{{ci.getFaculty()}}</p>
@@ -456,7 +460,7 @@
                 <div class='entry'>
                     <p class="entry2"><span class='entryname'>Level:</span>
                         .................................................................
-                        <span style='color:#ffffff;'>.....</span>
+                        <span class='hiddenline' style='color:#ffffff;'>.....</span>
                         <span class='entryname'>Course Duration:</span>
                         ...........................................................</p>
                     <p class='entryvalue' id='level'>{{ci.getLevel()}}</p>
@@ -465,7 +469,7 @@
                 <div class='entry'>
                     <p class="entry2"><span class='entryname'>Accommodation:</span>
                         ................................................
-                        <span style='color:#ffffff;'>.....</span>
+                        <span class='hiddenline' style='color:#ffffff;'>.....</span>
                         <span class='entryname'>Department:</span>
                         ..................................................................</p>
                     <p class='entryvalue' id='accommodation'>{{ci.getAccommodationType()|capitalize}}</p>
@@ -479,7 +483,7 @@
                 <div class='entry'>
                     <span class='entryname'>BVN:</span>
                     .................................................................
-                    <span style='color:#ffffff;'>.....</span>
+                    <span class='hiddenline' style='color:#ffffff;'>.....</span>
                     <span class='entryname'>Account Name:</span>
                     ............................................................
                     <p class='entryvalue' id='bvn'>{{cb.getBvn}}</p>
@@ -488,7 +492,7 @@
                 <div class='entry'>
                     <span class='entryname'>Account No.:</span>
                     .....................................................
-                    <span style='color:#ffffff;'>.....</span>
+                    <span class='hiddenline' style='color:#ffffff;'>.....</span>
                     <span class='entryname'>Bank:</span>
                     ...........................................................................
                     <p class='entryvalue' id='accno'>{{cb.getAccountNo()}}</p>
@@ -512,6 +516,11 @@
                 </p>
             </div>
         </div>
+                {% for i in 1..5 %}
+                <div style='border-radius:20px; border-color:red; color:red; border-width: 5px;padding:50px;'>
+                    <h1>THIS IS JUST A DEMO THIS IS JUST A DEMO</h1>
+                </div>
+                {% endfor %}
         <div class='printfnx'><a href='javascript:print();' class='btn btn-sm btn-primary'><i class="oi oi-print" title="Print" aria-hidden="true"></i> Print</a></div>
 
     </body>

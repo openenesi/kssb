@@ -16,7 +16,7 @@
         <div class="row setup-content-3" id="step-5">
             <div class="col-md-12">
                 <h3 class="font-weight-bold pl-0 my-4"><strong>Account Aready Exists!</strong></h3>
-                An account with the information you supplied already exists. If you recently created the account please <a href="{{path('login')}}" class="btn btn-sm btn-primary">login here</a>. Click <a href='{{path('resendcredentials', {'maddr':user.getEmail()})}}'>here</a> to resend the mail (with new password)<br /><br />
+                An account with the information you supplied already exists. If you recently created the account please <a href="{{path('login')}}" class="btn btn-sm btn-primary">login here</a>. Click <a href='{{path('resendcredentials', {'id':user.getId()})}}'>here</a> to resend the mail (with new password)<br /><br />
                 <div class='alert alert-info' role='alert'>For complains contact support team <a href="">here</a></div><br /><br />               
             </div>
         </div>

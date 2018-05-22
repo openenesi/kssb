@@ -3,7 +3,9 @@
 parameters:
     locale: 'en'
     passport_directory: '%kernel.root_dir%/../public/passport'
+    paystack_mode: 'test'
     paystack_secret_key: 'sk_test_91726061c53146047a0a2bcb129303ba39a8bbb9'
+    paystack_live_secret_key: 'sk_live_ef253e29c29a79b4c61f3b2c8554453a3bc75e46'
 
 
 services:

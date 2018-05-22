@@ -1,11 +1,16 @@
 {# empty Twig template #}
 {% extends "base.html.twig"%}
 {% block css %}
+    {{parent()}}
     <style type='text/css'>
-        {{parent()}}
+        
         #map{
             width:100%;
-            min-height:400px;
+            height:300px;
+            display:none;
+        }
+        #showmap{
+            margin-bottom: 10px;
         }
     </style>
 {% endblock css %}
@@ -19,6 +24,8 @@
                 <strong><i class="fa fa-phone"> </i> </strong> {{session.getMobileNo()}} <br />
             </address>
             <hr class='d-block d-md-none' />
+            <a href="javascript:void(0);" id="showmap" class="btn btn-primary btn-sm" >Show Map</a>
+            
             <div id="map">
             </div>
             <br />
@@ -46,12 +53,17 @@
     <script type="text/javascript">
         function myMap() {
             var mapOptions = {
-                center: new google.maps.LatLng(51.5, -0.12),
-                zoom: 10,
+                center: new google.maps.LatLng(7.7930041,6.7329553),
+                zoom: 16,
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             }
             var map = new google.maps.Map(document.getElementById("map"), mapOptions);
         }
+        
+        $(document).on("click","#showmap",function(event){ 
+            $("#map").toggle();
+            $(this).text(($(this).text()=="Show Map")?("Hide Map"):("Show Map"));
+        });
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?callback=myMap"></script> 
 {% endblock js %}

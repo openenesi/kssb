@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\TransactionLog;
 
@@ -50,8 +51,8 @@ class PaymentController extends Controller {
                 CURLOPT_POSTFIELDS => json_encode([
                     'amount' => $amount,
                     'email' => $email,
-                    /* 'reference' => $ref, */
-                    'callback_url' => str_replace("localhost", "10.1.44.65", $this->generateUrl("paid")),
+                    'reference' => $ref,
+                    'callback_url' => $this->generateUrl("paid", array(), UrlGeneratorInterface::ABSOLUTE_URL),
                     'subaccount' => 'ACCT_x949qqo59pog9hd',
                     'metadata' => array(
                         'cart_id' => $user->getEmail(),
@@ -61,7 +62,7 @@ class PaymentController extends Controller {
                     ),
                 ]),
                 CURLOPT_HTTPHEADER => [
-                    "authorization: Bearer " . $this->getParameter('paystack_secret_key'), //replace this with your own test key
+                    "authorization: Bearer " . (($this->getParameter('paystack_mode')=='live')?($this->getParameter('paystack_live_secret_key')):($this->getParameter('paystack_secret_key'))), //replace this with your own test key
                     "content-type: application/json",
                     "cache-control: no-cache"
                 ],
@@ -130,7 +131,7 @@ class PaymentController extends Controller {
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HTTPHEADER => [
                 "accept: application/json",
-                "authorization: Bearer " . $this->getParameter("paystack_secret_key"),
+                "authorization: Bearer " . (($this->getParameter('paystack_mode')=='live')?($this->getParameter('paystack_live_secret_key')):($this->getParameter('paystack_secret_key'))),
                 "cache-control: no-cache"
             ],
         ));
@@ -198,7 +199,7 @@ class PaymentController extends Controller {
                             return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'candidate' => $user, 'error' => true, 'errmsg' => "Server error", 'session' => $session));
                         }
 
-                        return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'transactionlog'=>$trxnlog, 'candidate' => $user, 'session' => $session));
+                        return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'paymentlog'=>$trxnlog, 'candidate' => $user, 'session' => $session));
                         //echo "Transaction was successful";
                     } else {
                         // the transaction was not successful, do not deliver value'
@@ -243,7 +244,7 @@ class PaymentController extends Controller {
             exit();
         }
 
-        define('PAYSTACK_SECRET_KEY', $this->getParameter("paystack_secret_key"));
+        define('PAYSTACK_SECRET_KEY', (($this->getParameter('paystack_mode')=='live')?($this->getParameter('paystack_live_secret_key')):($this->getParameter('paystack_secret_key'))));
 // confirm the event's signature
         if ($signature !== hash_hmac('sha512', $body, PAYSTACK_SECRET_KEY)) {
             // silently forget this ever happened
@@ -279,7 +280,7 @@ class PaymentController extends Controller {
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_HTTPHEADER => [
                         "accept: application/json",
-                        "authorization: Bearer " . $this->getParameter("paystack_secret_key"),
+                        "authorization: Bearer " . (($this->getParameter('paystack_mode')=='live')?($this->getParameter('paystack_live_secret_key')):($this->getParameter('paystack_secret_key'))),
                         "cache-control: no-cache"
                     ],
                 ));

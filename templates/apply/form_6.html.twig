@@ -1,5 +1,14 @@
 {% extends 'form_general.html.twig' %}
-
+{% block css %}
+    {{parent()}}
+    <style type='text/css'>
+        @media only screen and (max-width: 768px){
+            .printfrm, .logout, .previous, #testify{
+                margin-bottom:20px;
+            }
+        }
+    </style>
+{% endblock css %}
 {% block formbody %}
     {% if (testified == false) %}
         <!-- First Step -->
@@ -10,7 +19,7 @@
                     <div class='alert alert-warning' role='alert'>Oops... something went wrong!</div>
                 {% endif %}
                 By clicking on the submit button below, you "<span style="font-weight: bold; text-decoration: underline; font-style: italic;">{{candidate.getCandidatePersonal().getFullName()}}</span>" hereby declare that all the information given in this application is to the best of your knowledge and belief, correct.<br /><br />
-                <a href='{{path('form_5')}}' class='btn btn-secondary'>Previous</a> 
+                <a href='{{path('form_5')}}' class='btn btn-secondary previous'>Previous</a> 
                 <a id="testify" href="{{path('form_6', {'testified':'testified'})}}" class='btn btn-primary'>Submit</a><br /><br />               
             </div>
         </div>
@@ -20,8 +29,8 @@
             <div class="col-md-12">
                 <h3 class="font-weight-bold pl-0 my-4"><strong>Application Completed!</strong></h3>
                 Your application for the {{session.getScholarshipSession()~'/'~ (session.getScholarshipSession()+1)}} KSSB scholarship programme is successfully completed. Your application Form No. is <strong>{{appId}}</strong><br /><br />
-                <a href ="{{path('appform')}}" target='_blank' class="btn btn-sm btn-primary">Print Application Form</a> 
-                <a href ="{{path('logout')}}" class="btn btn-sm btn-outline-dark">Logout</a>
+                <a href ="{{path('appform')}}" target='_blank' class="btn btn-sm btn-primary printfrm">Print Application Form</a> 
+                <a href ="{{path('logout')}}" class="btn btn-sm btn-outline-dark logout">Logout</a>
             </div>
         </div>
     {% endif %}
@@ -30,7 +39,7 @@
     {{parent()}}
     <script type="text/javascript">
         $(document).on("click", "#testify", function (event) {
-            if(!window.confirm("This is your final submission. Changes will not be allowed.")){
+            if (!window.confirm("This is your final submission. Changes will not be allowed.")) {
                 event.preventDefault();
             }
         });

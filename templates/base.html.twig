@@ -8,6 +8,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>{% block title %}Kogi State Scholarship Board{% endblock title %}</title>
+        <link rel="shortcut icon" href="{{asset('favicon.ico')}}" type="image/x-icon">
         <!-- Bootstrap CSS -->
         {% block stylesheets %}
             <link rel="stylesheet" href="{{asset('bootstrap/css/bootstrap.min.css')}}"/>
@@ -29,15 +30,15 @@
                     background-position:90% 80%;
                     background-size:150px 120px;
                     background-attachment: fixed;
-                    font-family:Raleway, san-serif;
+                    font-family:Raleway, "Helvetica Neue", Helvetica, Arial, san-serif;
 
                 }
-                
+
                 h1,h2,h3,h4,h5,h6, .display-1, .display-2, .display-3, .display-4{
-                    font-family:Raleway,san-serif;
-                    font-weight:100;
+                    font-family:Raleway, "Helvetica Neue", Helvetica, Arial, san-serif;
+                    font-weight:300;
                 }
-                
+
                 #title-bar{
                     background:linear-gradient(180deg, #f3f6fd, #002a80); 
                 }
@@ -77,6 +78,12 @@
                     text-align: left;
                     padding-bottom: 10px;
                 }
+                .mobile{
+                    display:none
+                }
+                .nomobile{
+                    display:initial;
+                }
 
                 @media only screen and (max-width: 768px){
                     #imgstatelogo, #imgcoatofarms {
@@ -101,6 +108,12 @@
                     }
                     #sidenav{
                         padding-left:35px;
+                    }
+                    .mobile{
+                        display:initial
+                    }
+                    .nomobile{
+                        display:none;
                     }
                 }
                 span.alert.alert-danger{
@@ -138,15 +151,16 @@
             <nav id='topnavbar' class='hd navbar fixed-top navbar-light bg-light'>
                 <input type="checkbox" id="toggle" />
                 <div>
-                    <label for="toggle" class="toggle" data-open="KSSB" data-close="Hide" onclick></label>
+                    <label for="toggle" class="toggle" data-open="Show Menu" data-close="Hide Menu" onclick></label>
                     <ul class="menu">
                         <li><a href="{{path('home')}}" class="{{(page!='home')?:'active '}}">Home</a></li>
                         <li><a href="{{path('aboutus')}}" class="{{(page!='aboutus')?:'active '}}">About Us</a></li>		
-                        <li><a href="#">Board</a></li>	
+                        <li><a href="{{path('board')}}" class="{{(page!='board')?:'active '}}">Board</a></li>	
                         <li><a href="{{path('contactus')}}" class="{{(page!='contactus')?:'active '}}">Contact Us</a></li>
                         <li><a href="{{path('faq')}}" class="{{(page!='faq')?:'active '}}">FAQ</a></li>
+                        <li><a href="{{path('bursary')}}" class="{{(page!='bursary')?:'active '}}}">Bursary</a></li>
                         <li><a href="{{path('scholarship')}}" class="{{(page!='scholarship')?:'active '}}}">Scholarship</a></li>
-                        <li><a href="#">News</a></li>
+                        <li><a href="#">Gallery</a></li>
                     </ul>
                 </div>
                 {% if is_granted('ROLE_CANDIDATE') %}
@@ -176,7 +190,7 @@
                         <footer style='margin-top: 20px; background-color:#002a80; padding:20px; padding-bottom: 0px; color:lightblue; font-size: 0.8em; box-shadow:1px 1px 2px 1px #cccccc;'>
                             <div class='row'>
                                 <div class='col-12'>
-                                    <p class='text-center'>&copy;{{ "now"|date('Y')}} Kogi State Bursary and Scholarship Board (KSSB).</p>
+                                    <p class='text-center'>&copy;{{ "now"|date('Y')}} Kogi State Scholarship Board (KSSB).</p>
                                 </div>
                             </div>
                             {% if session is defined %}

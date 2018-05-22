@@ -38,10 +38,25 @@ class DefaultController extends Controller {
     }
 
     /**
+     * @Route("/bursary", name="bursary")
+     */
+    public function bursary() {
+        $session = $this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
+        return $this->render('default/bursary.html.twig', array('page' => 'bursary', 'session' => $session));
+    }
+
+    /**
      * @Route("/aboutus", name="aboutus")
      */
     public function aboutUs(Request $request) {
         return $this->render('default/about.html.twig', array("page" => "aboutus"));
+    }
+    
+    /**
+     * @Route("/board", name="board")
+     */
+    public function board(Request $request) {
+        return $this->render('default/board.html.twig', array("page" => "board"));
     }
 
     /**

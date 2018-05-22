@@ -22,7 +22,7 @@ add institution not listed link
 uncomment the reference parameter in the PaymentController
 rewrite the callback_url in the PaymentController(completed)
 
-change all test private secret keys on deployment
+change all test private secret keys on deployment (completed)
 verify subaccounts on deployment
 
 remove no-validate on forms
@@ -32,5 +32,10 @@ animate bitssense
 add smooth scrolling to the top nav bar when the page loads (completed)
 
 verify CSRF protection on create account page when in production
+
+add tab ico (completed)
+
+remove this is a demo in the form print out
+
 
 MISSION STATEMENT:To raise the standard and quality of Education in kogi state which is a veritable tool for Development. VISION STATEMENT : To create Educational access through scholarship.
