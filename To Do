@@ -36,6 +36,6 @@ verify CSRF protection on create account page when in production
 add tab ico (completed)
 
 remove this is a demo in the form print out
-
+remove reidrect from scholarship controller
 
 MISSION STATEMENT:To raise the standard and quality of Education in kogi state which is a veritable tool for Development. VISION STATEMENT : To create Educational access through scholarship.

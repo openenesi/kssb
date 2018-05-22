@@ -33,6 +33,7 @@ class DefaultController extends Controller {
      * @Route("/scholarship", name="scholarship")
      */
     public function scholarship() {
+        return $this->redirectToRoute("bursary");
         $session = $this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
         return $this->render('default/scholarship.html.twig', array('page' => 'scholarship', 'session' => $session));
     }
