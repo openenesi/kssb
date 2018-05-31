@@ -109,8 +109,8 @@ class User implements UserInterface, \Serializable {
 
     /**
      * @Assert\NotBlank(message="Date created is required.")
-     * @Assert\Date(message="Invalid value for date created.")
-     * @ORM\Column(type="date", unique=false, nullable=false) 
+     * @Assert\DateTime(message="Invalid value for date created.")
+     * @ORM\Column(type="datetime", unique=false, nullable=false) 
      */
     private $dateCreated;
 
@@ -161,6 +161,7 @@ class User implements UserInterface, \Serializable {
     }
 
     public function setEmail($email) {
+        $email = trim(strtolower($email));
         $this->email = $email;
         $this->username= $email;
     }
@@ -213,7 +214,7 @@ class User implements UserInterface, \Serializable {
     }
 
     public function setUsername($username) {
-        $this->username = $username;
+        $this->username = trim(strtolower($username));
     }
 
     public function getSalt() {

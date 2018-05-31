@@ -13,9 +13,18 @@ class AdminController extends Controller
      */
     public function index(Request $request)
     {
+        $rep = $this->getDoctrine()->getRepository(\App\Entity\User::class);
+        $userstat = array();
+        $userstat['registered']= $rep->countAllApplicants();
+        $userstat['paid']= $rep->countAllApplicants('paid');
+        $userstat['completed']= $rep->countAllApplicants('completed');
+        
         return $this->render('admin/index.html.twig', [
-            'page'=>'admin',
+            'page'=>'index',
+            'contentTitle'=>'Dashboard',
+            'titleIcon'=>'<i class="fa fa-dashboard fa-fw"></i>',
             'controller_name' => 'AdminController',
+            'userstat'=>$userstat
         ]);
     }
 }

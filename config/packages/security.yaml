@@ -1,20 +1,39 @@
 security:
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
-        in_memory: { memory: ~ }
+        in_memory:
+            memory:
+                users:
+                    faji:
+                        password: masofaji
+                        roles: 'ROLE_ADMIN'
         candidate_provider:
             entity:
                 class: App\Entity\User
                 property: username
     
     encoders:
+        Symfony\Component\Security\Core\User\User: plaintext
         App\Entity\User:
             algorithm: bcrypt
+            
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-            
+        admin:
+            anonymous: true
+            pattern: ^/kssbadmin
+            provider: in_memory
+            form_login:
+                login_path: adminlogin
+                check_path: adminlogin
+                use_forward: true
+                use_referer: true
+                csrf_token_generator: security.csrf.token_manager
+            logout:
+                path: /adminlogout
+                target: /adminlogin
         main:
             anonymous: true
 #            pattern:   (^/apply)|(^/logincheck)
@@ -56,6 +75,7 @@ security:
     access_control:
         #- { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         #- { path: ^/logincheck, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/kssbadmin, roles: ROLE_ADMIN }
         - { path: ^/apply/form_1, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/apply/choice, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/apply/paidwebhook, roles: IS_AUTHENTICATED_ANONYMOUSLY }

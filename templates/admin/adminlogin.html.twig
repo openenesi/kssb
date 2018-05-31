@@ -1,0 +1,26 @@
+{% extends 'admin_general.html.twig' %}
+
+{% block title %}Admin::Login{% endblock title %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+                <div class="login-panel panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Please Sign In</h3>
+                    </div>
+                    <div class="panel-body">
+                        {% if loginerror is defined %}
+                            {{ render_esi(url('admin_login_form', {'last_username':last_username, 'loginerror':loginerror})) }}
+                        {% elseif last_username is defined %}
+                            {{ render_esi(url('admin_login_form', {'last_username':last_username})) }}
+                        {% else %}
+                            {{ render_esi(url('admin_login_form')) }}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock body %}

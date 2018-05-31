@@ -56,4 +56,13 @@ class UserRepository extends ServiceEntityRepository {
         return $result;
     }
 
+    public function countAllApplicants($status = 'all') {
+        $query = "SELECT COUNT(o) as applicantcount from \App\Entity\User o ".(($status=='paid')?("where o.paid = 1"):(($status=='completed')?("where o.appId >0"):("")));
+        $query1 = $this->getEntityManager()->createQuery($query);
+
+        $result = $query1->setMaxResults(1)->getResult();
+        $result = $result[0]['applicantcount'];
+        return $result;
+    }
+
 }

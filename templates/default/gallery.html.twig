@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+{% block css %}
+    <style type="text/css">
+        .galimg{
+            margin:20px;
+            margin-left:auto;
+            margin-right:auto;
+            max-width: 900px;
+            min-width: 700px;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <h1 class='text-center'>Gallery</h1>
+    <div class="galimg text-center">
+        <img src="{{asset('gallery/1.jpg')}}"/>
+    </div>
+    <div class="galimg text-center">
+        <img src="{{asset('gallery/2.jpg')}}"/>
+    </div>
+    <div class="galimg text-center">
+        <img src="{{asset('gallery/3.jpg')}}"/>
+    </div>
+    <div class="galimg text-center">
+        <img src="{{asset('gallery/4.jpg')}}"/>
+    </div>
+    <div class="galimg text-center">
+        <img src="{{asset('gallery/5.jpg')}}"/>
+    </div>
+    <div class="galimg text-center">
+        <img src="{{asset('gallery/6.jpg')}}"/>
+    </div>
+    <div class="galimg text-center">
+        <img src="{{asset('gallery/7.jpg')}}"/>
+    </div>
+    <div class="galimg text-center">
+        <img src="{{asset('gallery/8.jpg')}}"/>
+    </div>
+    <div class="galimg text-center">
+        <img src="{{asset('gallery/9.jpg')}}"/>
+    </div>
+    <div class="galimg text-center">
+        <img src="{{asset('gallery/10.jpg')}}"/>
+    </div>
+{% endblock content %}

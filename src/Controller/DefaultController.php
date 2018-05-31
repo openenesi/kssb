@@ -33,7 +33,11 @@ class DefaultController extends Controller {
      * @Route("/scholarship", name="scholarship")
      */
     public function scholarship() {
+        /*$rep = $this->getDoctrine()->getRepository(\App\Entity\User::class);
+        $users = $rep->findAll();
+        if(count($users) > 99){
         return $this->redirectToRoute("bursary");
+        }*/
         $session = $this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
         return $this->render('default/scholarship.html.twig', array('page' => 'scholarship', 'session' => $session));
     }
@@ -51,6 +55,13 @@ class DefaultController extends Controller {
      */
     public function aboutUs(Request $request) {
         return $this->render('default/about.html.twig', array("page" => "aboutus"));
+    }
+    
+    /**
+     * @Route("/gallery", name="gallery")
+     */
+    public function gallery(Request $request) {
+        return $this->render('default/gallery.html.twig', array("page" => "gallery"));
     }
     
     /**

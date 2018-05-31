@@ -155,12 +155,12 @@
                     <ul class="menu">
                         <li><a href="{{path('home')}}" class="{{(page!='home')?:'active '}}">Home</a></li>
                         <li><a href="{{path('aboutus')}}" class="{{(page!='aboutus')?:'active '}}">About Us</a></li>		
-                        <li><a href="{{path('board')}}" class="{{(page!='board')?:'active '}}">Board</a></li>	
+                        <li><a href="{{path('board')}}" class="{{(page!='board')?:'active '}}">Stakeholders</a></li>	
                         <li><a href="{{path('contactus')}}" class="{{(page!='contactus')?:'active '}}">Contact Us</a></li>
                         <li><a href="{{path('faq')}}" class="{{(page!='faq')?:'active '}}">FAQ</a></li>
-                        <li><a href="{{path('bursary')}}" class="{{(page!='bursary')?:'active '}}}">Bursary</a></li>
-                        <li><a href="{{path('scholarship')}}" class="{{(page!='scholarship')?:'active '}}}">Scholarship</a></li>
-                        <li><a href="#">Gallery</a></li>
+                        <li><a href="{{path('bursary')}}" class="{{(page!='bursary')?:'active '}}">Bursary</a></li>
+                        <li><a href="{{path('scholarship')}}" class="{{(page!='scholarship')?:'active '}}">Scholarship</a></li>
+                        <li><a href="{{path('gallery')}}" class="{{(page!='gallery')?:'active '}}">Gallery</a></li>
                     </ul>
                 </div>
                 {% if is_granted('ROLE_CANDIDATE') %}
