@@ -10,7 +10,7 @@
                             <i class="glyphicon glyphicon-plus fa-5x"></i>
                         </div>
                         <div class="col-xs-9 text-right">
-                            <div class="huge">{{userstat['registered']}}</div>
+                            <div class="huge" id="registered">{{userstat['registered']}}</div>
                             <div>Accounts Created</div>
                         </div>
                     </div>
@@ -25,14 +25,14 @@
             </div>
         </div>
         <div class="col-xs-12 col-sm-6 col-md-4">
-            <div class="panel panel-primary">
+            <div class="panel panel-yellow">
                 <div class="panel-heading">
                     <div class="row">
                         <div class="col-xs-3">
                             <i class="fa fa-money fa-5x"></i>
                         </div>
                         <div class="col-xs-9 text-right">
-                            <div class="huge">{{userstat['paid']}}</div>
+                            <div class="huge" id="paid">{{userstat['paid']}}</div>
                             <div>Accounts Paid</div>
                         </div>
                     </div>
@@ -47,14 +47,14 @@
             </div>
         </div>
         <div class="col-xs-12 col-sm-6 col-md-4">
-            <div class="panel panel-primary">
+            <div class="panel panel-green">
                 <div class="panel-heading">
                     <div class="row">
                         <div class="col-xs-3">
                             <i class="glyphicon glyphicon-ok fa-5x"></i>
                         </div>
                         <div class="col-xs-9 text-right">
-                            <div class="huge">{{userstat['completed']}}</div>
+                            <div class="huge" id="completed">{{userstat['completed']}}</div>
                             <div>Application Completed</div>
                         </div>
                     </div>
@@ -70,3 +70,41 @@
         </div>
     </div>
 {% endblock content %}
+{% block js %}
+    {{parent()}}
+    <script type="text/javascript">
+        refreshRegistered();
+        refreshPaid();
+        refreshCompleted();
+
+        function refreshRegistered() {
+            
+            $.ajax({
+                url: '{{path('countregisteredajax')}}',
+                type: 'get'
+            }).done(function (data) {
+                
+                $('#registered').text(data);
+                setTimeout(refreshRegistered, 10000);
+            });
+        }
+        function refreshPaid() {
+            $.ajax({
+                url: '{{path('countpaidajax')}}',
+                type: 'get'
+            }).done(function (data) {
+                $('#paid').text(data);
+                setTimeout(refreshPaid, 10000);
+            });
+        }
+        function refreshCompleted() {
+            $.ajax({
+                url: '{{path('countcompletedajax')}}',
+                type: 'get'
+            }).done(function (data) {
+                $('#completed').text(data);
+                setTimeout(refreshCompleted, 10000);
+            });
+        }
+    </script>
+{% endblock js %}

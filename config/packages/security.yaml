@@ -32,8 +32,8 @@ security:
                 use_referer: true
                 csrf_token_generator: security.csrf.token_manager
             logout:
-                path: /adminlogout
-                target: /adminlogin
+                path: /kssbadmin/logout
+                target: /kssbadmin/adminlogin
         main:
             anonymous: true
 #            pattern:   (^/apply)|(^/logincheck)
