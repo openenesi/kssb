@@ -113,7 +113,7 @@
                                         <a href="{{path('admin')}}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                                     </li>
                                     <li>
-                                        <a href="#"><i class="fa fa-dashboard fa-fw"></i> Candidate Registration</a>
+                                        <a href="{{path('applicant')}}"><i class="fa fa-user fa-fw"></i> Applicants</a>
                                     </li>               
                                 </ul>
                             </div>
@@ -148,12 +148,12 @@
             <!-- jQuery -->
             <script src="{{asset('jquery/jquery-3.3.1.min.js')}}"></script>
             <script src="{{asset('startbootstrap/bootstrap/js/bootstrap.min.js')}}"></script>
+            {% block scripts %}
+            {% endblock scripts %}
             <!-- Metis Menu Plugin JavaScript -->
             <script src="{{asset('startbootstrap/metisMenu/metisMenu.min.js')}}"></script>
             <!-- Custom Theme JavaScript -->
             <script src="{{asset('startbootstrap/dist/js/sb-admin-2.js')}}"></script>
-            {% block scripts %}
-            {% endblock scripts %}
             {% block js %}
                 <script type='text/javascript'>
                     function scrollTo(target) {

@@ -47,4 +47,15 @@ class TransactionLogRepository extends ServiceEntityRepository
         ;
     }
     */
+    
+    public function findByReference2($ref){
+        return $this->createQueryBuilder('t')
+            ->where('t.reference LIKE :val')
+                ->andWhere("t.status = 'success'")
+            ->setParameter('val', $ref."-%")
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }

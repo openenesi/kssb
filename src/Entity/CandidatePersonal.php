@@ -157,7 +157,7 @@ class CandidatePersonal {
     }
 
     public function setSurname($name) {
-        $this->surname = $name;
+        $this->surname = ucfirst(strtolower($name));
     }
 
     public function getFirstName() {
@@ -165,7 +165,7 @@ class CandidatePersonal {
     }
 
     public function setFirstName($name) {
-        $this->firstName = $name;
+        $this->firstName = ucfirst(strtolower($name));
     }
 
     public function getOtherNames() {
@@ -173,7 +173,7 @@ class CandidatePersonal {
     }
 
     public function setOtherNames($name) {
-        $this->otherNames = $name;
+        $this->otherNames = ucwords(strtolower($name));
     }
 
     public function getHomeAddr() {
@@ -238,7 +238,7 @@ class CandidatePersonal {
     }
 
     public function setNokName($name) {
-        $this->nokName = $name;
+        $this->nokName = ucwords(strtolower($name));
     }
 
     public function getNokAddr() {

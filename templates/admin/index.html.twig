@@ -55,7 +55,7 @@
                         </div>
                         <div class="col-xs-9 text-right">
                             <div class="huge" id="completed">{{userstat['completed']}}</div>
-                            <div>Application Completed</div>
+                            <div>Applications Completed</div>
                         </div>
                     </div>
                 </div>
@@ -69,6 +69,16 @@
             </div>
         </div>
     </div>
+    <div class='row'>
+        <div class='col-12 text-center' >
+            <br />
+            <span id='slow' class='alert alert-warning' role='alert' style='display:none;'>
+                Slow or no network detected. Check your Internet connection!
+            </span>
+            <br />
+            <br />
+        </div>
+    </div>
 {% endblock content %}
 {% block js %}
     {{parent()}}
@@ -78,33 +88,52 @@
         refreshCompleted();
 
         function refreshRegistered() {
-            
+
             $.ajax({
                 url: '{{path('countregisteredajax')}}',
-                type: 'get'
+                type: 'get',
+                error: function (jqXHR, textStatus, errorThrown) {                   
+                    showSlowNetworkNotice();
+                    setTimeout(refreshRegistered, 3000);
+                }
             }).done(function (data) {
-                
+
                 $('#registered').text(data);
+                $("#slow").fadeOut();
                 setTimeout(refreshRegistered, 10000);
             });
         }
         function refreshPaid() {
             $.ajax({
                 url: '{{path('countpaidajax')}}',
-                type: 'get'
+                type: 'get',
+                error: function (jqXHR, textStatus, errorThrown) {
+                    showSlowNetworkNotice();
+                    setTimeout(refreshPaid, 3000);
+                }
             }).done(function (data) {
                 $('#paid').text(data);
+                $("#slow").fadeOut();
                 setTimeout(refreshPaid, 10000);
             });
         }
         function refreshCompleted() {
             $.ajax({
                 url: '{{path('countcompletedajax')}}',
-                type: 'get'
+                type: 'get',
+                error: function (jqXHR, textStatus, errorThrown) {
+                    showSlowNetworkNotice();
+                    setTimeout(refreshCompleted, 3000);
+                }
             }).done(function (data) {
                 $('#completed').text(data);
+                $("#slow").fadeOut();
                 setTimeout(refreshCompleted, 10000);
             });
+        }
+
+        function showSlowNetworkNotice() {
+            $("#slow").fadeIn();
         }
     </script>
 {% endblock js %}

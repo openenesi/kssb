@@ -95,6 +95,11 @@ class TransactionLog {
      */
     private $attempts;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $userId;
+
     public function getId() {
         return $this->id;
     }
@@ -220,6 +225,14 @@ class TransactionLog {
 
     public function setAttempts($attempts) {
         $this->attempts = $attempts;
+    }
+    
+    public function getUserId(){
+        return $this->userId;
+    }
+    
+    public function setUserId($id){
+        $this->userId = $id;
     }
 
 }

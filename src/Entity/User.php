@@ -108,11 +108,29 @@ class User implements UserInterface, \Serializable {
     private $appId;
 
     /**
+     * @Assert\Type(type="string")
+     * @ORM\Column(type="string", length=30, unique=true, nullable=true) 
+     */
+    private $trxnRef;
+
+    /**
      * @Assert\NotBlank(message="Date created is required.")
      * @Assert\DateTime(message="Invalid value for date created.")
      * @ORM\Column(type="datetime", unique=false, nullable=false) 
      */
     private $dateCreated;
+    /**
+     * @Assert\DateTime(message="Invalid value for date paid.")
+     * @Assert\GreaterThanOrEqual(propertyPath="dateCreated", message="Date paid is not accepted")
+     * @ORM\Column(type="datetime", unique=false, nullable=true) 
+     */
+    private $datePaid;
+    /**
+     * @Assert\DateTime(message="Invalid value for date paid.")
+     * @Assert\GreaterThanOrEqual(propertyPath="datePaid", message="Date of completion is not accepted")
+     * @ORM\Column(type="datetime", unique=false, nullable=true) 
+     */
+    private $dateCompleted;
 
     /**
      * @ORM\Column(name="is_active", type="boolean")
@@ -200,6 +218,14 @@ class User implements UserInterface, \Serializable {
     public function setAppId($id) {
         $this->appId = $id;
     }
+    
+    public function getTrxnRef(){
+        return $this->trxnRef;
+    }
+    
+    public function setTrxnRef($ref){
+        $this->trxnRef = $ref;
+    }
 
     public function getDateCreated(){
         return $this->dateCreated;
@@ -207,6 +233,26 @@ class User implements UserInterface, \Serializable {
     
     public function setDateCreated($dt){
         $this->dateCreated = $dt;
+    }
+    public function getDatePaid(){
+        return $this->datePaid;
+    }
+    
+    public function setDatePaid($dt){
+        if (!($dt instanceof \DateTime)) {
+            $dt = new \DateTime($dt);
+        }
+        $this->datePaid = $dt;
+    }
+    public function getDateCompleted(){
+        return $this->dateCompleted;
+    }
+    
+    public function setDateCompleted($dt){
+        if (!($dt instanceof \DateTime)) {
+            $dt = new \DateTime($dt);
+        }
+        $this->dateCompleted = $dt;
     }
     
     public function getUsername() {

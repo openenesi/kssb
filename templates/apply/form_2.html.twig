@@ -20,7 +20,7 @@
                     <tr><th>Amount:</th><td>&#8358;{{session.getRegistrationCost()|number_format(2,'.',',')}} <span class="badge badge-info">Paystack charge included</span></td></tr>
                 </table>
                 <div class="alert alert-info" role="alert">
-                    If you recently made payment and it has not reflected, click <a href="{{path('paid')}}?reference=KSSB{{candidate.getId()}}">here</a>
+                    If you recently made payment and it has not reflected, click <a href="{{path('paid')}}?reference={{candidate.getTrxnRef()}}">here</a>
                 </div>
                 <form action="{{url('form_2')}}" method="post">
                     <input type="hidden" name="pay" value="pay" />

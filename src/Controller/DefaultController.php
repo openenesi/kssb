@@ -134,6 +134,7 @@ class DefaultController extends Controller {
                 $lastAppId = $userRep->getLastAppId();
                 $lastAppId++;
                 $user->setAppId($lastAppId);
+                $user->setDateCompleted(new \DateTime());
                 try {
                     $em = $this->getDoctrine()->getManager();
                     $em->persist($user);

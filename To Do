@@ -1,3 +1,22 @@
+/*
+             $('#datatable').DataTable({
+             serverSide: true,
+             ajax: {
+             url: "{{path('fetchApplicantData')}}",
+             method: "get",
+             data: function (d) {
+             return $.extend({}, d, {
+             "status": $('#status').val(),
+             "lga": $('#lga').val(),
+             "institution": $('#institution').val(),
+             "bank": $('#bank').val()
+             });
+             }
+             }
+             });
+             */
+
+
 
 Profile pix (completed)
 

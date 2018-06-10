@@ -2,14 +2,14 @@
 {% extends 'email_general.html.twig' %}
 {% block content %}
     <h1 style="text-align:center;">Account Details</h1>
-    <div style="text-align: center;"><img src="{{absolute_url(asset('site_images/credential.png'))}}" style="width:80px; height: 80px;"/></div>
+    <div style="text-align: center;"><img src="{{absolute_url(asset('site_images/credential.png'))}}" style="width:70px; height: 70px;"/></div>
     <div style="padding-left:20px; padding-top:20px;">
         Welcome candidate, here are your account details:
         <div style="padding-left:20px;">
             <p><b>Email (Username):</b> {{username}} </p>
             <p><b>PIN (Password):</b> <span style="font-family:'Courier New', Courier">{{password}} </span></p>
             <div style="margin:15px; padding-top:12px; padding-right:20px; padding-left:20px; padding-bottom:12px; border-radius:4px; border-color: rgb(255,238,186); background-color:rgb(255,243,205); color:rgb(133,100,4); border-style:solid; border-width:1px;">
-                This account will be deleted if payment is not made within 24 hours.
+                This account will be deleted if payment is not made within 48 hours.
             </div>
             <p>Click <a href="{{url("form_3")}}">here</a> to continue with your application. </p>
         </div>

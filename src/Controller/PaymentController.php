@@ -31,8 +31,11 @@ class PaymentController extends Controller {
         }
 
         $user = $this->getUser();
-        $ref = "KSSB" . $user->getId();
-        
+        $ref = "KSSB" . $user->getId() . "-" . mt_rand(0, 999);
+        $user->setTrxnRef($ref);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($user);
+        $em->flush();
 
         if ((null !== $request->request->get("pay")) && $request->request->get("pay") == "pay") {
 
@@ -62,7 +65,7 @@ class PaymentController extends Controller {
                     ),
                 ]),
                 CURLOPT_HTTPHEADER => [
-                    "authorization: Bearer " . (($this->getParameter('paystack_mode')=='live')?($this->getParameter('paystack_live_secret_key')):($this->getParameter('paystack_secret_key'))), //replace this with your own test key
+                    "authorization: Bearer " . (($this->getParameter('paystack_mode') == 'live') ? ($this->getParameter('paystack_live_secret_key')) : ($this->getParameter('paystack_secret_key'))), //replace this with your own test key
                     "content-type: application/json",
                     "cache-control: no-cache"
                 ],
@@ -95,9 +98,9 @@ class PaymentController extends Controller {
         //if($user == null) echo "eds"; exit();
         $rep = $this->getDoctrine()->getRepository(\App\Entity\TransactionLog::class);
         $log = $rep->findByReference($ref);
-        $log = (isset($log) && is_array($log) && (count($log) >0))?($log[0]):(null);
+        $log = (isset($log) && is_array($log) && (count($log) > 0)) ? ($log[0]) : (null);
         if ($log) {
-            return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'candidate' => $user, 'paymentlog'=>$log, 'session' => $session));
+            return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'candidate' => $user, 'paymentlog' => $log, 'session' => $session));
         }
         return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'candidate' => $user, 'session' => $session));
     }
@@ -109,8 +112,8 @@ class PaymentController extends Controller {
         $session = $this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
         $user = $this->getUser();
         $ref = $request->query->get('reference');
-        $reference = isset($ref) ? $ref : '';
-        if (!$reference) {
+        $reference = isset($ref) ? $ref : $user->getTrxnRef();
+        if ('' === $reference || null === $reference || !$reference) {
             return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'candidate' => $user, 'error' => true, 'session' => $session));
         }
 
@@ -118,10 +121,15 @@ class PaymentController extends Controller {
          * PERFORM DATABASE QUERY TO VERIFY THAT THE REFERENCE HAS NOT BEEN VALUED
          */
         $rep = $this->getDoctrine()->getRepository(\App\Entity\TransactionLog::class);
-        $log = $rep->findByReference($ref);
-        $log = (isset($log)&& is_array($log) && (count($log)>0))?($log[0]):(null);
-        if ($log) {
-            return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'paymentlog'=> $log, 'candidate' => $user, 'session' => $session));
+
+        if(strpos($reference, "-")>0){
+            $log = $rep->findByReference($reference);
+        }else{
+        $log = $rep->findByReference2($reference);
+        }
+        $log = (isset($log) && is_array($log) && (count($log) > 0)) ? ($log[0]) : (null);
+        if ($log && $user->getPaid()) {
+            return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'paymentlog' => $log, 'candidate' => $user, 'session' => $session));
         }
 
         $curl = curl_init();
@@ -131,7 +139,7 @@ class PaymentController extends Controller {
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HTTPHEADER => [
                 "accept: application/json",
-                "authorization: Bearer " . (($this->getParameter('paystack_mode')=='live')?($this->getParameter('paystack_live_secret_key')):($this->getParameter('paystack_secret_key'))),
+                "authorization: Bearer " . (($this->getParameter('paystack_mode') == 'live') ? ($this->getParameter('paystack_live_secret_key')) : ($this->getParameter('paystack_secret_key'))),
                 "cache-control: no-cache"
             ],
         ));
@@ -177,11 +185,13 @@ class PaymentController extends Controller {
                         $trxnlog->setStatus($result['data']['status']);
                         $trxnlog->setTrxnDate($result['data']['transaction_date']);
                         $trxnlog->setAttempts($result['data']['log']['attempts']);
+                        $trxnlog->setUserId($user->getId());
 
                         try {
                             $em = $this->getDoctrine()->getManager();
                             $em->persist($trxnlog);
                             $user->setPaid(true);
+                            $user->setDatePaid($result['data']['transaction_date']);
                             $em->persist($user);
                             $em->flush();
 
@@ -199,7 +209,7 @@ class PaymentController extends Controller {
                             return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'candidate' => $user, 'error' => true, 'errmsg' => "Server error", 'session' => $session));
                         }
 
-                        return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'paymentlog'=>$trxnlog, 'candidate' => $user, 'session' => $session));
+                        return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'paymentlog' => $trxnlog, 'candidate' => $user, 'session' => $session));
                         //echo "Transaction was successful";
                     } else {
                         // the transaction was not successful, do not deliver value'
@@ -244,7 +254,7 @@ class PaymentController extends Controller {
             exit();
         }
 
-        define('PAYSTACK_SECRET_KEY', (($this->getParameter('paystack_mode')=='live')?($this->getParameter('paystack_live_secret_key')):($this->getParameter('paystack_secret_key'))));
+        define('PAYSTACK_SECRET_KEY', (($this->getParameter('paystack_mode') == 'live') ? ($this->getParameter('paystack_live_secret_key')) : ($this->getParameter('paystack_secret_key'))));
 // confirm the event's signature
         if ($signature !== hash_hmac('sha512', $body, PAYSTACK_SECRET_KEY)) {
             // silently forget this ever happened
@@ -280,7 +290,7 @@ class PaymentController extends Controller {
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_HTTPHEADER => [
                         "accept: application/json",
-                        "authorization: Bearer " . (($this->getParameter('paystack_mode')=='live')?($this->getParameter('paystack_live_secret_key')):($this->getParameter('paystack_secret_key'))),
+                        "authorization: Bearer " . (($this->getParameter('paystack_mode') == 'live') ? ($this->getParameter('paystack_live_secret_key')) : ($this->getParameter('paystack_secret_key'))),
                         "cache-control: no-cache"
                     ],
                 ));
@@ -300,7 +310,16 @@ class PaymentController extends Controller {
                         if (isset($result['data'])) {
                             //something came in
                             if ($result['data']['status'] == 'success') {
-                                http_response_code(200);
+                                http_response_code(200); 
+                                
+                                //get the user
+                                //
+                                if(strpos($event['data']['reference'], "-")>0){
+                                $uid = substr($event['data']['reference'], 4, strpos($event['data']['reference'], "-")-4);
+                                }else{
+                                    $uid = substr($event['data']['reference'], 4);
+                                }
+                           
                                 //log transaction
                                 $trxnlog = new TransactionLog();
                                 $trxnlog->setAmount($event['data']['amount']);
@@ -318,6 +337,7 @@ class PaymentController extends Controller {
                                 $trxnlog->setStatus($event['data']['status']);
                                 $trxnlog->setTrxnDate($event['data']['paid_at']);
                                 $trxnlog->setAttempts($event['data']['log']['attempts']);
+                                $trxnlog->setUserId($uid);
 
                                 try {
                                     $em = $this->getDoctrine()->getManager();
