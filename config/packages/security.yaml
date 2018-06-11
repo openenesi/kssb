@@ -75,6 +75,7 @@ security:
     access_control:
         #- { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         #- { path: ^/logincheck, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/kssbadmin/(countpaid|countregistered|countcompleted), roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/kssbadmin, roles: ROLE_ADMIN }
         - { path: ^/apply/form_1, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/apply/choice, roles: IS_AUTHENTICATED_ANONYMOUSLY }

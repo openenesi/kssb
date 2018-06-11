@@ -62,5 +62,8 @@ trait Utils {
     private function getScholarshipSession($er){
         return $er->findSessionConfig();
     }
+    private function getAccountCounter($er){
+        return $er->findAccountCounter();
+    }
 
 }

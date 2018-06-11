@@ -22,9 +22,9 @@
                         <label for="status">Status</label>
                         <select id="status" name='status' class="form-control">
                             <option selected value="all">All</option>
-                            <option value="paid">Paid</option>
+                            <option value="paid" {% if pg == 'paid' %} selected {% endif %}>Paid</option>
                             <option value="notpaid">Not Paid</option>
-                            <option value="completed">Completed</option>
+                            <option value="completed" {% if pg == 'completed' %} selected {% endif %}>Completed</option>
                             <option value="notcompleted">Not Completed</option>
                         </select>
                     </div>
@@ -64,9 +64,9 @@
         </div>
         <div id="recdiv" style="font-size: 10px;"><div>
                 <table class = "table table-condensed table-hover table-striped table-bordered display compact" id="datatable" style="width:100%;">
-                        <thead>
-                            <tr>
-                                <th>AppId</th><th>Name</th><th style="display:none;">First Name</th><th style="display:none;">Other Names</th><th>LGA</th><th>Ward</th><th>Date Created</th><th>Payment Status</th><th style="display:none;">Date Paid</th><th>Date Completed</th><th style="display:none;">Id</th>
+                    <thead>
+                        <tr>
+                            <th>AppId</th><th>Name</th><th style="display:none;">First Name</th><th style="display:none;">Other Names</th><th>LGA</th><th>Ward</th><th>Date Created</th><th>Payment Status</th><th style="display:none;">Date Paid</th><th>Date Completed</th><th style="display:none;">Id</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -117,16 +117,16 @@
                         datatable.ajax.reload();
                     } else {
                         datatable = $('#datatable')./*on('xhr.dt', function(a,b,c,d){
-                            console.log(c);
-                        })
-                                .*/DataTable({
+                         console.log(c);
+                         })
+                         .*/DataTable({
                             serverSide: true,
                             ajax: {
                                 url: "{{path('fetchApplicantData')}}",
                                 method: "get", /*
-                                error: function(a, b, c){
-                                    alert(b+"-"+c);
-                                },*/
+                                 error: function(a, b, c){
+                                 alert(b+"-"+c);
+                                 },*/
                                 data: function (d) {
                                     return $.extend({}, d, {
                                         "status": $('#status').val(),
@@ -238,12 +238,12 @@
                                     // `data` option, which defaults to the column being worked with, in
                                     // this case `data: 0`.
                                     render: function (data, type, row) {
-                                         if (row['dateCompleted']) {
-                                        dt = new Date(row['dateCompleted'].date);
-                                        return ((dt.getDay() > 8) ? (dt.getDay() + 1) : ('0' + (dt.getDay() + 1))) + "-" + ((dt.getMonth() < 9) ? ('0' + (dt.getMonth() + 1)) : (dt.getMonth() + 1)) + "-" + dt.getFullYear() + " " + ((dt.getUTCHours() > 9) ? (dt.getUTCHours()) : ("0" + dt.getUTCHours())) + ":" + ((dt.getUTCMinutes() > 9) ? (dt.getUTCMinutes()) : ("0" + dt.getUTCMinutes())) + ":" + ((dt.getUTCSeconds() > 9) ? (dt.getUTCSeconds()) : ("0" + dt.getUTCSeconds()));
-                                         }else{
-                                             return "-";
-                                         }
+                                        if (row['dateCompleted']) {
+                                            dt = new Date(row['dateCompleted'].date);
+                                            return ((dt.getDay() > 8) ? (dt.getDay() + 1) : ('0' + (dt.getDay() + 1))) + "-" + ((dt.getMonth() < 9) ? ('0' + (dt.getMonth() + 1)) : (dt.getMonth() + 1)) + "-" + dt.getFullYear() + " " + ((dt.getUTCHours() > 9) ? (dt.getUTCHours()) : ("0" + dt.getUTCHours())) + ":" + ((dt.getUTCMinutes() > 9) ? (dt.getUTCMinutes()) : ("0" + dt.getUTCMinutes())) + ":" + ((dt.getUTCSeconds() > 9) ? (dt.getUTCSeconds()) : ("0" + dt.getUTCSeconds()));
+                                        } else {
+                                            return "-";
+                                        }
                                     },
                                     "targets": 9
                                 },
@@ -256,15 +256,19 @@
                     return false;
                 });
 
-             {# 
-                            $(document).on('keyup', '#datatable_filter input', function (event) {
-                            alert($(this).val());
-                                datatable.search($(this).val()).draw();
-                            });
-                              $('#datatable').DataTable({
-                                    ajax: '{{path('fetchApplicantData')}}'
-                                });
-                        #}
+
+            {% if pg != '' %}
+                $('#submit').trigger('click');
+            {% endif %}
+            {# 
+                           $(document).on('keyup', '#datatable_filter input', function (event) {
+                           alert($(this).val());
+                               datatable.search($(this).val()).draw();
+                           });
+                             $('#datatable').DataTable({
+                                   ajax: '{{path('fetchApplicantData')}}'
+                               });
+                       #}
 
         </script>
     {% endblock js %}

@@ -56,7 +56,7 @@ class PaymentController extends Controller {
                     'email' => $email,
                     'reference' => $ref,
                     'callback_url' => $this->generateUrl("paid", array(), UrlGeneratorInterface::ABSOLUTE_URL),
-                    'subaccount' => 'ACCT_x949qqo59pog9hd',
+                    'subaccount' => 'ACCT_qs99apg6evdsurx',
                     'metadata' => array(
                         'cart_id' => $user->getEmail(),
                         'custom_fields' => array(
@@ -195,7 +195,7 @@ class PaymentController extends Controller {
                             $em->persist($user);
                             $em->flush();
 
-                            $message = (new \Swift_Message('Payment Confirmation (KSSB ' . $session->getScholarshipSession() . '/' . ($session->getScholarshipSession() + 1) . ')'))
+                            /*$message = (new \Swift_Message('Payment Confirmation (KSSB ' . $session->getScholarshipSession() . '/' . ($session->getScholarshipSession() + 1) . ')'))
                                     ->setFrom($session->getEmail())
                                     ->setTo($user->getEmail())
                                     ->setBody(
@@ -204,7 +204,7 @@ class PaymentController extends Controller {
                                             'emails/paymentnotification.html.twig', array('amount' => $trxnlog->getAmount(), 'datePaid' => $trxnlog->getTrxnDate(), 'session' => $session)
                                     ), 'text/html'
                             );
-                            $mailer->send($message);
+                            $mailer->send($message);*/
                         } catch (Exception $e) {
                             return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'candidate' => $user, 'error' => true, 'errmsg' => "Server error", 'session' => $session));
                         }

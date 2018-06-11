@@ -42,6 +42,7 @@ class AdminController extends Controller {
         $institutions = $repinstitution->findAll();
         $repbank = $this->getDoctrine()->getRepository(\App\Entity\Bank::class);
         $banks = $repbank->findAll();
+        $pg = ($request->query->get('pg'))?($request->query->get('pg')):("");
 
         return $this->render('admin/applicant.html.twig', [
                     'session' => $session,
@@ -49,6 +50,7 @@ class AdminController extends Controller {
                     'institutions' => $institutions,
                     'banks' => $banks,
                     'page' => 'applicant',
+                    'pg'=>$pg,
                     'contentTitle' => 'Applicants',
                     'titleIcon' => '<i class="fa fa-user fa-fw"></i>',
         ]);

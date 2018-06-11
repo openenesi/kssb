@@ -15,7 +15,7 @@
                         </div>
                     </div>
                 </div>
-                <a href="#">
+                <a href="{{path('applicant',{'pg':'registered'})}}">
                     <div class="panel-footer">
                         <span class="pull-left">View Details</span>
                         <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -37,7 +37,7 @@
                         </div>
                     </div>
                 </div>
-                <a href="#">
+                <a href="{{path('applicant',{'pg':'paid'})}}">
                     <div class="panel-footer">
                         <span class="pull-left">View Details</span>
                         <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -59,7 +59,7 @@
                         </div>
                     </div>
                 </div>
-                <a href="#">
+                <a href="{{path('applicant',{'pg':'completed'})}}">
                     <div class="panel-footer">
                         <span class="pull-left">View Details</span>
                         <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -97,7 +97,7 @@
                     setTimeout(refreshRegistered, 3000);
                 }
             }).done(function (data) {
-
+                data = data-0;
                 $('#registered').text(data);
                 $("#slow").fadeOut();
                 setTimeout(refreshRegistered, 10000);
@@ -112,6 +112,7 @@
                     setTimeout(refreshPaid, 3000);
                 }
             }).done(function (data) {
+                data = data-0;
                 $('#paid').text(data);
                 $("#slow").fadeOut();
                 setTimeout(refreshPaid, 10000);
@@ -126,6 +127,7 @@
                     setTimeout(refreshCompleted, 3000);
                 }
             }).done(function (data) {
+                data = data-0;
                 $('#completed').text(data);
                 $("#slow").fadeOut();
                 setTimeout(refreshCompleted, 10000);

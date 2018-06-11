@@ -75,18 +75,22 @@ class DefaultController extends Controller {
      * @Route("/contactus", name="contactus")
      */
     public function contactUs(Request $request, \Swift_Mailer $mailer) {
+        
         $session = $this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
         $cs = new \App\Utility\ContactUs();
         $form = $this->getForm($cs);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $message = (new \Swift_Message((($cs->getSubject()) ?: ("No Subject")) . " (" . $cs->getFullName() . ")"))
+            return $this->redirectToRoute("contactus");
+           /* $message = (new \Swift_Message((($cs->getSubject()) ?: ("No Subject")) . " (" . $cs->getFullName() . ")"))
                     ->setFrom($session->getEmail())
                     ->setTo($session->getEmail())
                     ->setBody($cs->getMessage() . "\n Sent from: " . $cs->getEmail());
             $mailer->send($message);
             $this->addFlash("msg_sent", "Your message has been sent!");
             $form = $this->getForm(new \App\Utility\ContactUs());
+            
+            */
         }
 
         return $this->render('default/contactus.html.twig', array('page' => 'contactus', 'session' => $session, 'form' => $form->createView()));
@@ -139,7 +143,7 @@ class DefaultController extends Controller {
                     $em = $this->getDoctrine()->getManager();
                     $em->persist($user);
                     $em->flush();
-
+/*
                     $message = (new \Swift_Message('Application Complete (KSSB ' . $session->getScholarshipSession() . '/' . ($session->getScholarshipSession() + 1) . ')'))
                             ->setFrom($session->getEmail())
                             ->setTo($user->getEmail())
@@ -150,7 +154,7 @@ class DefaultController extends Controller {
                             ), 'text/html'
                     );
                     $mailer->send($message);
-
+*/
                     return $this->render('apply/form_6.html.twig', array('page' => 'scholarship', 'step' => 'finish', 'testified' => true, 'appId' => $this->generateAppId($user->getAppId(), $session), 'candidate' => $user, 'session' => $session));
                 } catch (Exception $e) {
                     return $this->render('apply/form_6.html.twig', array('page' => 'scholarship', 'step' => 'finish', 'testified' => false, 'attempted' => true, 'candidate' => $user, 'session' => $session));
