@@ -31,13 +31,14 @@ class PaymentController extends Controller {
         }
 
         $user = $this->getUser();
-        $ref = "KSSB" . $user->getId() . "-" . mt_rand(0, 999);
-        $user->setTrxnRef($ref);
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($user);
-        $em->flush();
-
-        if ((null !== $request->request->get("pay")) && $request->request->get("pay") == "pay") {
+        $ref = $user->getTrxnRef();
+        $checkIfPaid= $this->checkIfPaid($user);
+        if ( $checkIfPaid === 0 && (null !== $request->request->get("pay")) && $request->request->get("pay") == "pay") {
+            $ref = "KSSB" . $user->getId() . "-" . mt_rand(0, 999);
+            $user->setTrxnRef($ref);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
 
             $curl = curl_init();
 
@@ -56,7 +57,7 @@ class PaymentController extends Controller {
                     'email' => $email,
                     'reference' => $ref,
                     'callback_url' => $this->generateUrl("paid", array(), UrlGeneratorInterface::ABSOLUTE_URL),
-                    'subaccount' => 'ACCT_qs99apg6evdsurx',
+                    'subaccount' => $this->getParameter('kssb_subaccount'),
                     'metadata' => array(
                         'cart_id' => $user->getEmail(),
                         'custom_fields' => array(
@@ -96,11 +97,15 @@ class PaymentController extends Controller {
             exit();
         }
         //if($user == null) echo "eds"; exit();
-        $rep = $this->getDoctrine()->getRepository(\App\Entity\TransactionLog::class);
-        $log = $rep->findByReference($ref);
-        $log = (isset($log) && is_array($log) && (count($log) > 0)) ? ($log[0]) : (null);
-        if ($log) {
-            return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'candidate' => $user, 'paymentlog' => $log, 'session' => $session));
+        if ($checkIfPaid === 1) {
+            $rep = $this->getDoctrine()->getRepository(\App\Entity\TransactionLog::class);
+            $log = $rep->findByReference($ref);
+            $log = (isset($log) && is_array($log) && (count($log) > 0)) ? ($log[0]) : (null);
+            if ($log) {
+                return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'candidate' => $user, 'paymentlog' => $log, 'session' => $session));
+            }
+        } else if ($checkIfPaid == -1) {
+            return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'candidate' => $user, 'error' => true, 'errmsg' => $checkIfPaid."An error occurred.", 'session' => $session));
         }
         return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'candidate' => $user, 'session' => $session));
     }
@@ -122,10 +127,10 @@ class PaymentController extends Controller {
          */
         $rep = $this->getDoctrine()->getRepository(\App\Entity\TransactionLog::class);
 
-        if(strpos($reference, "-")>0){
+        if (strpos($reference, "-") > 0) {
             $log = $rep->findByReference($reference);
-        }else{
-        $log = $rep->findByReference2($reference);
+        } else {
+            $log = $rep->findByReference2($reference);
         }
         $log = (isset($log) && is_array($log) && (count($log) > 0)) ? ($log[0]) : (null);
         if ($log && $user->getPaid()) {
@@ -195,16 +200,16 @@ class PaymentController extends Controller {
                             $em->persist($user);
                             $em->flush();
 
-                            /*$message = (new \Swift_Message('Payment Confirmation (KSSB ' . $session->getScholarshipSession() . '/' . ($session->getScholarshipSession() + 1) . ')'))
-                                    ->setFrom($session->getEmail())
-                                    ->setTo($user->getEmail())
-                                    ->setBody(
-                                    $this->renderView(
-                                            // templates/emails/registration.html.twig
-                                            'emails/paymentnotification.html.twig', array('amount' => $trxnlog->getAmount(), 'datePaid' => $trxnlog->getTrxnDate(), 'session' => $session)
-                                    ), 'text/html'
-                            );
-                            $mailer->send($message);*/
+                            /* $message = (new \Swift_Message('Payment Confirmation (KSSB ' . $session->getScholarshipSession() . '/' . ($session->getScholarshipSession() + 1) . ')'))
+                              ->setFrom($session->getEmail())
+                              ->setTo($user->getEmail())
+                              ->setBody(
+                              $this->renderView(
+                              // templates/emails/registration.html.twig
+                              'emails/paymentnotification.html.twig', array('amount' => $trxnlog->getAmount(), 'datePaid' => $trxnlog->getTrxnDate(), 'session' => $session)
+                              ), 'text/html'
+                              );
+                              $mailer->send($message); */
                         } catch (Exception $e) {
                             return $this->render('apply/form_2.html.twig', array('page' => 'scholarship', 'step' => 'pay', 'candidate' => $user, 'error' => true, 'errmsg' => "Server error", 'session' => $session));
                         }
@@ -310,16 +315,16 @@ class PaymentController extends Controller {
                         if (isset($result['data'])) {
                             //something came in
                             if ($result['data']['status'] == 'success') {
-                                http_response_code(200); 
-                                
+                                http_response_code(200);
+
                                 //get the user
                                 //
-                                if(strpos($event['data']['reference'], "-")>0){
-                                $uid = substr($event['data']['reference'], 4, strpos($event['data']['reference'], "-")-4);
-                                }else{
+                                if (strpos($event['data']['reference'], "-") > 0) {
+                                    $uid = substr($event['data']['reference'], 4, strpos($event['data']['reference'], "-") - 4);
+                                } else {
                                     $uid = substr($event['data']['reference'], 4);
                                 }
-                           
+
                                 //log transaction
                                 $trxnlog = new TransactionLog();
                                 $trxnlog->setAmount($event['data']['amount']);
@@ -353,6 +358,128 @@ class PaymentController extends Controller {
                 break;
         }
         exit();
+    }
+
+    private function checkIfPaid($user) {
+
+        $reference = $user->getTrxnRef();
+        if (!isset($reference)) {
+            return 0;
+        }
+
+        /*         * *
+         * PERFORM DATABASE QUERY TO VERIFY THAT THE REFERENCE HAS NOT BEEN VALUED
+         */
+        $rep = $this->getDoctrine()->getRepository(\App\Entity\TransactionLog::class);
+
+        if (strpos($reference, "-") > 0) {
+            $log = $rep->findByReference($reference);
+        } else {
+            $log = $rep->findByReference2($reference);
+        }
+        $log = (isset($log) && is_array($log) && (count($log) > 0)) ? ($log[0]) : (null);
+        if ($log) {
+            if ($user->getPaid()) {
+                return 1;
+            }
+            if ($user->getPaid() == false && $log->getStatus() == 'success') {
+                $em = $this->getDoctrine()->getManager();
+                $user->setPaid(true);
+                $user->setDatePaid($log->getTrxnDate());
+                $em->persist($user);
+                $em->flush();
+                return 1;
+            }
+        }
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => "https://api.paystack.co/transaction/verify/" . rawurlencode($reference),
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER => [
+                "accept: application/json",
+                "authorization: Bearer " . (($this->getParameter('paystack_mode') == 'live') ? ($this->getParameter('paystack_live_secret_key')) : ($this->getParameter('paystack_secret_key'))),
+                "cache-control: no-cache"
+            ],
+        ));
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+
+        if ($err) {
+            // there was an error contacting the Paystack API
+            //var_dump($err);
+            return -1;
+        }
+
+        if ($response) {
+            $result = json_decode($response, true);
+            // print_r($result);
+            if (isset($result)) {
+                if (isset($result['data'])) {
+                    //something came in
+                    if ($result['data']['status'] == 'success') {
+                        // the transaction was successful, you can deliver value
+                        /*
+                          @ also remember that if this was a card transaction, you can store the
+                          @ card authorization to enable you charge the customer subsequently.
+                          @ The card authorization is in:
+                          @ $result['data']['authorization']['authorization_code'];
+                          @ PS: Store the authorization with this email address used for this transaction.
+                          @ The authorization will only work with this particular email.
+                          @ If the user changes his email on your system, it will be unusable
+                         */
+                        $trxnlog = new TransactionLog();
+                        $trxnlog->setAmount($result['data']['amount']);
+                        $trxnlog->setBank($result['data']['authorization']['bank']);
+                        $trxnlog->setCardType($result['data']['authorization']['card_type']);
+                        $trxnlog->setChannel($result['data']['channel']);
+                        $trxnlog->setCountryCode($result['data']['authorization']['country_code']);
+                        $trxnlog->setCurrency($result['data']['currency']);
+                        $trxnlog->setDomain($result['data']['domain']);
+                        $trxnlog->setGatewayResponse($result['data']['gateway_response']);
+                        $trxnlog->setIpAddress($result['data']['ip_address']);
+                        $trxnlog->setLast4($result['data']['authorization']['last4']);
+                        $trxnlog->setMessage($result['data']['message']);
+                        $trxnlog->setReference($result['data']['reference']);
+                        $trxnlog->setStatus($result['data']['status']);
+                        $trxnlog->setTrxnDate($result['data']['transaction_date']);
+                        $trxnlog->setAttempts($result['data']['log']['attempts']);
+                        $trxnlog->setUserId($user->getId());
+
+                        try {
+                            $em = $this->getDoctrine()->getManager();
+                            $em->persist($trxnlog);
+                            $user->setPaid(true);
+                            $user->setDatePaid($result['data']['transaction_date']);
+                            $em->persist($user);
+                            $em->flush();
+                            return 1;
+                        } catch (Exception $e) {
+                            return -1;
+                        }
+                        //echo "Transaction was successful";
+                    } else {
+                        // the transaction was not successful, do not deliver value'
+                        // print_r($result);  //uncomment this line to inspect the result, to check why it failed.
+                        //echo "Transaction was not successful: Last gateway response was: " . $result['data']['gateway_response'];
+                        return 0;
+                    }
+                } else {
+                    //return $result['message'];
+                    return 0;
+                }
+            } else {
+                //print_r($result);
+                //die("Something went wrong while trying to convert the request variable to json. Uncomment the print_r command to see what is in the result variable.");
+                return -1;
+            }
+        } else {
+            //var_dump($request);
+            //die("Something went wrong while executing curl. Uncomment the var_dump line above this line to see what the issue is. Please check your CURL command to make sure everything is ok");
+            return -1;
+        }
     }
 
 }
