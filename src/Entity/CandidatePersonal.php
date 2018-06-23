@@ -100,7 +100,7 @@ class CandidatePersonal {
     /**
      * @Assert\NotBlank(message="Your unique email is required.")
      * @Assert\Email(message="A valid email address is required.")
-     * @ORM\Column(type="string", length=30, unique=true, nullable=false) 
+     * @ORM\Column(type="string", length=100, unique=true, nullable=false) 
      */
     private $email;
 

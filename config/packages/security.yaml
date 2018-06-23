@@ -79,6 +79,7 @@ security:
         - { path: ^/kssbadmin, roles: ROLE_ADMIN }
         - { path: ^/apply/form_1, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/apply/choice, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/apply/changepassword, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/apply/paidwebhook, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/apply/rc, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/apply, roles: ROLE_CANDIDATE}

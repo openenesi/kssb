@@ -70,7 +70,7 @@ class UserController extends Controller {
                     $ac->incrementCounter();
                     $em->persist($user);
                     $em->persist($ac);
-                    
+
                     $em->flush();
 
                     $message = (new \Swift_Message('Account Details (KSSB ' . $session->getScholarshipSession() . '/' . ($session->getScholarshipSession() + 1) . ')'))
@@ -95,6 +95,59 @@ class UserController extends Controller {
 
         $arr_data['form'] = $form->createView();
         return $this->render('apply/form_1.html.twig', $arr_data);
+    }
+
+    /**
+     * @Route("/apply/changepassword", name="changepassword")
+     */
+    public function changePassword(Request $request, \Swift_Mailer $mailer, UserPasswordEncoderInterface $encoder) {
+        //echo "here"; exit();
+        $session = $this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
+        if ($session->getApplicationSessionStatus() == "closed") {
+            return $this->render('default/closed.html.twig', array('page' => 'scholarship', 'session' => $session));
+        }
+        if ($session->getApplicationSessionStatus() == "not-ready") {
+            return $this->render('default/notready.html.twig', array('page' => 'scholarship', 'session' => $session));
+        }
+
+        $arr_data = array('page' => 'scholarship', 'step' => 'candidate', 'session' => $session);
+        if (null === $request->request->get('email') || "" === trim($request->request->get('email'))) {
+            return $this->render('security/passwordrecovery.html.twig', $arr_data);
+        }
+        $email = $request->request->get('email');
+        $rep = $this->getDoctrine()->getRepository(\App\Entity\User::class);
+        $userbyemail = $rep->findByEmail($email);
+
+        if (!(is_array($userbyemail) && count($userbyemail) > 0)) {
+            $arr_data['error'] = true;
+            $arr_data['email'] = $email;
+            return $this->render('security/passwordrecovery.html.twig', $arr_data);
+        }
+        $user = $userbyemail[0];
+        $arr_data['user'] = $user;
+        $plainPassword = /* "pyramid"; // */substr(str_shuffle("023456789abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ"), 0, 6);
+        $encoded = $encoder->encodePassword($user, $plainPassword);
+
+        $user->setPassword($encoded);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($user);
+        $em->flush();
+
+        $arr_data['resent'] = true;
+
+        $message = (new \Swift_Message('New Account Details (KSSB ' . $session->getScholarshipSession() . '/' . ($session->getScholarshipSession() + 1) . ')'))
+                ->setFrom($session->getEmail())
+                ->setTo($user->getEmail())
+                ->setBody(
+                $this->renderView(
+                        // templates/emails/registration.html.twig
+                        'emails/newaccountdetails.html.twig', array('username' => $user->getUsername(), 'password' => $plainPassword, 'session' => $session)
+                ), 'text/html'
+        );
+        $mailer->send($message);
+        //var_dump($arr_data); exit();
+        return $this->render('security/passwordrecovery.html.twig', $arr_data);
     }
 
     /**

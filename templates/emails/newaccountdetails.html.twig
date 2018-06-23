@@ -1,0 +1,15 @@
+{# empty Twig template #}
+{% extends 'email_general.html.twig' %}
+{% block content %}
+    <h1 style="text-align:center;">New Password</h1>
+    <div style="text-align: center;"><img src="{{absolute_url(asset('site_images/credential.png'))}}" style="width:70px; height: 70px;"/></div>
+    <div style="padding-left:20px; padding-top:20px;">
+        Welcome candidate, here is your new password:
+        <div style="padding-left:20px;">
+            <p><b>Email (Username):</b> {{username}} </p>
+            <p><b>PIN (Password):</b> <span style="font-family:'Courier New', Courier">{{password}} </span></p>
+            
+            <p>Click <a href="{{url("form_3")}}">here</a> to continue with your application. </p>
+        </div>
+    </div>
+{% endblock content %}

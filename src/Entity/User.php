@@ -35,7 +35,7 @@ class User implements UserInterface, \Serializable {
     /**
      * @Assert\NotBlank(message="Your unique email is required.")
      * @Assert\Email(message="A valid email address is required.")
-     * @ORM\Column(type="string", length=30, unique=true, nullable=false)
+     * @ORM\Column(type="string", length=100, unique=true, nullable=false)
      */
     private $username;
 
@@ -49,8 +49,8 @@ class User implements UserInterface, \Serializable {
     /**
      * @Assert\NotBlank(message="Matric/Registration number is required")
      * @Assert\Type(type="string", message="Invalid type. required string")
-     * @Assert\Length(min=3, max=30, minMessage="Matric/Registration number should not be less than 3 characters", maxMessage="Matric/Registration number should not be more than 30 characters")
-     * @ORM\Column(type="string", length=30, unique=false, nullable=false)
+     * @Assert\Length(min=3, max=50, minMessage="Matric/Registration number should not be less than 3 characters", maxMessage="Matric/Registration number should not be more than 50 characters")
+     * @ORM\Column(type="string", length=50, unique=false, nullable=false)
      */
     private $matricNo;
 
@@ -73,7 +73,7 @@ class User implements UserInterface, \Serializable {
     /**
      * @Assert\NotBlank(message="Your unique email is required.")
      * @Assert\Email(message="A valid email address is required.")
-     * @ORM\Column(type="string", length=30, unique=true, nullable=false)
+     * @ORM\Column(type="string", length=100, unique=true, nullable=false)
      */
     private $email;
     
