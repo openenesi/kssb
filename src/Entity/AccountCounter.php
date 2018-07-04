@@ -47,6 +47,9 @@ class AccountCounter {
     public function getAccounts() {
         return $this->accounts;
     }
+    public function addAccount() {
+        $this->accounts= $this->accounts + 1;
+    }
 
     public function setAccounts($v) {
         $this->accounts = $v;

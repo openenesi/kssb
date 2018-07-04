@@ -9,7 +9,14 @@
             <div class="alert alert-danger" style="text-align: center;" role="alert">
                 <i class="fa fa-exclamation-triangle" style="font-size: 80px;"></i>
                 <h1 >Something is not right!</h1>
+                Here are the possible cause:
+                <ul>
+                    <li>The server may be currently overwhelmed with too many request.</li>
+                    <li>Poor network connection from the client side. As a result slow request may be aborted.</li>
+                    <li>Possible (on rear situations) server error.</li>
+                </ul>
                 Contact the administrator.
+                {# exception.message #}
             </div> 
         </div>
         <div class="col-lg-2">

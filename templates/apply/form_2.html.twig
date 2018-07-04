@@ -9,7 +9,7 @@
                 Verify transaction details and click "Pay Securely" button <br /><br />
                 {% if error is defined and error == true %}
                     <div class="alert alert-danger" role="alert">
-                        {{ (errmsg is defined)?(errmsg):('Something went wrong. Check your network connection.')}}! Please try again.
+                        {{ (errmsg is defined)?(errmsg):('Unfortunately, there too many requests hitting the server. Please try again later')}}! Please try again.
                     </div>
                 {% endif %}
                 <table class="table table-bordered table-sm table-active">

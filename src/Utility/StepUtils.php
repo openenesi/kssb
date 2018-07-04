@@ -17,7 +17,7 @@ trait StepUtils {
 
     //put your code here
     public function ensureStep($step) {
-
+            //return $this->redirectToRoute("outofservice");
         if ($this->getUser()) {
             $user = $this->getUser();
             
@@ -25,7 +25,7 @@ trait StepUtils {
                 
                 return ($step!="form_6")?($this->redirectToRoute("form_6")):(null);
             }
-            
+            //return $this->redirectToRoute("scholarship");
             if ($step == "form_2" || !$user->getPaid()) { 
                 return ($step!="form_2")?($this->redirectToRoute("form_2")):(null);
             } else if ($step == "form_3" || !$user->getCandidatePersonal()) { 

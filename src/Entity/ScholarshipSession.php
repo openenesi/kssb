@@ -21,35 +21,35 @@ class ScholarshipSession {
      *
      * @ORM\Column(type="datetime", unique=false, nullable=true) 
      */
-    private $startDate;
+    private $startDate= "2018-05-27 00:00:00";
 
     /**
      *
      * @ORM\Column(type="datetime", unique=false, nullable=true) 
      */
-    private $endDate;
+    private $endDate="2018-09-30 23:59:59";
 
     /**
      *
      * @ORM\Column(type="decimal", precision=7, scale=2, unique=false, nullable=true, options={"unsigned":true}) 
      */
-    private $registrationCost;
+    private $registrationCost= 650.00;
 
     /**
      *
      * @ORM\Column(type="integer", unique=false, nullable=false, options={"unsigned":true}) 
      */
-    private $scholarshipSession;
+    private $scholarshipSession=2018;
 
     /**
      * @ORM\Column(type="string", length=11, unique=true, nullable=false)
      */
-    private $mobileNo;
+    private $mobileNo="07016804127";
 
     /**
      * @ORM\Column(type="string", length=30, unique=true, nullable=false)
      */
-    private $email;
+    private $email= "info@kssb.kg.gov.ng";
 
     public function getId() {
         return $this->id;
@@ -107,10 +107,12 @@ class ScholarshipSession {
         $now = new \DateTime();
         //$diff1 = $now->diff($this->getStartDate());
         //$diff2 = $now->diff($this->getEndDate());
-        if($now < $this->getStartDate()){
+        $sd = (($this->getStartDate() instanceof \DateTime)?($this->getStartDate()):(new \DateTime($this->getStartDate())));
+        $ed = (($this->getEndDate() instanceof \DateTime)?($this->getEndDate()):(new \DateTime($this->getEndDate())));
+        if($now < $sd){
             //notready
             return "not-ready";
-        }elseif ($now > $this->getEndDate()){
+        }elseif ($now > $ed){
             //closed
             return "closed";
             

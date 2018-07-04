@@ -9,266 +9,314 @@
         #recdiv{
             padding-top:20px;
             padding-bottom:20px;
-            /*max-width: 100%;
-            overflow-x: auto;
-        }*/
-        </style>
-    {% endblock css %}
-    {% block content %}
-        <div style="border-width:1px; border-color:#cccccc; font-size: 11px; border-style: solid; border-radius: 5px; background-color:#f6f8fb; padding:7px;">
-            <form id="filterfrm">
-                <div class="row">
-                    <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                        <label for="status">Status</label>
-                        <select id="status" name='status' class="form-control">
-                            <option selected value="all">All</option>
-                            <option value="paid" {% if pg == 'paid' %} selected {% endif %}>Paid</option>
-                            <option value="notpaid">Not Paid</option>
-                            <option value="completed" {% if pg == 'completed' %} selected {% endif %}>Completed</option>
-                            <option value="notcompleted">Not Completed</option>
-                        </select>
-                    </div>
-                    <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                        <label for="lga">LGA</label>
-                        <select id="lga" name='lga' class="form-control">
-                            <option selected value="all">All</option>
-                            {% for lga in lgas %}
-                                <option value="{{lga.id}}">{{lga.lgaName}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                        <label for="institution">Institution</label>
-                        <select id="institution" name="institution" class="form-control">
-                            <option selected value="all">All</option>
-                            {% for inst in institutions %}
-                                <option value="{{inst.id}}">{{inst.institutionName}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                        <label for="bank">Bank</label>
-                        <select id="bank" name='bank' class="form-control">
-                            <option selected value="all">All</option>
-                            {% for bank in banks %}
-                                <option value="{{bank.id}}">{{bank.bankName}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3" style="vertical-align: bottom; padding-top:30px;">
+        }
+        /*max-width: 100%;
+        overflow-x: auto;
+    }*/
 
-                        <input type="submit" name="submit" id="submit" value="Load" />
-                    </div>
+        table tr th.tabletitle{
+            color:#ffffff !important;
+            background-color:#000000 !important;
+            font-size: larger !important;
+        }
+        span#loading{
+            color:#cccccc !important;
+            font-size: 26px !important;
+            font-family: verdana !important;
+        }
+        div#appid{
+            font-size:25px;
+            font-weight:bold;
+            border-style:solid;
+            border-width:2px;
+            border-color:#000000;
+            border-radius:5px;
+            padding:3px;
+            word-wrap:break-word;
+            max-width:200px;
+            margin-left:auto;
+            margin-right:auto;
+        }
+
+    </style>
+{% endblock css %}
+{% block content %}
+    <div style='display:none;' class='row' id='candidateview'></div>
+    <div id='candidaterecords' style="border-width:1px; border-color:#cccccc; font-size: 11px; border-style: solid; border-radius: 5px; background-color:#f6f8fb; padding:7px;">
+        <form id="filterfrm">
+            <div class="row">
+                <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                    <label for="status">Status</label>
+                    <select id="status" name='status' class="form-control">
+                        <option selected value="all">All</option>
+                        <option value="paid" {% if pg == 'paid' %} selected {% endif %}>Paid</option>
+                        <option value="notpaid">Not Paid</option>
+                        <option value="completed" {% if pg == 'completed' %} selected {% endif %}>Completed</option>
+                        <option value="notcompleted">Not Completed</option>
+                    </select>
                 </div>
-            </form>
-        </div>
-        <div id="recdiv" style="font-size: 10px;"><div>
-                <table class = "table table-condensed table-hover table-striped table-bordered display compact" id="datatable" style="width:100%;">
-                    <thead>
-                        <tr>
-                            <th>AppId</th><th>Name</th><th style="display:none;">First Name</th><th style="display:none;">Other Names</th><th>LGA</th><th>Ward</th><th>Date Created</th><th>Payment Status</th><th style="display:none;">Date Paid</th><th>Date Completed</th><th style="display:none;">Id</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                    <label for="lga">LGA</label>
+                    <select id="lga" name='lga' class="form-control">
+                        <option selected value="all">All</option>
+                        {% for lga in lgas %}
+                            <option value="{{lga.id}}">{{lga.lgaName}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                    <label for="institution">Institution</label>
+                    <select id="institution" name="institution" class="form-control">
+                        <option selected value="all">All</option>
+                        {% for inst in institutions %}
+                            <option value="{{inst.id}}">{{inst.institutionName}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                    <label for="bank">Bank</label>
+                    <select id="bank" name='bank' class="form-control">
+                        <option selected value="all">All</option>
+                        {% for bank in banks %}
+                            <option value="{{bank.id}}">{{bank.bankName}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3" style="vertical-align: bottom; padding-top:30px;">
 
-                    </tbody>
-                </table>
-            </div></div>
+                    <input type="submit" name="submit" id="submit" value="Load" />
+                </div>
+            </div>
+        </form>
+    </div>
+    <div id="recdiv" style="font-size: 10px;"><div>
+            <table class = "table table-condensed table-hover table-striped table-bordered display compact" id="datatable" style="width:100%;">
+                <thead>
+                    <tr>
+                        <th>AppId</th><th>Name</th><th style="display:none;">First Name</th><th style="display:none;">Other Names</th><th>LGA</th><th>Ward</th><th>Date Created</th><th>Payment Status</th><th style="display:none;">Date Paid</th><th>Date Completed</th><th style="display:none;">Id</th><th style="display:none;">Email</th>
+                    </tr>
+                </thead>
+                <tbody>
 
-    {% endblock content %}
-    {% block scripts %}
-        <script type="text/javascript" charset="utf8" src="{{asset('datatables/datatables.min.js')}}"></script>
-        <script type="text/javascript" charset="utf8" src="{{asset('datatables/DataTables-1.10.16/js/dataTables.bootstrap.min.js')}}"></script>
-        <script type="text/javascript" charset="utf8" src="{{asset('datatables/FixedHeader-3.1.3/js/dataTables.fixedHeader.min.js')}}"></script>
-    {% endblock scripts %}
-    {% block js %}
-        {{parent()}}
-        <script type="text/javascript">
-            var session
-            = {{session.scholarshipSession}};
-            {# $(document).on("click", "#submit", function (event) {
-                        dis = $(this);
-                        alert("clicked");
-                        $.ajax({
-                            url: "{{path('fetchApplicantData')}}",
-                            method: "get",
-                            data: {
-                                status: $('#status').val(),
-                                lga: $('#lga').val(),
-                                institution: $('#institution').val(),
-                                bank: $('#bank').val()
-                            },
-                            error: function (jqXHR, textStatus, errorThrown) {
-                                console.log(textStatus);
-                            }
-                        }).done(function (data) {
-                            alert("done!");
-                            console.log(data);
-                        });
-                        
-                        event.preventDefault();
-                        return false;
+                </tbody>
+            </table>
+        </div></div>
+
+{% endblock content %}
+{% block scripts %}
+    <script type="text/javascript" charset="utf8" src="{{asset('datatables/datatables.min.js')}}"></script>
+    <script type="text/javascript" charset="utf8" src="{{asset('datatables/DataTables-1.10.16/js/dataTables.bootstrap.min.js')}}"></script>
+    <script type="text/javascript" charset="utf8" src="{{asset('datatables/FixedHeader-3.1.3/js/dataTables.fixedHeader.min.js')}}"></script>
+{% endblock scripts %}
+{% block js %}
+    {{parent()}}
+    <script type="text/javascript">
+        var session
+        = {{session.scholarshipSession}};
+        {# $(document).on("click", "#submit", function (event) {
+                    dis = $(this);
+                    alert("clicked");
+                    $.ajax({
+                        url: "{{path('fetchApplicantData')}}",
+                        method: "get",
+                        data: {
+                            status: $('#status').val(),
+                            lga: $('#lga').val(),
+                            institution: $('#institution').val(),
+                            bank: $('#bank').val()
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            console.log(textStatus);
+                        }
+                    }).done(function (data) {
+                        alert("done!");
+                        console.log(data);
                     });
-            {#}
-
-                        var datatable = null;
-                $(document).on("click", "#submit", function (event) {
-                    if (null !== datatable) {
-                        datatable.ajax.reload();
-                    } else {
-                        datatable = $('#datatable')./*on('xhr.dt', function(a,b,c,d){
-                         console.log(c);
-                         })
-                         .*/DataTable({
-                            serverSide: true,
-                            ajax: {
-                                url: "{{path('fetchApplicantData')}}",
-                                method: "get", /*
-                                 error: function(a, b, c){
-                                 alert(b+"-"+c);
-                                 },*/
-                                data: function (d) {
-                                    return $.extend({}, d, {
-                                        "status": $('#status').val(),
-                                        "lga": $('#lga').val(),
-                                        "institution": $('#institution').val(),
-                                        "bank": $('#bank').val()
-                                    });
-                                }
-                            },
-                            fixedHeader: {
-                                header: true,
-                                footer: false
-                            },
-                            lengthMenu: [25, 50, 75, 100],
-                            pageLength: 50,
-                            pagingType: "full_numbers",
-                            processing: true,
-                            scrollX: true,
-                            searching: true,
-                            order: [[0, 'desc']],
-                            columns: [
-                                {"data": "appId"},
-                                {"data": "surname"},
-                                {"data": "firstName"},
-                                {"data": "otherNames"},
-                                {"data": "lgaName"},
-                                {"data": "wardName"},
-                                {"data": "dateCreated"},
-                                {"data": "paid"},
-                                {"data": "datePaid"},
-                                {"data": "dateCompleted"},
-                                {"data": "id"}
-                            ],
-                            columnDefs: [
-                                {
-                                    // The `data` parameter refers to the data for the cell (defined by the
-                                    // `data` option, which defaults to the column being worked with, in
-                                    // this case `data: 0`.
-                                    render: function (data, type, row) {
-                                        if ((row['appId'] - 0) != 0) {
-                                            var appId = 'SIP/' + (session * 100000 + (row['appId'] - 0));
-                                            return "<a href='{{path('viewApplicantData',{'id':0})}}" + row['id'] + "'>" + appId + "</a>";
-                                        } else {
-                                            return "-";
-                                        }
-                                    },
-                                    "targets": 0
-                                },
-                                {
-                                    // The `data` parameter refers to the data for the cell (defined by the
-                                    // `data` option, which defaults to the column being worked with, in
-                                    // this case `data: 0`.
-                                    render: function (data, type, row) {
-                                        return ((row['surname'] == null) ? ("-") : (row['surname'])) + ' ' + ((row['firstName'] == null) ? ("") : (row['firstName'])) + ' ' + ((row['otherNames'] == null) ? ("") : (row['otherNames']));
-                                    },
-                                    "targets": 1
-                                },
-                                {"visible": false, "targets": [2]},
-                                {"visible": false, "targets": [3]},
-                                {
-                                    // The `data` parameter refers to the data for the cell (defined by the
-                                    // `data` option, which defaults to the column being worked with, in
-                                    // this case `data: 0`.
-                                    render: function (data, type, row) {
-                                        return ((row['lgaName'] == null || row['lgaName'] == '') ? ("-") : (row['lgaName']));
-                                    },
-                                    "targets": 4
-                                },
-                                {
-                                    // The `data` parameter refers to the data for the cell (defined by the
-                                    // `data` option, which defaults to the column being worked with, in
-                                    // this case `data: 0`.
-                                    render: function (data, type, row) {
-                                        return ((row['wardName'] == null || row['wardName'] == '') ? ("-") : (row['wardName']));
-                                    },
-                                    "targets": 5
-                                },
-
-                                {
-                                    // The `data` parameter refers to the data for the cell (defined by the
-                                    // `data` option, which defaults to the column being worked with, in
-                                    // this case `data: 0`.
-                                    render: function (data, type, row) {
-                                        dt = new Date(row['dateCreated'].date);
-                                        return ((dt.getDay() > 8) ? (dt.getDay() + 1) : ('0' + (dt.getDay() + 1))) + "-" + ((dt.getMonth() < 9) ? ('0' + (dt.getMonth() + 1)) : (dt.getMonth() + 1)) + "-" + dt.getFullYear() + " " + ((dt.getUTCHours() > 9) ? (dt.getUTCHours()) : ("0" + dt.getUTCHours())) + ":" + ((dt.getUTCMinutes() > 9) ? (dt.getUTCMinutes()) : ("0" + dt.getUTCMinutes())) + ":" + ((dt.getUTCSeconds() > 9) ? (dt.getUTCSeconds()) : ("0" + dt.getUTCSeconds()));
-                                    },
-                                    "searchable": false,
-                                    "targets": 6
-                                },
-                                {
-                                    // The `data` parameter refers to the data for the cell (defined by the
-                                    // `data` option, which defaults to the column being worked with, in
-                                    // this case `data: 0`.
-                                    render: function (data, type, row) {
-                                        if (data == true)
-                                        {
-                                            dt = new Date(row["datePaid"].date);
-                                            return "Paid" + ' (' + ((dt.getDay() > 8) ? (dt.getDay() + 1) : ('0' + (dt.getDay() + 1))) + "-" + ((dt.getMonth() < 9) ? ('0' + (dt.getMonth() + 1)) : (dt.getMonth() + 1)) + "-" + dt.getFullYear() + " " + ((dt.getUTCHours() > 9) ? (dt.getUTCHours()) : ("0" + dt.getUTCHours())) + ":" + ((dt.getUTCMinutes() > 9) ? (dt.getUTCMinutes()) : ("0" + dt.getUTCMinutes())) + ":" + ((dt.getUTCSeconds() > 9) ? (dt.getUTCSeconds()) : ("0" + dt.getUTCSeconds())) + ')';
-                                        } else {
-                                            return "Not Paid";
-                                        }
-                                    },
-                                    "searchable": false,
-                                    "targets": 7
-                                },
-                                {"visible": false, "searchable": false, "targets": [8]},
-                                {
-                                    // The `data` parameter refers to the data for the cell (defined by the
-                                    // `data` option, which defaults to the column being worked with, in
-                                    // this case `data: 0`.
-                                    render: function (data, type, row) {
-                                        if (row['dateCompleted']) {
-                                            dt = new Date(row['dateCompleted'].date);
-                                            return ((dt.getDay() > 8) ? (dt.getDay() + 1) : ('0' + (dt.getDay() + 1))) + "-" + ((dt.getMonth() < 9) ? ('0' + (dt.getMonth() + 1)) : (dt.getMonth() + 1)) + "-" + dt.getFullYear() + " " + ((dt.getUTCHours() > 9) ? (dt.getUTCHours()) : ("0" + dt.getUTCHours())) + ":" + ((dt.getUTCMinutes() > 9) ? (dt.getUTCMinutes()) : ("0" + dt.getUTCMinutes())) + ":" + ((dt.getUTCSeconds() > 9) ? (dt.getUTCSeconds()) : ("0" + dt.getUTCSeconds()));
-                                        } else {
-                                            return "-";
-                                        }
-                                    },
-                                    "targets": 9
-                                },
-                                {"visible": false, "searchable": false, "targets": [10]}
-                            ]
-                        });
-                        datatable.fixedHeader.enable(true);
-                    }
+                        
                     event.preventDefault();
                     return false;
                 });
+        {#}
 
-
-            {% if pg != '' %}
-                $('#submit').trigger('click');
-            {% endif %}
-            {# 
-                           $(document).on('keyup', '#datatable_filter input', function (event) {
-                           alert($(this).val());
-                               datatable.search($(this).val()).draw();
+                    var datatable = null;
+            $(document).on("click", "#submit", function (event) {
+                if (null !== datatable) {
+                    datatable.ajax.reload();
+                } else {
+                    datatable = $('#datatable')./*on('xhr.dt', function(a,b,c,d){
+                     console.log(c);
+                     })
+                     .*/DataTable({
+                        serverSide: true,
+                        ajax: {
+                            url: "{{path('fetchApplicantData')}}",
+                            method: "get", /*
+                             error: function(a, b, c){
+                             alert(b+"-"+c);
+                             },*/
+                            data: function (d) {
+                                return $.extend({}, d, {
+                                    "status": $('#status').val(),
+                                    "lga": $('#lga').val(),
+                                    "institution": $('#institution').val(),
+                                    "bank": $('#bank').val()
+                                });
+                            }
+                        },
+                        fixedHeader: {
+                            header: true,
+                            footer: false
+                        },
+                        lengthMenu: [25, 50, 75, 100],
+                        pageLength: 50,
+                        pagingType: "full_numbers",
+                        processing: true,
+                        scrollX: true,
+                        searching: true,
+                        order: [[0, 'desc']],
+                        columns: [
+                            {"data": "appId"},
+                            {"data": "surname"},
+                            {"data": "firstName"},
+                            {"data": "otherNames"},
+                            {"data": "lgaName"},
+                            {"data": "wardName"},
+                            {"data": "dateCreated"},
+                            {"data": "paid"},
+                            {"data": "datePaid"},
+                            {"data": "dateCompleted"},
+                            {"data": "id"},
+                            {"data": "email"}
+                        ],
+                        columnDefs: [
+                            {
+                                // The `data` parameter refers to the data for the cell (defined by the
+                                // `data` option, which defaults to the column being worked with, in
+                                // this case `data: 0`.
+                                render: function (data, type, row) {
+                                    if ((row['appId'] - 0) != 0) {
+                                        var appId = 'SIP/' + (session * 100000 + (row['appId'] - 0));
+                                        return "<a class='viewref' href = 'javascript:void(0);' data-href='{{path('viewApplicantData',{'id':0})}}" + row['id'] + "'>" + appId + "</a>";
+                                    } else {
+                                        return "[<a class='viewref' href = 'javascript:void(0);' data-href='{{path('viewApplicantData')}}?email=" + row['email'] + "'>View</a>]";
+                                    }
+                                },
+                                "targets": 0
+                            },
+                            {
+                                // The `data` parameter refers to the data for the cell (defined by the
+                                // `data` option, which defaults to the column being worked with, in
+                                // this case `data: 0`.
+                                render: function (data, type, row) {
+                                    return ((row['surname'] == null) ? ("-") : (row['surname'])) + ' ' + ((row['firstName'] == null) ? ("") : (row['firstName'])) + ' ' + ((row['otherNames'] == null) ? ("") : (row['otherNames']));
+                                },
+                                "targets": 1
+                            },
+                            {"visible": false, "targets": [2]},
+                            {"visible": false, "targets": [3]},
+                            {
+                                // The `data` parameter refers to the data for the cell (defined by the
+                                // `data` option, which defaults to the column being worked with, in
+                                // this case `data: 0`.
+                                render: function (data, type, row) {
+                                    return ((row['lgaName'] == null || row['lgaName'] == '') ? ("-") : (row['lgaName']));
+                                },
+                                "targets": 4
+                            },
+                            {
+                                // The `data` parameter refers to the data for the cell (defined by the
+                                // `data` option, which defaults to the column being worked with, in
+                                // this case `data: 0`.
+                                render: function (data, type, row) {
+                                    return ((row['wardName'] == null || row['wardName'] == '') ? ("-") : (row['wardName']));
+                                },
+                                "targets": 5
+                            },
+                            {
+                                // The `data` parameter refers to the data for the cell (defined by the
+                                // `data` option, which defaults to the column being worked with, in
+                                // this case `data: 0`.
+                                render: function (data, type, row) {
+                                    dt = new Date(row['dateCreated'].date);
+                                    return ((dt.getDay() > 8) ? (dt.getDay() + 1) : ('0' + (dt.getDay() + 1))) + "-" + ((dt.getMonth() < 9) ? ('0' + (dt.getMonth() + 1)) : (dt.getMonth() + 1)) + "-" + dt.getFullYear() + " " + ((dt.getUTCHours() > 9) ? (dt.getUTCHours()) : ("0" + dt.getUTCHours())) + ":" + ((dt.getUTCMinutes() > 9) ? (dt.getUTCMinutes()) : ("0" + dt.getUTCMinutes())) + ":" + ((dt.getUTCSeconds() > 9) ? (dt.getUTCSeconds()) : ("0" + dt.getUTCSeconds()));
+                                },
+                                "searchable": false,
+                                "targets": 6
+                            },
+                            {
+                                // The `data` parameter refers to the data for the cell (defined by the
+                                // `data` option, which defaults to the column being worked with, in
+                                // this case `data: 0`.
+                                render: function (data, type, row) {
+                                    if (data == true)
+                                    {
+                                        dt = new Date(row["datePaid"].date);
+                                        return "Paid" + ' (' + ((dt.getDay() > 8) ? (dt.getDay() + 1) : ('0' + (dt.getDay() + 1))) + "-" + ((dt.getMonth() < 9) ? ('0' + (dt.getMonth() + 1)) : (dt.getMonth() + 1)) + "-" + dt.getFullYear() + " " + ((dt.getUTCHours() > 9) ? (dt.getUTCHours()) : ("0" + dt.getUTCHours())) + ":" + ((dt.getUTCMinutes() > 9) ? (dt.getUTCMinutes()) : ("0" + dt.getUTCMinutes())) + ":" + ((dt.getUTCSeconds() > 9) ? (dt.getUTCSeconds()) : ("0" + dt.getUTCSeconds())) + ')';
+                                    } else {
+                                        return "Not Paid";
+                                    }
+                                },
+                                "searchable": false,
+                                "targets": 7
+                            },
+                            {"visible": false, "searchable": false, "targets": [8]},
+                            {
+                                // The `data` parameter refers to the data for the cell (defined by the
+                                // `data` option, which defaults to the column being worked with, in
+                                // this case `data: 0`.
+                                render: function (data, type, row) {
+                                    if (row['dateCompleted']) {
+                                        dt = new Date(row['dateCompleted'].date);
+                                        return ((dt.getDay() > 8) ? (dt.getDay() + 1) : ('0' + (dt.getDay() + 1))) + "-" + ((dt.getMonth() < 9) ? ('0' + (dt.getMonth() + 1)) : (dt.getMonth() + 1)) + "-" + dt.getFullYear() + " " + ((dt.getUTCHours() > 9) ? (dt.getUTCHours()) : ("0" + dt.getUTCHours())) + ":" + ((dt.getUTCMinutes() > 9) ? (dt.getUTCMinutes()) : ("0" + dt.getUTCMinutes())) + ":" + ((dt.getUTCSeconds() > 9) ? (dt.getUTCSeconds()) : ("0" + dt.getUTCSeconds()));
+                                    } else {
+                                        return "-";
+                                    }
+                                },
+                                "targets": 9
+                            },
+                            {"visible": false, "searchable": false, "targets": [10]},
+                            {"visible": false, "searchable": true, "targets": [11]}
+                        ]
+                    });
+                    datatable.fixedHeader.enable(true);
+                }
+                event.preventDefault();
+                return false;
+            });
+        {% if pg != '' %}
+            $('#submit').trigger('click');
+        {% endif %}
+        {# 
+                       $(document).on('keyup', '#datatable_filter input', function (event) {
+                       alert($(this).val());
+                           datatable.search($(this).val()).draw();
+                       });
+                         $('#datatable').DataTable({
+                               ajax: '{{path('fetchApplicantData')}}'
                            });
-                             $('#datatable').DataTable({
-                                   ajax: '{{path('fetchApplicantData')}}'
-                               });
-                       #}
+                   #}
 
-        </script>
-    {% endblock js %}
+                       $(document).on("click", "#viewrecs, #viewrecs2", function (event) {
+                           $("#candidaterecords, #recdiv").fadeIn();
+                           $("#candidateview").hide();
+                           $("#viewsummary").show();
+                           $("#viewrecs2").hide();
+                           datatable.fixedHeader.enable(true);
+                       });
+                       $(document).on("click", ".viewref", function (event) {
+                           var dis = $(this);
+                           $("#candidaterecords, #recdiv").hide();
+                           $("#candidateview").fadeIn();
+                           $("#candidateview").html("<span id='loading'>Loading candidate details...</span>");
+                           datatable.fixedHeader.enable(false);
+                           $.ajax({
+                               type: 'get',
+                               url: dis.attr('data-href')
+                           }).done(function (data) {
+                               $("#candidateview").html(data);
+                               $("#viewsummary").hide();
+                               $("#viewrecs2").show();
+                           });
+                       });
+    </script>
+{% endblock js %}

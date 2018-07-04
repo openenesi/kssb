@@ -17,7 +17,7 @@ class CandidateBankController extends Controller {
      * @Route("/apply/form_5", name="form_5")
      */
     public function form_5(Request $request) {
-        $session = $this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
+        $session = new \App\Entity\ScholarshipSession(); //$this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
         if ($session->getApplicationSessionStatus() == "closed") {
             return $this->render('default/closed.html.twig', array('page' => 'scholarship', 'session' => $session));
         }

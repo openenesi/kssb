@@ -19,7 +19,7 @@ class UserController extends Controller {
      */
     public function form_1(Request $request, \Swift_Mailer $mailer, UserPasswordEncoderInterface $encoder) {
         $notcountexceeded = false;
-        $session = $this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
+        $session = new \App\Entity\ScholarshipSession(); //$this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
         if ($session->getApplicationSessionStatus() == "closed") {
             return $this->render('default/closed.html.twig', array('page' => 'scholarship', 'session' => $session));
         }
@@ -102,7 +102,7 @@ class UserController extends Controller {
      */
     public function changePassword(Request $request, \Swift_Mailer $mailer, UserPasswordEncoderInterface $encoder) {
         //echo "here"; exit();
-        $session = $this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
+        $session = new \App\Entity\ScholarshipSession(); //$this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
         if ($session->getApplicationSessionStatus() == "closed") {
             return $this->render('default/closed.html.twig', array('page' => 'scholarship', 'session' => $session));
         }
@@ -114,6 +114,15 @@ class UserController extends Controller {
         if (null === $request->request->get('email') || "" === trim($request->request->get('email'))) {
             return $this->render('security/passwordrecovery.html.twig', $arr_data);
         }
+        
+        $accounterep =  $this->getDoctrine()->getRepository(\App\Entity\AccountCounter::class);
+        $accs = $accounterep->findAll();
+        $acc = $accs[0];
+        if($acc->getAccounts() > 55){
+            $arr_data['erroroverload'] = true;            
+            return $this->render('security/passwordrecovery.html.twig', $arr_data);
+        }
+        
         $email = $request->request->get('email');
         $rep = $this->getDoctrine()->getRepository(\App\Entity\User::class);
         $userbyemail = $rep->findByEmail($email);
@@ -146,6 +155,10 @@ class UserController extends Controller {
                 ), 'text/html'
         );
         $mailer->send($message);
+        $em = $this->getDoctrine()->getManager();
+        $acc->addAccount();
+        $em->persist($acc);
+        $em->flush();
         //var_dump($arr_data); exit();
         return $this->render('security/passwordrecovery.html.twig', $arr_data);
     }
@@ -155,7 +168,7 @@ class UserController extends Controller {
      */
     public function resendCred(Request $request, \Swift_Mailer $mailer, UserPasswordEncoderInterface $encoder, $id) {
         //echo "here"; exit();
-        $session = $this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
+        $session = new \App\Entity\ScholarshipSession(); //$this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
         if ($session->getApplicationSessionStatus() == "closed") {
             return $this->render('default/closed.html.twig', array('page' => 'scholarship', 'session' => $session));
         }
@@ -198,7 +211,7 @@ class UserController extends Controller {
      * @Route("/apply/choice", name="choice")
      */
     public function choice(Request $request) {
-        $session = $this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
+        $session = new \App\Entity\ScholarshipSession(); //$this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
         return $this->render('apply/form_0.html.twig', array('page' => 'scholarship', 'session' => $session));
     }
 

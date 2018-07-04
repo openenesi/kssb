@@ -82,7 +82,7 @@ class UserRepository extends ServiceEntityRepository {
 
         $query1 = "SELECT COUNT(o) as applicantcount " . $prependsql;
 
-        $query2 = "SELECT o.id, p.surname, p.firstName, p.otherNames, o.appId, l.lgaName, w.wardName, o.paid, p.title, o.dateCreated as dateCreated, o.datePaid as datePaid, o.dateCompleted as dateCompleted " ;
+        $query2 = "SELECT o.id, p.surname, p.firstName, p.otherNames, o.appId, o.email, l.lgaName, w.wardName, o.paid, p.title, o.dateCreated as dateCreated, o.datePaid as datePaid, o.dateCompleted as dateCompleted " ;
 
         $status = ($options['status'] == 'all') ? (false) : (true);
         $institution = ($options['institution'] == 'all') ? (false) : (true);

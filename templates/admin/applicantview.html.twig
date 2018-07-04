@@ -1,0 +1,199 @@
+    
+        {% if notfound %}
+        <div class="col-xs-12">
+            <div class="row">
+                <div class="col-xs-1 col-sm-3 col-md-4"></div>
+                <div class="col-xs-10 col-sm-6 col-md-4">
+                    <div class="alert alert-danger" role="alert">
+                        RECORD NOT FOUND!
+                    </div>
+                </div>
+                <div class="col-xs-1 col-sm-3 col-md-4"></div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-xs-12">
+            <div class="row">
+                <div class="col-xs-12 col-sm-3 text-center">
+                    <img id='image' src='{% if candidate.candidatePersonal is defined and candidate.candidatePersonal is not null %}{{asset('passport/'~candidate.candidatePersonal.getPassport())}}{% else %}{{asset('passport/default.jpg')}}{% endif%}?timestamp={{"now"|date('U')}}' class="img-thumbnail" style='width:170px; height:190px; margin-bottom: 5px;'/>
+                    {% if(appId is defined) %}
+                        <div id='appid'>{{appId}}</div>
+                    {% endif %}
+                </div>
+                <div class="col-xs-12 col-sm-9">
+                    <table class="table table-bordered table-condensed table-striped">
+                        <tr><th class='tabletitle' colspan = "2">PAYMENT DETAILS</th></tr>
+                                
+                            <tr>
+                                <th>Transaction Reference</th>
+                                <td>{{(candidate.trxnRef != null)?(candidate.trxnRef):('-')}}</td>
+                            </tr>
+                       
+                            <tr>
+                                <th>Amount Paid</th>
+                                <td>&#8358;{{(candidate.paid)?((trxnlog.amount/100)|number_format(2,'.',',')):('-')}}</td>
+                            </tr>
+                            <tr>
+                                <th>Date Paid</th>
+                                <td>{{(candidate.paid)?(trxnlog.trxnDate|date('Y-m-d H:i:s a')):('-')}}</td>
+                            </tr>
+                            <tr>
+                                <th>Channel</th>
+                                <td>{{(candidate.paid)?(trxnlog.channel|upper):('-')}}</td>
+                            </tr>
+                            {% if candidate.paid and trxnlog.channel == 'card' %}
+                                <tr>
+                                    <th>Card Type</th>
+                                    <td>{{trxnlog.cardType}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Last 4 Digit</th>
+                                    <td>{{trxnlog.last4}}</td>
+                                </tr>
+                            {% endif %}
+                            <tr>
+                                <th>Bank</th>
+                                <td>{{(candidate.paid)?(trxnlog.bank):('-')}}</td>
+                            </tr>                     
+
+                    </table>
+                </div>
+            </div>
+            <table class="table table-bordered table-condensed table-hover table-striped">
+                <tr><th class='tabletitle' colspan = "2">ACCOUNT DETAILS</th></tr>
+                <tr>
+                    <th>Date Created</th>
+                    <td>{{candidate.getDateCreated()|date('Y-m-d H:i:s a')}}</td>
+                </tr>
+                <tr>
+                    <th>Date Paid</th>
+                    <td>{{(candidate.paid)?(candidate.getDatePaid()|date('Y-m-d H:i:s a')):('-')}}</td>
+                </tr>
+                <tr>
+                    <th>Date Completed</th>
+                    <td>{{((candidate.appId is defined) and (candidate.appId is not null))?(candidate.getDateCompleted()|date('Y-m-d H:i:s a')):('-')}}</td>
+                </tr>
+                <tr>
+                    <th>Application ID</th>
+                    <td>{{((candidate.appId is defined) and (candidate.appId is not null))?(appId):('-')}}</td>
+                </tr>
+                <tr><th class='tabletitle' colspan = "2">PERSONAL INFORMATION</th></tr>
+                <tr>
+                    <th>Full Name</th>
+                    <td>{{(candidate.getCandidatePersonal())?(candidate.getCandidatePersonal().getTitle()~' '~candidate.getCandidatePersonal().getFullName()):('-')}}</td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td>{{candidate.getEmail()}}</td>
+                </tr>
+                <tr>
+                    <th>Gender</th>
+                    <td>{{((candidate.getCandidatePersonal())?(candidate.getCandidatePersonal().getGender()):('-'))|capitalize}}</td>
+                </tr>
+                <tr>
+                    <th>Mobile No.</th>
+                    <td>{{candidate.getMobileNo()}}</td>
+                </tr>
+                <tr>
+                    <th>Date of Birth</th>
+                    <td>{{(candidate.getCandidatePersonal())?(candidate.getCandidatePersonal().getDob()|date('Y-m-d')):('-')}}</td>
+                </tr>
+                <tr>
+                    <th>Marital Status</th>
+                    <td>{{((candidate.getCandidatePersonal())?(candidate.getCandidatePersonal().getMaritalStatus()):('-'))|capitalize}}</td>
+                </tr>
+                <tr>
+                    <th>Home Address</th>
+                    <td>{{(candidate.getCandidatePersonal())?(candidate.getCandidatePersonal().getHomeAddr()):('-')}}</td>
+                </tr>
+                <tr>
+                    <th>LGA</th>
+                    <td>{{(candidate.getCandidatePersonal())?(candidate.getCandidatePersonal().getWard().getLga().getLgaName()):('-')}}</td>
+                </tr>
+                <tr>
+                    <th>Ward</th>
+                    <td>{{(candidate.getCandidatePersonal())?(candidate.getCandidatePersonal().getWard().getWardName()):('-')}}</td>
+                </tr>
+                <tr>
+                    <th>Next of Kin Name</th>
+                    <td>{{((candidate.getCandidatePersonal())?(candidate.getCandidatePersonal().getNokName()):('-'))|capitalize}}</td>
+                </tr>
+                <tr>
+                    <th>Next of Kin Address</th>
+                    <td>{{(candidate.getCandidatePersonal())?(candidate.getCandidatePersonal().getNokAddr()):('-')}}</td>
+                </tr>
+                <tr>
+                    <th>Next of Kin No.</th>
+                    <td>{{(candidate.getCandidatePersonal())?(candidate.getCandidatePersonal().getNokNo()):('-')}}</td>
+                </tr>
+                <tr><th class='tabletitle' colspan = "2">ACADEMIC DETAILS</th></tr>
+                <tr>
+                    <th>Matric No.</th>
+                    <td>{{candidate.getMatricNo()}}</td>
+                </tr>
+                <tr>
+                    <th>Institution Category</th>
+                    <td>{{((candidate.getCandidateInstitution())?(candidate.getCandidateInstitution().getInstitution().getInstitutionCategory()|replace({'_': ' '})):('-'))|capitalize}}</td>
+                </tr>
+                <tr>
+                    <th>Institution Name</th>
+                    <td>{{(candidate.getCandidateInstitution())?(candidate.getCandidateInstitution().getInstitution().getInstitutionName()):('-')}}</td>
+                </tr>
+                <tr>
+                    <th>Address of Institution</th>
+                    <td>{{(candidate.getCandidateInstitution())?(candidate.getCandidateInstitution().getInstitutionAddr()):('-')}}</td>
+                </tr>
+                <tr>
+                    <th>Date of Admission</th>
+                    <td>{{(candidate.getCandidateInstitution())?(candidate.getCandidateInstitution().getAdmissionDate()|date('Y-m-d')):('-')}}</td>
+                </tr>
+                <tr>
+                    <th>Year of Graduation</th>
+                    <td>{{(candidate.getCandidateInstitution())?(candidate.getCandidateInstitution().getGraduationYear()):('-')}}</td>
+                </tr>
+                <tr>
+                    <th>Faculty/School</th>
+                    <td>{{(candidate.getCandidateInstitution())?(candidate.getCandidateInstitution().getFaculty()):('-')}}</td>
+                </tr>
+                <tr>
+                    <th>Department</th>
+                    <td>{{(candidate.getCandidateInstitution())?(candidate.getCandidateInstitution().getDepartment()):('-')}}</td>
+                </tr>
+                <tr>
+                    <th>Course of Study</th>
+                    <td>{{(candidate.getCandidateInstitution())?(candidate.getCandidateInstitution().getCourseOfStudy()):('-')}}</td>
+                </tr>
+                <tr>
+                    <th>Level</th>
+                    <td>{{(candidate.getCandidateInstitution())?(candidate.getCandidateInstitution().getLevel()):('-')}}</td>
+                </tr>
+                <tr>
+                    <th>Course Duration</th>
+                    <td>{{(candidate.getCandidateInstitution())?(candidate.getCandidateInstitution().getCourseDuration()~' year(s)'):('-')}}</td>
+                </tr>
+                <tr>
+                    <th>Accommodation</th>
+                    <td>{{(candidate.getCandidateInstitution())?(candidate.getCandidateInstitution().getAccommodationType()):('-')}}</td>
+                </tr>
+                <tr><th class='tabletitle' colspan = "2">BANK ACCOUNT DETAILS</th></tr>
+                <tr>
+                    <th>BVN</th>
+                    <td style="font-family:'Courier New', Courier">{{candidate.getBvn()}}</td>
+                </tr>
+                <tr>
+                    <th>Account Name</th>
+                    <td>{{(candidate.getCandidateBank())?(candidate.getCandidateBank().getAccountName()):('-')}}</td>
+                </tr>
+                <tr>
+                    <th>Account Number</th>
+                    <td style="font-family:'Courier New', Courier">{{(candidate.getCandidateBank())?(candidate.getCandidateBank().getAccountNo()):('-')}}</td>
+                </tr>
+                <tr>
+                    <th>Bank</th>
+                    <td>{{(candidate.getCandidateBank())?(candidate.getCandidateBank().getBank().getBankName()):('-')}}</td>
+                </tr>
+            </table>
+        </div>
+        {% endif %}
+                    <div class='text-center' style='margin-bottom:10px;'><a class='btn btn-sm btn-primary' id='viewrecs' href='javascript:void(0);'>Back</a></div>
+                    

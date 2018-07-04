@@ -7,7 +7,7 @@
             <div class="col-md-12">
                 <h3 class="font-weight-bold pl-0 my-4"><strong>Account Details Resent!</strong></h3>
                 Your login details have been emailed to <strong>"<i>{{user.getEmail()}}</i>"</strong>. The mail may hit your INBOX or SPAM directory. If you do not get the mail please give some time.<br /><br />
-                <div class='alert alert-warning' role='alert'>This account will be deleted if payment is not made within 24 hours.</div><br /><br />
+                <div class='alert alert-warning' role='alert'>This account will be deleted if payment is not made within 3 days.</div><br /><br />
                 <a href ="{{path('login')}}" class="btn btn-sm btn-primary">Login to proceed</a>
             </div>
         </div>
@@ -26,7 +26,7 @@
             <div class="col-md-12">
                 <h3 class="font-weight-bold pl-0 my-4"><strong>Account Created!</strong></h3>
                 Your account has been successfully created and your login details emailed to <strong>"<i>{{user.getEmail()}}</i>"</strong>. The mail may hit your INBOX or SPAM directory. If you do not get the mail please give some time.<br /><br />
-                <div class='alert alert-warning' role='alert'>This account will be deleted if payment is not made within 48 hours.</div><br /><br />
+                <div class='alert alert-warning' role='alert'>This account will be deleted if payment is not made within 3 days.</div><br /><br />
                 <a href ="{{path('login')}}" class="btn btn-sm btn-primary">Login to proceed</a>
             </div>
         </div>

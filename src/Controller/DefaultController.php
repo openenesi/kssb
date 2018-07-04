@@ -25,7 +25,7 @@ class DefaultController extends Controller {
      * @Route("/faq", name="faq")
      */
     public function faq() {
-        $session = $this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
+        $session = new \App\Entity\ScholarshipSession(); //$this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
         return $this->render('default/faq.html.twig', array('page' => 'faq', 'session' => $session));
     }
 
@@ -40,7 +40,7 @@ class DefaultController extends Controller {
      * @Route("/testmail", name="testmail")
      */
     public function testmail(Request $request, \Swift_Mailer $mailer) {
-        $session = $this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
+        $session = new \App\Entity\ScholarshipSession(); //$this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
 
         $message = (new \Swift_Message('Account Details (KSSB ' . $session->getScholarshipSession() . '/' . ($session->getScholarshipSession() + 1) . ')'))
                 ->setFrom($session->getEmail())
@@ -65,7 +65,7 @@ class DefaultController extends Controller {
           if(count($users) > 99){
           return $this->redirectToRoute("bursary");
           } */
-        $session = $this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
+        $session = new \App\Entity\ScholarshipSession(); //$this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
         return $this->render('default/scholarship.html.twig', array('page' => 'scholarship', 'session' => $session));
     }
 
@@ -73,7 +73,7 @@ class DefaultController extends Controller {
      * @Route("/bursary", name="bursary")
      */
     public function bursary() {
-        $session = $this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
+        $session = new \App\Entity\ScholarshipSession(); //$this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
         return $this->render('default/bursary.html.twig', array('page' => 'bursary', 'session' => $session));
     }
 
@@ -103,7 +103,7 @@ class DefaultController extends Controller {
      */
     public function contactUs(Request $request, \Swift_Mailer $mailer) {
 
-        $session = $this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
+        $session = new \App\Entity\ScholarshipSession(); //$this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
         $cs = new \App\Utility\ContactUs();
         $form = $this->getForm($cs);
         $form->handleRequest($request);
@@ -139,7 +139,7 @@ class DefaultController extends Controller {
      * @Route("/apply/form_6/{testified}", name="form_6")
      */
     public function form_6(Request $request, \Swift_Mailer $mailer, $testified = null) {
-        $session = $this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
+        $session = new \App\Entity\ScholarshipSession(); //$this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
         //var_dump($session); exit();
 
         $r = $this->ensureStep("form_6");
@@ -201,7 +201,7 @@ class DefaultController extends Controller {
         if ($user->getAppId() == null) {
             return $this->redirectToRoute('form_6');
         }
-        $session = $this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
+        $session = new \App\Entity\ScholarshipSession(); //$this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
         $appId = $this->generateAppId($user->getAppId(), $session);
         return $this->render('apply/appform.html.twig', array('a' => $user->getAppId(), 'candidate' => $user, 'session' => $session, 'appId' => $appId));
     }
@@ -210,7 +210,7 @@ class DefaultController extends Controller {
      * @Route("/apply/tempemail", name="tempemail")
      */
     public function tempEmail(Request $request) {
-        $session = $this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
+        $session = new \App\Entity\ScholarshipSession(); //$this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
         return $this->render('emails/applicationcomplete.html.twig', array('appId' => 'SIP/201700003', 'session' => $session));
     }
 

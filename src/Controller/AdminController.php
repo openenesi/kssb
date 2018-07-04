@@ -42,7 +42,7 @@ class AdminController extends Controller {
         $institutions = $repinstitution->findAll();
         $repbank = $this->getDoctrine()->getRepository(\App\Entity\Bank::class);
         $banks = $repbank->findAll();
-        $pg = ($request->query->get('pg'))?($request->query->get('pg')):("");
+        $pg = ($request->query->get('pg')) ? ($request->query->get('pg')) : ("");
 
         return $this->render('admin/applicant.html.twig', [
                     'session' => $session,
@@ -50,7 +50,7 @@ class AdminController extends Controller {
                     'institutions' => $institutions,
                     'banks' => $banks,
                     'page' => 'applicant',
-                    'pg'=>$pg,
+                    'pg' => $pg,
                     'contentTitle' => 'Applicants',
                     'titleIcon' => '<i class="fa fa-user fa-fw"></i>',
         ]);
@@ -90,10 +90,38 @@ class AdminController extends Controller {
     /**
      * @Route("/kssbadmin/applicant/data/view/{id}", name="viewApplicantData")
      */
-    public function viewApplicantData(Request $request) {
-        
+    public function viewApplicantData(Request $request, $id=null) {
+        $rep = $this->getDoctrine()->getRepository(\App\Entity\User::class);
+        $arr_data = array();
+        $arr_data['page']= 'applicant';
+        $arr_data['contentTitle'] = 'Applicant View';
+        $arr_data['titleIcon'] = '<i class="fa fa-user fa-fw"></i>';
+        $arr_data["notfound"] = false;
+        $userobj = null;
+        if(isset($id)){
+        $userobj = $rep->find($id);
+        }elseif(null !== $request->query->get('email')){
+            $userobj = $rep->findByEmail($request->query->get('email'));
+        }
+        if (null === $userobj || (is_array($userobj) && count($userobj) == 0)) {
+            $arr_data["notfound"] = true;
+        } else {
+
+            $user = (is_array($userobj) ? ($userobj[0]) : ($userobj));
+            $arr_data['candidate'] = $user;
+            $trxnrep = $this->getDoctrine()->getRepository(\App\Entity\TransactionLog::class);
+            $trxnlog = $trxnrep->findByReference($user->getTrxnRef());
+            if (count($trxnlog)) {
+                $arr_data['trxnlog'] = $trxnlog[0];
+                if($user->getAppId()){
+                    $session = $this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
+                    $arr_data['appId']=$this->generateAppId($user->getAppId(), $session);
+                }
+            }
+        }
+        return $this->render('admin/applicantview.html.twig', $arr_data);
     }
-    
+
     /**
      * @Route("/kssbadmin/countregistered", name="countregisteredajax")
      */

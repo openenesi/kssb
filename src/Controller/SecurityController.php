@@ -15,7 +15,7 @@ class SecurityController extends Controller {
      * @Route("/login", name="login")
      */
     public function login(Request $request, AuthenticationUtils $authenticationUtils) {
-        $session = $this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
+        $session = new \App\Entity\ScholarshipSession(); //$this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
 
@@ -40,7 +40,7 @@ class SecurityController extends Controller {
      * @Route("/kssbadmin/adminlogin", name="adminlogin")
      */
     public function adminLogin(Request $request, AuthenticationUtils $authenticationUtils) {
-        $session = $this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
+        $session = new \App\Entity\ScholarshipSession(); //$this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
 

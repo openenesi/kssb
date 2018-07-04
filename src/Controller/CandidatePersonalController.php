@@ -17,7 +17,7 @@ class CandidatePersonalController extends Controller {
      * @Route("/apply/form_3", name="form_3")
      */
     public function form_3(Request $request) {
-        $session = $this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
+        $session = new \App\Entity\ScholarshipSession(); //$this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
         if ($session->getApplicationSessionStatus() == "closed") {
             return $this->render('default/closed.html.twig', array('page' => 'scholarship', 'session' => $session));
         }
@@ -82,7 +82,7 @@ class CandidatePersonalController extends Controller {
 
         $imagedefault = "default.jpeg";
 
-        $session = $this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
+        $session = new \App\Entity\ScholarshipSession(); //$this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
 
         $user = $this->getUser();
 
