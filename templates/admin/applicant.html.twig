@@ -84,7 +84,7 @@
                 </div>
                 <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3" style="vertical-align: bottom; padding-top:30px;">
 
-                    <input type="submit" name="submit" id="submit" value="Load" />
+                    <input  disabled type="submit" name="submit" id="submit" value="Load" />
                 </div>
             </div>
         </form>
@@ -138,7 +138,9 @@
                 });
         {#}
 
+            $("#submit").prop("disabled",false);
                     var datatable = null;
+                    var section = "";
             $(document).on("click", "#submit", function (event) {
                 if (null !== datatable) {
                     datatable.ajax.reload();
@@ -196,9 +198,9 @@
                                 render: function (data, type, row) {
                                     if ((row['appId'] - 0) != 0) {
                                         var appId = 'SIP/' + (session * 100000 + (row['appId'] - 0));
-                                        return "<a class='viewref' href = 'javascript:void(0);' data-href='{{path('viewApplicantData',{'id':0})}}" + row['id'] + "'>" + appId + "</a>";
+                                        return "<a class='viewref' href = 'javascript:void(0);' data-href='{{path('viewApplicantData',{'id':0})}}" + row['id'] + "' id='"+row['id']+"'>" + appId + "</a>";
                                     } else {
-                                        return "[<a class='viewref' href = 'javascript:void(0);' data-href='{{path('viewApplicantData')}}?email=" + row['email'] + "'>View</a>]";
+                                        return "[<a class='viewref' href = 'javascript:void(0);' data-href='{{path('viewApplicantData')}}?email=" + row['email'] + "' id='"+row['email']+"'>View</a>]";
                                     }
                                 },
                                 "targets": 0
@@ -302,8 +304,10 @@
                            $("#viewsummary").show();
                            $("#viewrecs2").hide();
                            datatable.fixedHeader.enable(true);
+                           scrollTo2($("#"+section));
                        });
                        $(document).on("click", ".viewref", function (event) {
+                           section = $(this).attr('id');
                            var dis = $(this);
                            $("#candidaterecords, #recdiv").hide();
                            $("#candidateview").fadeIn();

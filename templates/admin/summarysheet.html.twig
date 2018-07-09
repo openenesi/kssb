@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Summary Sheet</title>
+        <link rel="shortcut icon" href="{{asset('favicon.ico')}}" type="image/x-icon">
+        <!-- Bootstrap CSS -->
+        {% block stylesheets %}
+            <link rel="stylesheet" href="{{asset('bootstrap/css/bootstrap.min.css')}}"/>
+            <link rel="stylesheet" href="{{asset('fontawesome/css/fontawesome-all.min.css')}}" />
+            <link href="{{asset('open-iconic/font/css/open-iconic-bootstrap.css')}}" rel="stylesheet" />
+        {% endblock stylesheets %}
+        <style rel='stylesheet'>
+
+            #recordstb{
+                border-collapse: collapse;
+                border-width: 1px;
+                border-style: solid;
+                border-color:#d7d0d0;
+                font-size: 0.7em;
+                width:100%;
+            }
+
+            #recordstb tr{
+                border-collapse: collapse;
+                border-width: 1px;
+                border-style: solid;
+                border-color:#d7d0d0;
+            }
+            #recordstb td, #recordstb th{
+                border-collapse: collapse;
+                border-width: 1px;
+                border-style: solid;
+                border-color:#d7d0d0;
+                overflow: hidden;
+                word-break: keep-all;
+                white-space: nowrap;
+            }
+
+            #recordstb th{
+                background-color: #d7d0d0;
+            }
+            @page {
+                size: A4;
+                margin: 3mm;
+            }
+            
+            @media print{
+                #actions{
+                    display: none;
+                }
+            }
+
+        </style>
+    </head>
+
+    <body>
+        <div  id='actions' style='padding:5px; margin:5px; border-radius: 5px; border-color:#333333; border-width: 1px; border-style:solid; width:200px;'>
+            <a href = "javascript:void(0);" title="Print"><i class='fas fa-print fa-2x' style='color:#666666;'> </i> </a>
+            <a href = "javascript:void(0);" title="Download Excel"><i class='fas fa-file-excel fa-2x' style='color:#218838;'> </i> </a>
+            <a href = "javascript:void(0);" title="Download PDF"><i class='fas fa-file-pdf fa-2x' style='color:#C82829;'> </i> </a> 
+        </div>
+        <table id = 'recordstb'>
+            <thead>
+                <tr>
+                    <th>AppId</th>
+                    <th>Name</th>
+                    <th>Sex</th>
+                    <th>MatricNo.</th>
+                    <th>Bank</th>
+                    <th>AccountNo</th>
+                    <th>BVN</th>
+                    <th>Institution</th>
+                    <th>InstitutionCategory</th>
+                    <th>Course</th>
+                    <th>Level</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rec in data %}
+                    <tr>
+                        <td>{{rec['appId']}}</td>
+                        <td>{{rec['surname']~" "~rec['firstName']~" "~rec['otherNames']}}</td>
+                        <td>{{rec['gender']|capitalize}}</td>
+                        <td>{{rec['matricNo']}}</td>
+                        <td>{{rec['bankName']}}</td>
+                        <td>{{rec['accountNo']}}</td>
+                        <td>{{rec['bvn']}}</td>
+                        <td>{{rec['institutionName']}}</td>
+                        <td>{{rec['institutionCategory']|replace({'_':' '})|capitalize}}</td>
+                        <td>{{rec['courseOfStudy']}}</td>
+                        <td>{{rec['level']}}</td>
+                    </tr>                
+                {% endfor %}
+            </tbody>
+        </table>
+    </body>
+</html>

@@ -157,5 +157,78 @@ class UserRepository extends ServiceEntityRepository {
 
         return $output;
     }
+    
+    
+    public function fetchApplicantSummary(array $options) {
+        $output = array();
+
+        $prependsql = " from \App\Entity\User o "
+                . "LEFT JOIN \App\Entity\CandidatePersonal p WITH o.candidatePersonal = p.id "
+                . "LEFT JOIN \App\Entity\CandidateInstitution i WITH o.candidateInstitution = i.id "
+                . "LEFT JOIN \App\Entity\CandidateBank b WITH o.candidateBank = b.id "
+                . "LEFT JOIN \App\Entity\Ward w WITH p.ward = w.id "
+                . "LEFT JOIN \App\Entity\Lga l WITH w.lga = l.id "
+                . "LEFT JOIN \App\Entity\Institution n WITH i.institution = n.id "
+                . "LEFT JOIN \App\Entity\Bank a WITH b.bank = a.id ";
+
+        $query = "";
+
+        $query2 = "SELECT o.id, p.surname, p.firstName, p.otherNames, p.gender, o.appId,  n.institutionCategory, n.institutionName, a.bankName, b.accountNo, b.bvn, i.matricNo, i.courseOfStudy, i.level" ;
+
+        $status = true;
+        $instcat = ($options['instcat'] == 'all') ? (false) : (true);
+        $institution = ($options['institution'] == 'all') ? (false) : (true);
+        $ward = ($options['ward'] == 'all') ? (false) : (true);
+        $lga = ($options['lga'] == 'all') ? (false) : (true);
+        $bank = ($options['bank'] == 'all') ? (false) : (true);
+        $where = ($status || $instcat || $ward || $institution || $lga || $bank) ? (true) : (false);
+        $and = false;
+
+        $query .= ($where) ? (" WHERE ") : ("");
+
+        if ($status) {
+            $query .= " o.appId>0";
+            $and = true;
+        }
+
+        if ($instcat) {
+            $query .= (($and) ? (" AND ") : ("") ) . " n.institutionCategory = " . $options['instcat'];
+            $and = true;
+        }
+        
+        if ($institution) {
+            $query .= (($and) ? (" AND ") : ("") ) . " i.institution = " . $options['institution'];
+            $and = true;
+        }
+        if ($ward) {
+            $query .= (($and) ? (" AND ") : ("") ) . " p.ward = " . $options['ward'];
+            $and = true;
+        }
+        if ($lga) {
+            $query .= (($and) ? (" AND ") : ("") ) . " w.lga = " . $options['lga'];
+            $and = true;
+        }
+        if ($bank) {
+            $query .= (($and) ? (" AND ") : ("")) . " b.bank = " . $options['bank'];
+            $and = true;
+        }
+
+        $query2 .= $prependsql.$query." ORDER BY o.appId ASC";
+
+        $queryrec = $this->getEntityManager()->createQuery($query2);
+        //var_dump($query2); exit();
+
+        try {
+            $result2 = $queryrec->getResult();
+        } catch (\Exception $e) {
+            var_dump($e->getMessage());
+            exit();
+        }
+
+
+        $output['data'] = $result2;
+
+        return $output;
+    }
 
 }

@@ -37,11 +37,11 @@ class AdminController extends Controller {
         $session = $this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
         $rep = $this->getDoctrine()->getRepository(\App\Entity\User::class);
         $replga = $this->getDoctrine()->getRepository(\App\Entity\Lga::class);
-        $lgas = $replga->findAll();
+        $lgas = $replga->findBy(array(), array("lgaName" => "ASC"));
         $repinstitution = $this->getDoctrine()->getRepository(\App\Entity\Institution::class);
-        $institutions = $repinstitution->findAll();
+        $institutions = $repinstitution->findBy(array(), array("institutionName" => "ASC"));
         $repbank = $this->getDoctrine()->getRepository(\App\Entity\Bank::class);
-        $banks = $repbank->findAll();
+        $banks = $repbank->findBy(array(), array("bankName" => "ASC"));
         $pg = ($request->query->get('pg')) ? ($request->query->get('pg')) : ("");
 
         return $this->render('admin/applicant.html.twig', [
@@ -88,19 +88,70 @@ class AdminController extends Controller {
     }
 
     /**
-     * @Route("/kssbadmin/applicant/data/view/{id}", name="viewApplicantData")
+     * @Route("/kssbadmin/applicant/data/generatesummarysheet", name="generatesummarysheet")
      */
-    public function viewApplicantData(Request $request, $id=null) {
+    public function generateSummarySheet(Request $request) {
+        $session = $this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
+        $rep = $this->getDoctrine()->getRepository(\App\Entity\User::class);
+        $replga = $this->getDoctrine()->getRepository(\App\Entity\Lga::class);
+        $lgas = $replga->findBy(array(), array("lgaName" => "ASC"));
+        $repbank = $this->getDoctrine()->getRepository(\App\Entity\Bank::class);
+        $banks = $repbank->findBy(array(), array("bankName" => "ASC"));
+        $pg = ($request->query->get('pg')) ? ($request->query->get('pg')) : ("");
+
+        return $this->render('admin/generatesummarysheet.html.twig', [
+                    'session' => $session,
+                    'lgas' => $lgas,
+                    'banks' => $banks,
+                    'page' => 'summarysheet',
+                    'instcats' => $this->getUtilInstitutionCategories(),
+                    'pg' => $pg,
+                    'contentTitle' => 'Summary Sheet',
+                    'titleIcon' => '<i class="fa fa-pie-chart fa-fw"></i>',
+        ]);
+    }
+
+    /**
+     * @Route("/kssbadmin/applicant/data/summarysheet", name="summarysheet")
+     */
+    public function summarySheet(Request $request) {
         $rep = $this->getDoctrine()->getRepository(\App\Entity\User::class);
         $arr_data = array();
-        $arr_data['page']= 'applicant';
+
+        $lga = $request->query->get('lga');
+        $ward = $request->query->get('ward');
+        $instcat = $request->query->get('instcat');
+        $institution = $request->query->get('institution');
+        $bank = $request->query->get('bank');
+
+        $records = $rep->fetchApplicantSummary(
+                array(
+                    'lga' => $lga,
+                    'ward' => $ward,
+                    'instcat' => $instcat,
+                    'institution' => $institution,
+                    'bank' => $bank)
+        );
+
+        $arr_data['data']=$records['data'];
+
+        return $this->render('admin/summarysheet.html.twig', $arr_data);
+    }
+
+    /**
+     * @Route("/kssbadmin/applicant/data/view/{id}", name="viewApplicantData")
+     */
+    public function viewApplicantData(Request $request, $id = null) {
+        $rep = $this->getDoctrine()->getRepository(\App\Entity\User::class);
+        $arr_data = array();
+        $arr_data['page'] = 'applicant';
         $arr_data['contentTitle'] = 'Applicant View';
         $arr_data['titleIcon'] = '<i class="fa fa-user fa-fw"></i>';
         $arr_data["notfound"] = false;
         $userobj = null;
-        if(isset($id)){
-        $userobj = $rep->find($id);
-        }elseif(null !== $request->query->get('email')){
+        if (isset($id)) {
+            $userobj = $rep->find($id);
+        } elseif (null !== $request->query->get('email')) {
             $userobj = $rep->findByEmail($request->query->get('email'));
         }
         if (null === $userobj || (is_array($userobj) && count($userobj) == 0)) {
@@ -113,9 +164,9 @@ class AdminController extends Controller {
             $trxnlog = $trxnrep->findByReference($user->getTrxnRef());
             if (count($trxnlog)) {
                 $arr_data['trxnlog'] = $trxnlog[0];
-                if($user->getAppId()){
+                if ($user->getAppId()) {
                     $session = $this->getScholarshipSession($this->getDoctrine()->getRepository(\App\Entity\ScholarshipSession::class));
-                    $arr_data['appId']=$this->generateAppId($user->getAppId(), $session);
+                    $arr_data['appId'] = $this->generateAppId($user->getAppId(), $session);
                 }
             }
         }

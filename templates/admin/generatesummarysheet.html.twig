@@ -1,0 +1,134 @@
+{% extends 'admin_general.html.twig' %}
+{% block links %}
+{% endblock links %}
+{% block css %}
+    <style type='text/css'>
+    </style>
+{% endblock css %}
+{% block content %}
+    <div id='candidaterecords' style="border-width:1px; border-color:#cccccc; font-size: 11px; border-style: solid; border-radius: 5px; background-color:#f6f8fb; padding:7px;">
+        <form id="filterfrm" target="_blank" action = "{{path('summarysheet')}}" method = "GET">
+            <div class="row">
+                <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                    <label for="lga">LGA</label>
+                    <select id="lga" name='lga' class="form-control">
+                        <option selected value="all">All</option>
+                        {% for lga in lgas %}
+                            <option value="{{lga.id}}">{{lga.lgaName}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                    <label for="ward">Ward</label>
+                    <select id="ward" name='ward' class="form-control">
+                        <option selected value="all">All</option>
+                    </select>
+                </div>
+                <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                    <label for="instcat">Institution Category</label>
+                    <select id="instcat" name="instcat" class="form-control">
+                        <option selected value="all">All</option>
+                        {% for key, value in instcats %}
+                            <option value="{{value}}">{{key}}</option>
+                        {% endfor %}                        
+                    </select>
+                </div>
+                <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                    <label for="institution">Institution</label>
+                    <select id="institution" name="institution" class="form-control">
+                        <option selected value="all">All</option>
+                    </select>
+                </div>
+                <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                    <label for="bank">Bank</label>
+                    <select id="bank" name='bank' class="form-control">
+                        <option selected value="all">All</option>
+                        {% for bank in banks %}
+                            <option value="{{bank.id}}">{{bank.bankName}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3" style="vertical-align: bottom; padding-top:30px;">
+
+                    <input type="submit" name="submit" id="submit" value="Generate Summary Sheet" />
+                </div>
+            </div>
+        </form>
+    </div>
+
+{% endblock content %}
+{% block scripts %}
+{% endblock scripts %}
+{% block js %}
+    {{parent()}}
+    <script type="text/javascript">
+        var session
+                = {{session.scholarshipSession}};
+        
+         var loadingoption = "<option value='all'>Loading...</option>";
+          var alloption = "<option value='all'>All</option>";
+        {# $(document).on("click", "#submit", function (event) {
+                    dis = $(this);
+                    alert("clicked");
+                    $.ajax({
+                        url: "{{path('fetchApplicantData')}}",
+                        method: "get",
+                        data: {
+                            status: $('#status').val(),
+                            lga: $('#lga').val(),
+                            institution: $('#institution').val(),
+                            bank: $('#bank').val()
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            console.log(textStatus);
+                        }
+                    }).done(function (data) {
+                        alert("done!");
+                        console.log(data);
+                    });
+                        
+                    event.preventDefault();
+                    return false;
+                });
+        {#}
+
+               $(document).on("change", "#lga", function (event) {
+                var dis = $(this);
+                $("#ward").html(loadingoption);
+                
+                if (dis.val() == "all") {
+                    $("#ward").html(alloption);
+                    return;
+                }
+
+                $.ajax({
+                    'url': "{{path('ward_options', {'lgaid':0})}}" + dis.val(),
+                    'method': 'GET'
+                }).done(function (data) { //alert(data);
+                    $("#ward").html(alloption + data);
+                });
+
+
+            });
+            
+               $(document).on("change", "#instcat", function (event) {
+                var dis = $(this);
+                $("#institution").html(loadingoption);
+                
+                if (dis.val() == "all") {
+                    $("#institution").html(alloption);
+                    return;
+                }
+
+                $.ajax({
+                    'url': "{{path('institution_options', {'category':'-'})}}" + dis.val(),
+                    'method': 'GET'
+                }).done(function (data) { //alert(data);
+                    $("#institution").html(alloption + data);
+                });
+
+
+            });
+
+    </script>
+{% endblock js %}
