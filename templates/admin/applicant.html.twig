@@ -43,7 +43,7 @@
 {% block content %}
     <div style='display:none;' class='row' id='candidateview'></div>
     <div id='candidaterecords' style="border-width:1px; border-color:#cccccc; font-size: 11px; border-style: solid; border-radius: 5px; background-color:#f6f8fb; padding:7px;">
-        <form id="filterfrm">
+        <form id="filterfrm" method="GET" target="_blank" action = "">
             <div class="row">
                 <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
                     <label for="status">Status</label>
@@ -52,7 +52,8 @@
                         <option value="paid" {% if pg == 'paid' %} selected {% endif %}>Paid</option>
                         <option value="notpaid">Not Paid</option>
                         <option value="completed" {% if pg == 'completed' %} selected {% endif %}>Completed</option>
-                        <option value="notcompleted">Not Completed</option>
+                        <option value="notcompleted" {% if pg == 'notcompleted' %} selected {% endif %}>Not Completed</option>
+                        <option value="notcompletedpaid">Not Completed(paid)</option>
                     </select>
                 </div>
                 <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
@@ -84,7 +85,9 @@
                 </div>
                 <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3" style="vertical-align: bottom; padding-top:30px;">
 
-                    <input  disabled type="submit" name="submit" id="submit" value="Load" />
+                    <input  disabled type="submit" name="submit" id="submit" value="Load" /> 
+                    <input type="submit" id="csvemail" name = 'csvemail' value='Emails in CSV' />
+                    <input type="submit" id="csvgsm" name = 'csvgsm' value='GSM in CSV' />
                 </div>
             </div>
         </form>
@@ -113,30 +116,26 @@
     <script type="text/javascript">
         var session
         = {{session.scholarshipSession}};
-        {# $(document).on("click", "#submit", function (event) {
+         $(document).on("click", "#csvemail", function (event) {
+             $("#filterfrm").submit();
                     dis = $(this);
-                    alert("clicked");
-                    $.ajax({
-                        url: "{{path('fetchApplicantData')}}",
-                        method: "get",
-                        data: {
-                            status: $('#status').val(),
-                            lga: $('#lga').val(),
-                            institution: $('#institution').val(),
-                            bank: $('#bank').val()
-                        },
-                        error: function (jqXHR, textStatus, errorThrown) {
-                            console.log(textStatus);
-                        }
-                    }).done(function (data) {
-                        alert("done!");
-                        console.log(data);
-                    });
-                        
-                    event.preventDefault();
-                    return false;
+                    //alert("clicked");
+                    $('#filterfrm').attr("target", "_blank");
+                    $('#filterfrm').attr("action","{{path('fetchApplicantInfo',{'info':'email','format':'csv'})}}");
+                    $('#filterfrm').trigger('submit');
+                    //alert('submited');
                 });
-        {#}
+        
+         $(document).on("click", "#csvgsm", function (event) {
+             $("#filterfrm").submit();
+                    dis = $(this);
+                    //alert("clicked");
+                    $('#filterfrm').attr("target", "_blank");
+                    $('#filterfrm').attr("action","{{path('fetchApplicantInfo',{'info':'gsm','format':'csv'})}}");
+                    $('#filterfrm').trigger('submit');
+                    //alert('submited');
+                });
+        
 
             $("#submit").prop("disabled",false);
                     var datatable = null;

@@ -82,20 +82,20 @@ class UserRepository extends ServiceEntityRepository {
 
         $query1 = "SELECT COUNT(o) as applicantcount " . $prependsql;
 
-        $query2 = "SELECT o.id, p.surname, p.firstName, p.otherNames, o.appId, o.email, l.lgaName, w.wardName, o.paid, p.title, o.dateCreated as dateCreated, o.datePaid as datePaid, o.dateCompleted as dateCompleted " ;
+        $query2 = "SELECT o.id, p.surname, p.firstName, p.otherNames, o.appId, o.email, l.lgaName, w.wardName, o.paid, p.title, o.dateCreated as dateCreated, o.datePaid as datePaid, o.dateCompleted as dateCompleted ";
 
         $status = ($options['status'] == 'all') ? (false) : (true);
         $institution = ($options['institution'] == 'all') ? (false) : (true);
         $lga = ($options['lga'] == 'all') ? (false) : (true);
         $bank = ($options['bank'] == 'all') ? (false) : (true);
-        $search = (!isset($options['search']) || $options['search'] == '' || count($options['search'])== 0 || trim($options['search']['value']) == '') ? (false) : (true);
+        $search = (!isset($options['search']) || $options['search'] == '' || count($options['search']) == 0 || trim($options['search']['value']) == '') ? (false) : (true);
         $where = ($status || $institution || $lga || $bank || $search) ? (true) : (false);
         $and = false;
 
         $query .= ($where) ? (" WHERE ") : ("");
 
         if ($status) {
-            $query .= ($options['status'] == 'paid') ? (" o.paid=1 ") : (($options['status'] == 'notpaid') ? (" o.paid=0 ") : (($options['status']=='notcompleted')?(" o.appId IS NULL"):(" o.appId>0")));
+            $query .= ($options['status'] == 'paid') ? (" o.paid=1 ") : (($options['status'] == 'notpaid') ? (" o.paid=0 ") : (($options['status'] == 'notcompleted') ? (" o.appId IS NULL") : (($options['status']=='notcompletedpaid')?("o.paid=1 AND o.appId IS NULL"):(" o.appId>0"))));
             $and = true;
         }
 
@@ -111,23 +111,23 @@ class UserRepository extends ServiceEntityRepository {
             $query .= (($and) ? (" AND ") : ("")) . " b.bank = " . $options['bank'];
             $and = true;
         }
-        if($search && is_array($options['search']) && $options['search']['value'] !== ''){
-            $query .= (($and) ? (" AND ") : ("")) . " (".
-                    "o.appId LIKE '%".$options['search']['value']."%' OR ".
-                    "p.firstName LIKE '%".$options['search']['value']."%' OR ".
-                    "p.surname LIKE '%".$options['search']['value']."%' OR ".
-                    "p.otherNames LIKE '%".$options['search']['value']."%' OR ".
-                    "w.wardName LIKE '%".$options['search']['value']."%' OR ".
-                    "l.lgaName LIKE '%".$options['search']['value']."%'".
+        if ($search && is_array($options['search']) && $options['search']['value'] !== '') {
+            $query .= (($and) ? (" AND ") : ("")) . " (" .
+                    "o.appId LIKE '%" . $options['search']['value'] . "%' OR " .
+                    "p.firstName LIKE '%" . $options['search']['value'] . "%' OR " .
+                    "p.surname LIKE '%" . $options['search']['value'] . "%' OR " .
+                    "p.otherNames LIKE '%" . $options['search']['value'] . "%' OR " .
+                    "w.wardName LIKE '%" . $options['search']['value'] . "%' OR " .
+                    "l.lgaName LIKE '%" . $options['search']['value'] . "%'" .
                     ")";
             $and = true;
         }
 
         $query1 .= $query;
-        $query2 .= $prependsql.$query . " ORDER BY o.appId DESC";
-        
+        $query2 .= $prependsql . $query . " ORDER BY o.appId DESC";
+
         //return($query2);
-        
+
         /* if (isset($options['start']) && $options['length'] != -1) {
           $query2 .= " LIMIT " . intval($options['start']) . ", " . intval($options['length']);
           } */
@@ -156,9 +156,80 @@ class UserRepository extends ServiceEntityRepository {
         $output['data'] = $result2;
 
         return $output;
+    }    
+    
+    public function fetchApplicantInfo(array $options) {
+
+        $prependsql = " from \App\Entity\User o "
+                . "LEFT JOIN \App\Entity\CandidatePersonal p WITH o.candidatePersonal = p.id "
+                . "LEFT JOIN \App\Entity\CandidateInstitution i WITH o.candidateInstitution = i.id "
+                . "LEFT JOIN \App\Entity\CandidateBank b WITH o.candidateBank = b.id "
+                . "LEFT JOIN \App\Entity\Ward w WITH p.ward = w.id "
+                . "LEFT JOIN \App\Entity\Lga l WITH w.lga = l.id "
+                . "LEFT JOIN \App\Entity\Institution n WITH i.institution = n.id "
+                . "LEFT JOIN \App\Entity\Bank a WITH b.bank = a.id ";
+
+        $query = "";
+
+        $query2 = "SELECT ";
+        switch($options['info']){
+            case 'email':
+                $query2 .= ' o.email as email '; break;
+            case 'gsm':
+                $query2 .= ' o.mobileNo as gsm '; break;
+            case 'regno':
+                $query2 .= ' o.matricNo as regno '; break;
+        }
+
+        $status = ($options['status'] == 'all') ? (false) : (true);
+        $institution = ($options['institution'] == 'all') ? (false) : (true);
+        $lga = ($options['lga'] == 'all') ? (false) : (true);
+        $bank = ($options['bank'] == 'all') ? (false) : (true);
+        $where = ($status || $institution || $lga || $bank ) ? (true) : (false);
+        $and = false;
+
+        $query .= ($where) ? (" WHERE ") : ("");
+
+        if ($status) {
+            $query .= ($options['status'] == 'paid') ? (" o.paid=1 ") : (($options['status'] == 'notpaid') ? (" o.paid=0 ") : (($options['status'] == 'notcompleted') ? (" o.appId IS NULL") : (($options['status']=='notcompletedpaid')?("o.paid=1 AND o.appId IS NULL"):(" o.appId>0"))));
+            $and = true;
+        }
+
+        if ($institution) {
+            $query .= (($and) ? (" AND ") : ("") ) . " i.institution = " . $options['institution'];
+            $and = true;
+        }
+        if ($lga) {
+            $query .= (($and) ? (" AND ") : ("") ) . " w.lga = " . $options['lga'];
+            $and = true;
+        }
+        if ($bank) {
+            $query .= (($and) ? (" AND ") : ("")) . " b.bank = " . $options['bank'];
+            $and = true;
+        }
+
+        $query2 .= $prependsql . $query . " ORDER BY o.appId DESC";
+
+        //return($query2);
+
+        /* if (isset($options['start']) && $options['length'] != -1) {
+          $query2 .= " LIMIT " . intval($options['start']) . ", " . intval($options['length']);
+          } */
+
+
+        $queryrec = $this->getEntityManager()->createQuery($query2);
+        //var_dump($query2); exit();
+
+        try {
+            $result2 = $queryrec->getResult();
+        } catch (\Exception $e) {
+            var_dump($e->getMessage());
+            exit();
+        }
+
+        return $result2;
     }
-    
-    
+
     public function fetchApplicantSummary(array $options) {
         $output = array();
 
@@ -173,7 +244,7 @@ class UserRepository extends ServiceEntityRepository {
 
         $query = "";
 
-        $query2 = "SELECT o.id, p.surname, p.firstName, p.otherNames, p.gender, o.appId,  n.institutionCategory, n.institutionName, a.bankName, b.accountNo, b.bvn, i.matricNo, i.courseOfStudy, i.level" ;
+        $query2 = "SELECT o.id, p.surname, p.firstName, p.otherNames, p.gender, o.appId,  n.institutionCategory, n.institutionName, a.bankName, b.accountNo, b.bvn, i.matricNo, i.courseOfStudy, i.level";
 
         $status = true;
         $instcat = ($options['instcat'] == 'all') ? (false) : (true);
@@ -195,7 +266,7 @@ class UserRepository extends ServiceEntityRepository {
             $query .= (($and) ? (" AND ") : ("") ) . " n.institutionCategory = " . $options['instcat'];
             $and = true;
         }
-        
+
         if ($institution) {
             $query .= (($and) ? (" AND ") : ("") ) . " i.institution = " . $options['institution'];
             $and = true;
@@ -213,7 +284,7 @@ class UserRepository extends ServiceEntityRepository {
             $and = true;
         }
 
-        $query2 .= $prependsql.$query." ORDER BY o.appId ASC";
+        $query2 .= $prependsql . $query . " ORDER BY o.appId ASC";
 
         $queryrec = $this->getEntityManager()->createQuery($query2);
         //var_dump($query2); exit();
@@ -229,6 +300,43 @@ class UserRepository extends ServiceEntityRepository {
         $output['data'] = $result2;
 
         return $output;
+    }
+
+    public function fetchDistributionByDistrict() {
+
+        $west = "5,6,9,10,11,12,13";
+        $east = "3,4,7,8,14,18,19,20,21";
+        $central = "1,2,15,16,17";
+
+        $sql_west = "select count(w) west from \App\Entity\User w "
+                . "LEFT JOIN \App\Entity\CandidatePersonal p WITH w.candidatePersonal = p.id "
+                . "LEFT JOIN \App\Entity\Ward a WITH p.ward = a.id "
+                . "LEFT JOIN \App\Entity\Lga l WITH a.lga = l.id "
+                . " where l.id in ($west) ";
+        $queryrec_west = $this->getEntityManager()->createQuery($sql_west);
+        $sql_east = "select count(e) east from \App\Entity\User e "
+                . "LEFT JOIN \App\Entity\CandidatePersonal p WITH e.candidatePersonal = p.id "
+                . "LEFT JOIN \App\Entity\Ward a WITH p.ward = a.id "
+                . "LEFT JOIN \App\Entity\Lga l WITH a.lga = l.id "
+                . " where l.id in ($east) ";
+        $queryrec_east = $this->getEntityManager()->createQuery($sql_east);
+        $sql_central = "select count(c) central from \App\Entity\User c "
+                . "LEFT JOIN \App\Entity\CandidatePersonal p WITH c.candidatePersonal = p.id "
+                . "LEFT JOIN \App\Entity\Ward a WITH p.ward = a.id "
+                . "LEFT JOIN \App\Entity\Lga l WITH a.lga = l.id "
+                . " where l.id in ($central) ";
+        $queryrec_central = $this->getEntityManager()->createQuery($sql_central);
+
+        try {
+            $result_west = $queryrec_west->getResult();
+            $result_east = $queryrec_east->getResult();
+            $result_central = $queryrec_central->getResult();
+        } catch (\Exception $e) {
+            var_dump($e->getMessage());
+            exit();
+        }
+
+        return array("west" => $result_west[0]['west'], "east" => $result_east[0]['east'], "central" => $result_central[0]['central']);
     }
 
 }

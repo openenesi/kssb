@@ -1,0 +1,52 @@
+{% extends 'admin_general.html.twig' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="row">
+                <div class="col-1 col-sm-2 col-md-4"></div>
+                <div class="col-10 col-sm-8 col-md-4">
+                    <canvas id="chart" width="300px" height="300px"></canvas>
+                </div>
+                <div class="col-1 col-sm-2 col-md-4"></div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block js %}
+    {{parent()}}
+    <script src="{{asset('chart/chart.bundle.min.js')}}"></script>
+    <script type="text/javascript">
+
+        var ctx = $("#chart");
+        var chartData = {
+            datasets: [{
+                    data: [
+                        {{distribution['west']}},
+                                            {{distribution['east']}},
+                                                        {{distribution['central']}}
+                    ],
+                    backgroundColor: [
+                        "#98ef2e",
+                        "#1154ed",
+                        "#ac0031"
+                    ],
+                    label: "Distribution per Senatorial District"
+                }],
+            labels: [
+                'West',
+                'East',
+                'Central'
+            ]
+        };
+        var options = {
+            responsive: true
+        };
+        var config = {
+            type: 'pie',
+            data: chartData,
+            options: options
+        };
+        var mychart = new Chart(ctx, config);
+    </script>
+{% endblock js %}
