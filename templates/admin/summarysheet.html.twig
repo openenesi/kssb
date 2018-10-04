@@ -46,7 +46,7 @@
                 size: A4;
                 margin: 3mm;
             }
-            
+
             @media print{
                 #actions{
                     display: none;
@@ -57,41 +57,104 @@
     </head>
 
     <body>
-        <div  id='actions' style='padding:5px; margin:5px; border-radius: 5px; border-color:#333333; border-width: 1px; border-style:solid; width:200px;'>
-            <a href = "javascript:void(0);" title="Print"><i class='fas fa-print fa-2x' style='color:#666666;'> </i> </a>
-            <a href = "javascript:void(0);" title="Download Excel"><i class='fas fa-file-excel fa-2x' style='color:#218838;'> </i> </a>
-            <a href = "javascript:void(0);" title="Download PDF"><i class='fas fa-file-pdf fa-2x' style='color:#C82829;'> </i> </a> 
-        </div>
         <table id = 'recordstb'>
             <thead>
                 <tr>
-                    <th>AppId</th>
-                    <th>Name</th>
-                    <th>Sex</th>
-                    <th>MatricNo.</th>
-                    <th>Bank</th>
-                    <th>AccountNo</th>
-                    <th>BVN</th>
-                    <th>Institution</th>
-                    <th>InstitutionCategory</th>
-                    <th>Course</th>
-                    <th>Level</th>
+                    {% if 'appid' in cols %}
+                        <th>AppId</th>
+                        {% endif %}
+                        {% if 'name' in cols %}
+                        <th>Name</th>
+                        {% endif %}
+                        {% if 'sex' in cols %}
+                        <th>Sex</th>
+                        {% endif %}
+                        {% if 'matricno' in cols %}
+                        <th>MatricNo.</th>
+                        {% endif %}
+                        {% if 'gsm' in cols %}
+                        <th>Mobile No.</th>
+                        {% endif %}
+                        {% if 'email' in cols %}
+                        <th>Email</th>
+                        {% endif %}
+                        {% if 'bank' in cols %}
+                        <th>Bank</th>
+                        {% endif %}
+                        {% if 'accno' in cols %}
+                        <th>AccountNo</th>
+                        {% endif %}
+                        {% if 'bvn' in cols %}
+                        <th>BVN</th>
+                        {% endif %}
+                        {% if 'institution' in cols %}
+                        <th>Institution</th>
+                        {% endif %}
+                        {% if 'inst_cat' in cols %}
+                        <th>InstitutionCategory</th>
+                        {% endif %}
+                        {% if 'course' in cols %}
+                        <th>Course</th>
+                        {% endif %}
+                        {% if 'level' in cols %}
+                        <th>Level</th>
+                        {% endif %}
+                        {% if 'lga' in cols %}
+                        <th>LGA</th>
+                        {% endif %}
+                        {% if 'ward' in cols %}
+                        <th>Ward</th>
+                        {% endif %}
                 </tr>
             </thead>
             <tbody>
                 {% for rec in data %}
                     <tr>
-                        <td>{{rec['appId']}}</td>
-                        <td>{{rec['surname']~" "~rec['firstName']~" "~rec['otherNames']}}</td>
-                        <td>{{rec['gender']|capitalize}}</td>
-                        <td>{{rec['matricNo']}}</td>
-                        <td>{{rec['bankName']}}</td>
-                        <td>{{rec['accountNo']}}</td>
-                        <td>{{rec['bvn']}}</td>
-                        <td>{{rec['institutionName']}}</td>
-                        <td>{{rec['institutionCategory']|replace({'_':' '})|capitalize}}</td>
-                        <td>{{rec['courseOfStudy']}}</td>
-                        <td>{{rec['level']}}</td>
+                        {% if 'appid' in cols %}
+                            <td>{{rec['appId']}}</td>
+                        {% endif %}
+                        {% if 'name' in cols %}
+                            <td>{{rec['surname']~" "~rec['firstName']~" "~rec['otherNames']}}</td>
+                        {% endif %}
+                        {% if 'sex' in cols %}
+                            <td>{{rec['gender']|capitalize}}</td>
+                        {% endif %}
+                        {% if 'matricno' in cols %}
+                            <td>{{rec['matricNo']}}</td>
+                        {% endif %}
+                        {% if 'gsm' in cols %}
+                            <td>{{rec['mobileNo']}}</td>
+                        {% endif %}
+                        {% if 'email' in cols %}
+                            <td>{{rec['email']}}</td>
+                        {% endif %}
+                        {% if 'bank' in cols %}
+                            <td>{{rec['bankName']}}</td>
+                        {% endif %}
+                        {% if 'accno' in cols %}
+                            <td>{{rec['accountNo']}}</td>
+                        {% endif %}
+                        {% if 'bvn' in cols %}
+                            <td>{{rec['bvn']}}</td>
+                        {% endif %}
+                        {% if 'institution' in cols %}
+                            <td>{{rec['institutionName']}}</td>
+                        {% endif %}
+                        {% if 'inst_cat' in cols %}
+                            <td>{{rec['institutionCategory']|replace({'_':' '})|capitalize}}</td>
+                        {% endif %}
+                        {% if 'course' in cols %}
+                            <td>{{rec['courseOfStudy']}}</td>
+                        {% endif %}
+                        {% if 'level' in cols %}
+                            <td>{{rec['level']}}</td>
+                        {% endif %}
+                        {% if 'lga' in cols %}
+                            <td>{{rec['lgaName']}}</td>
+                        {% endif %}
+                        {% if 'ward' in cols %}
+                            <td>{{rec['wardName']}}</td>
+                        {% endif %}
                     </tr>                
                 {% endfor %}
             </tbody>

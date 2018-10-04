@@ -176,7 +176,32 @@
                             {% block content %}
                             {% endblock content %}
                         </div>
-
+                        {% if page=='home' or page == 'contactus' %}
+                            <!-- Modal -->
+                            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h3 class="modal-title" id="exampleModalLongTitle">Kogi State Scholarship 2018!</h3>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="alert alert-info" role="alert">
+                                                <h4 class="text-center">
+                                                    This is to notify you that the 2018 Kogi State Scholarship Registration is still on. <br /> Kindly click <a href="{{path('scholarship')}}">here</a> to begin (or continue) registration
+                                                </h4>
+                                            </div>
+                                            <p class='text-center'><strong>Help Line: </strong> <i class="fa fa-envelope"> </i> {{session.getEmail()}} <i class="fa fa-phone"> </i> {{session.getMobileNo()}}.</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
                     </div>
                     <div class='col-sm-1 col-md-2'>
                     </div>
@@ -226,29 +251,32 @@
             {% endblock scripts %}
             {% block js %}
                 <script type='text/javascript'>
-                    $('form').attr('autocomplete', 'off');
+                    {% if page=='home' or page == 'contactus' %}
+                        $('#exampleModalCenter').modal();
+                    {% endif %}
+                        $('form').attr('autocomplete', 'off');
 
-                    window.onscroll = function () {
-                        myFunction()
-                    };
+                        window.onscroll = function () {
+                            myFunction()
+                        };
 
-                    var navbar = document.getElementById("topnavbar");
-                    var sticky = navbar.offsetTop;
+                        var navbar = document.getElementById("topnavbar");
+                        var sticky = navbar.offsetTop;
 
-                    function myFunction() {
-                        if (window.pageYOffset >= sticky) {
-                            navbar.classList.add("sticky")
-                        } else {
-                            navbar.classList.remove("sticky");
+                        function myFunction() {
+                            if (window.pageYOffset >= sticky) {
+                                navbar.classList.add("sticky")
+                            } else {
+                                navbar.classList.remove("sticky");
+                            }
                         }
-                    }
 
-                    function scrollTo(target) {
-                        $('html, body').stop().animate({
-                            scrollTop: target.offset().top
-                        }, 1000);
+                        function scrollTo(target) {
+                            $('html, body').stop().animate({
+                                scrollTop: target.offset().top
+                            }, 1000);
 
-                    }
+                        }
                 </script>
             {% endblock js %}
         {% endblock javascripts %}

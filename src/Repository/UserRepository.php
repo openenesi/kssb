@@ -95,7 +95,7 @@ class UserRepository extends ServiceEntityRepository {
         $query .= ($where) ? (" WHERE ") : ("");
 
         if ($status) {
-            $query .= ($options['status'] == 'paid') ? (" o.paid=1 ") : (($options['status'] == 'notpaid') ? (" o.paid=0 ") : (($options['status'] == 'notcompleted') ? (" o.appId IS NULL") : (($options['status']=='notcompletedpaid')?("o.paid=1 AND o.appId IS NULL"):(" o.appId>0"))));
+            $query .= ($options['status'] == 'paid') ? (" o.paid=1 ") : (($options['status'] == 'notpaid') ? (" o.paid=0 ") : (($options['status'] == 'notcompleted') ? (" o.appId IS NULL") : (($options['status'] == 'notcompletedpaid') ? ("o.paid=1 AND o.appId IS NULL") : (" o.appId>0"))));
             $and = true;
         }
 
@@ -156,8 +156,8 @@ class UserRepository extends ServiceEntityRepository {
         $output['data'] = $result2;
 
         return $output;
-    }    
-    
+    }
+
     public function fetchApplicantInfo(array $options) {
 
         $prependsql = " from \App\Entity\User o "
@@ -171,14 +171,17 @@ class UserRepository extends ServiceEntityRepository {
 
         $query = "";
 
-        $query2 = "SELECT ";
-        switch($options['info']){
+        $query2 = "SELECT p.surname, p.firstName, p.otherNames, ";
+        switch ($options['info']) {
             case 'email':
-                $query2 .= ' o.email as email '; break;
+                $query2 .= ' o.email as email ';
+                break;
             case 'gsm':
-                $query2 .= ' o.mobileNo as gsm '; break;
+                $query2 .= ' o.mobileNo as gsm ';
+                break;
             case 'regno':
-                $query2 .= ' o.matricNo as regno '; break;
+                $query2 .= ' o.matricNo as regno ';
+                break;
         }
 
         $status = ($options['status'] == 'all') ? (false) : (true);
@@ -191,7 +194,7 @@ class UserRepository extends ServiceEntityRepository {
         $query .= ($where) ? (" WHERE ") : ("");
 
         if ($status) {
-            $query .= ($options['status'] == 'paid') ? (" o.paid=1 ") : (($options['status'] == 'notpaid') ? (" o.paid=0 ") : (($options['status'] == 'notcompleted') ? (" o.appId IS NULL") : (($options['status']=='notcompletedpaid')?("o.paid=1 AND o.appId IS NULL"):(" o.appId>0"))));
+            $query .= ($options['status'] == 'paid') ? (" o.paid=1 ") : (($options['status'] == 'notpaid') ? (" o.paid=0 ") : (($options['status'] == 'notcompleted') ? (" o.appId IS NULL") : (($options['status'] == 'notcompletedpaid') ? ("o.paid=1 AND o.appId IS NULL") : (" o.appId>0"))));
             $and = true;
         }
 
@@ -232,6 +235,10 @@ class UserRepository extends ServiceEntityRepository {
 
     public function fetchApplicantSummary(array $options) {
         $output = array();
+        $draw = null;
+        if (isset($options['draw'])) {
+            $draw = $options['draw'];
+        }
 
         $prependsql = " from \App\Entity\User o "
                 . "LEFT JOIN \App\Entity\CandidatePersonal p WITH o.candidatePersonal = p.id "
@@ -243,8 +250,80 @@ class UserRepository extends ServiceEntityRepository {
                 . "LEFT JOIN \App\Entity\Bank a WITH b.bank = a.id ";
 
         $query = "";
+        $groupcol = ' o.appId ';
+        if (isset($options['grouping'])) {
+            switch ($options['grouping']) {
+                case 'bank':
+                    $groupcol = ' a.bankName ';
+                    break;
+                case 'lga':
+                    $groupcol = ' l.lgaName ';
+                    break;
+                case 'ward':
+                    $groupcol = ' w.wardName ';
+                    break;
+                case 'inst':
+                    $groupcol = ' n.institutionName ';
+                    break;
+                case 'inst_cat':
+                    $groupcol = ' n.institutionCategory ';
+                    break;
+            }
+        }
 
-        $query2 = "SELECT o.id, p.surname, p.firstName, p.otherNames, p.gender, o.appId,  n.institutionCategory, n.institutionName, a.bankName, b.accountNo, b.bvn, i.matricNo, i.courseOfStudy, i.level";
+        //$query2 = "SELECT o.id, p.surname, p.firstName, p.otherNames, p.gender, o.appId,  n.institutionCategory, n.institutionName, a.bankName, b.accountNo, b.bvn, i.matricNo, i.courseOfStudy, i.level";
+        $query2 = "SELECT o.id, a.bankName, n.institutionName, n.institutionCategory, l.lgaName, w.wardName, ";
+
+        foreach ($options['cols'] as $col) {
+            switch ($col) {
+                case "appid":
+                    $query2 .= " o.appId, ";
+                    break;
+                case "name":
+                    $query2 .= " p.surname, p.firstName, p.otherNames, ";
+                    break;
+                case "sex":
+                    $query2 .= " p.gender,";
+                    break;
+                case "matricno":
+                    $query2 .= " i.matricNo, ";
+                    break;
+                case "gsm":
+                    $query2 .= " p.mobileNo, ";
+                    break;
+                case "email":
+                    $query2 .= " p.email, ";
+                    break;
+//                case "bank":
+//                    $query2 .=" a.bankName, ";
+//                    break;
+                case "accno":
+                    $query2 .= " b.accountNo, ";
+                    break;
+                case "bvn":
+                    $query2 .= " b.bvn, ";
+                    break;
+//                case "institution":
+//                    $query2 .=" n.institutionName, ";
+//                    break;
+//                case "inst_cat":
+//                    $query2 .=" n.institutionCategory, ";
+//                    break;
+                case "course":
+                    $query2 .= " i.courseOfStudy, ";
+                    break;
+                case "level":
+                    $query2 .= " i.level, ";
+                    break;
+//                case "lga":
+//                    $query2 .=" l.lgaName, ";
+//                    break;
+//                case "ward":
+//                    $query2 .=" w.wardName, ";
+//                    break;
+            }
+        }
+        $query2 = trim($query2, " ,");
 
         $status = true;
         $instcat = ($options['instcat'] == 'all') ? (false) : (true);
@@ -283,13 +362,26 @@ class UserRepository extends ServiceEntityRepository {
             $query .= (($and) ? (" AND ") : ("")) . " b.bank = " . $options['bank'];
             $and = true;
         }
-
-        $query2 .= $prependsql . $query . " ORDER BY o.appId ASC";
+        if($options['frotooption']=='range'){
+            $rangearr = explode('-', $options['froto']);
+            $froarr = explode('/', $rangearr[0]);
+            $fro = trim($froarr[2])."-".trim($froarr[1])."-".trim($froarr[0])." 00:00:00";
+            $toarr = explode('/', $rangearr[1]);
+            $to = trim($toarr[2])."-".trim($toarr[1])."-".trim($toarr[0])." 23:59:59";
+            
+            $query .= (($and) ? (" AND ") : ("") ) . " (o.dateCompleted >= '".$fro."' AND o.dateCompleted <= '" . $to."') ";
+            $and = true;
+        }
+        $query2 .= $prependsql . $query . " ORDER BY " . $groupcol . " ASC";
 
         $queryrec = $this->getEntityManager()->createQuery($query2);
         //var_dump($query2); exit();
 
         try {
+            if ($draw) {
+                $queryrec->setMaxResults(1000);
+                $queryrec->setFirstResult(($draw * 1000));
+            }
             $result2 = $queryrec->getResult();
         } catch (\Exception $e) {
             var_dump($e->getMessage());

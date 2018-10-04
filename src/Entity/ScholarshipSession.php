@@ -27,7 +27,7 @@ class ScholarshipSession {
      *
      * @ORM\Column(type="datetime", unique=false, nullable=true) 
      */
-    private $endDate="2018-09-30 23:59:59";
+    private $endDate="2018-12-31 23:59:59";
 
     /**
      *

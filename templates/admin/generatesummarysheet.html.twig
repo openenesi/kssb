@@ -1,5 +1,6 @@
 {% extends 'admin_general.html.twig' %}
 {% block links %}
+    <link rel="stylesheet" type="text/css" media="all" href="{{asset('daterangepicker/daterangepicker.css')}}" />
 {% endblock links %}
 {% block css %}
     <style type='text/css'>
@@ -48,9 +49,50 @@
                         {% endfor %}
                     </select>
                 </div>
-                <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3" style="vertical-align: bottom; padding-top:30px;">
+                <div class ="form-group col-xs-12">
+                    <fieldset>
+                        <legend>Date of Submission</legend>
+                        <input type="radio" name="frotochoice" class='frotochoice' value ="all" checked /> All
+                        <input type="radio" name="frotochoice" class='frotochoice' value ="range" /> Within Range:
+                        <input type='text' name='froto'  id='froto' value="" placeholder ='Select date range' style='display:none; width:200px;'/>
+                    </fieldset>
+                </div>
+                <div class ="form-group col-xs-12">
+                    <fieldset>
+                        <legend>Information to display</legend>
+                        <input type="checkbox" name="allcolumn" id ='allcolumn' value ="all" /> All
+                        <input type="checkbox" name="col[appid]" class='summarycol' value ="appid" checked /> App Id
+                        <input type="checkbox" name="col[name]" class='summarycol' value ="name" checked /> Name
+                        <input type="checkbox" name="col[sex]" class='summarycol' value ="sex" checked /> Gender
+                        <input type="checkbox" name="col[matricno]" class='summarycol' value ="matricno" checked /> Matric No.
+                        <input type="checkbox" name="col[gsm]" class='summarycol' value ="gsm" /> Mobile No.
+                        <input type="checkbox" name="col[email]" class='summarycol' value ="email" /> Email
+                        <input type="checkbox" name="col[bank]" class='summarycol' value ="bank" checked /> Bank
+                        <input type="checkbox" name="col[accno]" class='summarycol' value ="accno" checked /> Acc. No.
+                        <input type="checkbox" name="col[bvn]" class='summarycol' value ="bvn" checked /> BVN
+                        <input type="checkbox" name="col[institution]" class='summarycol' value ="institution" checked /> Institution
+                        <input type="checkbox" name="col[inst_cat]" class='summarycol' value ="inst_cat" checked /> Intitution Category
+                        <input type="checkbox" name="col[course]" class='summarycol' value ="course" checked /> Course
+                        <input type="checkbox" name="col[level]" class='summarycol' value ="level" checked /> Level
+                        <input type="checkbox" name="col[lga]" class='summarycol' value ="lga" /> LGA
+                        <input type="checkbox" name="col[ward]" class='summarycol' value ="ward" /> Ward
+                    </fieldset>
+                </div>
+                <div class ="form-group col-xs-12">
+                    <fieldset>
+                        <legend>Group in worksheet by (Excel only):</legend>
+                        <input type="radio" name="grouping" checked value ="none" /> No Grouping
+                        <input type="radio" name="grouping" value ="bank" /> Bank
+                        <input type="radio" name="grouping" value ="lga" /> LGA
+                        <input type="radio" name="grouping" value ="ward" /> Ward
+                        <input type="radio" name="grouping" value ="inst" /> Institution
+                        <input type="radio" name="grouping" value ="inst_cat" /> Institution Category
+                    </fieldset>
+                </div>
+                <div class="form-group col-xs-12" style="vertical-align: bottom; padding-top:30px;">
 
-                    <input type="submit" name="submit" id="submit" value="Generate Summary Sheet" />
+                    <input class='submit' style= "margin:5px; " id = "summaryview" type="submit" name="vss" value="View Summary Sheet" />
+                    <input class='submit' style= "margin:5px; " id = "summaryexcel" type="submit" name="dss"  value="Download Summary Sheet (Excel)" />
                 </div>
             </div>
         </form>
@@ -58,77 +100,114 @@
 
 {% endblock content %}
 {% block scripts %}
+    <script type="text/javascript" src="{{asset('daterangepicker/moment.min.js')}}"></script>
+    <script type="text/javascript" src="{{asset('daterangepicker/daterangepicker.js')}}"></script>
 {% endblock scripts %}
 {% block js %}
     {{parent()}}
     <script type="text/javascript">
         var session
-                = {{session.scholarshipSession}};
-        
-         var loadingoption = "<option value='all'>Loading...</option>";
-          var alloption = "<option value='all'>All</option>";
-        {# $(document).on("click", "#submit", function (event) {
-                    dis = $(this);
-                    alert("clicked");
-                    $.ajax({
-                        url: "{{path('fetchApplicantData')}}",
-                        method: "get",
-                        data: {
-                            status: $('#status').val(),
-                            lga: $('#lga').val(),
-                            institution: $('#institution').val(),
-                            bank: $('#bank').val()
-                        },
-                        error: function (jqXHR, textStatus, errorThrown) {
-                            console.log(textStatus);
-                        }
-                    }).done(function (data) {
-                        alert("done!");
-                        console.log(data);
-                    });
-                        
-                    event.preventDefault();
-                    return false;
-                });
-        {#}
+        = {{session.scholarshipSession}};
+                var loadingoption = "<option value='all'>Loading...</option>";
+        var alloption = "<option value='all'>All</option>";
 
-               $(document).on("change", "#lga", function (event) {
-                var dis = $(this);
-                $("#ward").html(loadingoption);
-                
-                if (dis.val() == "all") {
-                    $("#ward").html(alloption);
-                    return;
-                }
-
-                $.ajax({
-                    'url': "{{path('ward_options', {'lgaid':0})}}" + dis.val(),
-                    'method': 'GET'
-                }).done(function (data) { //alert(data);
-                    $("#ward").html(alloption + data);
-                });
+        $("#froto").daterangepicker({
+            linkedCalendars: true,
+            autoApply: true,
+            locale: {
+                format: 'DD/MM/YYYY'
+            }
+        });
 
 
+        $(document).on("click", ".submit", function (event) {
+            //$("#filterfrm").submit();
+            dis = $(this);
+            //alert("clicked");
+            $('#filterfrm').attr("target", "_blank");
+            if ($(this).attr('id') == 'summaryview') {
+                $('#filterfrm').attr("action", "{{path('summarysheet')}}");
+            } else {
+                $('#filterfrm').attr("action", "{{path('summarysheetexcel')}}");
+            }
+            $('#filterfrm').trigger('submit');
+            //alert('submited');
+        });
+
+        $(document).on("change", "#lga", function (event) {
+            var dis = $(this);
+            $("#ward").html(loadingoption);
+
+            if (dis.val() == "all") {
+                $("#ward").html(alloption);
+                return;
+            }
+
+            $.ajax({
+                'url': "{{path('ward_options', {'lgaid':0})}}" + dis.val(),
+                'method': 'GET'
+            }).done(function (data) { //alert(data);
+                $("#ward").html(alloption + data);
             });
-            
-               $(document).on("change", "#instcat", function (event) {
-                var dis = $(this);
-                $("#institution").html(loadingoption);
-                
-                if (dis.val() == "all") {
-                    $("#institution").html(alloption);
-                    return;
-                }
-
-                $.ajax({
-                    'url': "{{path('institution_options', {'category':'-'})}}" + dis.val(),
-                    'method': 'GET'
-                }).done(function (data) { //alert(data);
-                    $("#institution").html(alloption + data);
-                });
 
 
+        });
+
+        $(document).on("change", "#instcat", function (event) {
+            var dis = $(this);
+            $("#institution").html(loadingoption);
+
+            if (dis.val() == "all") {
+                $("#institution").html(alloption);
+                return;
+            }
+
+            $.ajax({
+                'url': "{{path('institution_options', {'category':'-'})}}" + dis.val(),
+                'method': 'GET'
+            }).done(function (data) { //alert(data);
+                $("#institution").html(alloption + data);
             });
+
+
+        });
+
+        $(document).on("click", ".summarycol", function (event) {
+            if ($(this).prop('checked') == false) {
+                $("#allcolumn").prop('checked', false);
+            } else {
+                if ($(".summarycol").is(function (a, b) {
+                    if ($(this).prop('checked') == false) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                })) {
+                    $("#allcolumn").prop('checked', false);
+
+                } else {
+                    $("#allcolumn").prop('checked', true);
+
+                }
+            }
+        });
+
+        $(document).on("click", "#allcolumn", function (event) {
+            $(".summarycol").prop('checked', $(this).prop('checked'));
+            if ($(this).prop('checked')) {
+                $('.submit').show();
+            } else {
+                $('.submit').hide();
+            }
+        });
+
+        $(document).on("click", ".frotochoice", function (event) {
+            if ($(this).prop('checked') && $(this).val() == 'range') {
+                $('#froto').show();
+            } else {
+                $('#froto').hide();
+            }
+        });
 
     </script>
 {% endblock js %}

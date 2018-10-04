@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use Symfony\Component\Cache\Simple\MemcachedCache;
 
 class AdminController extends Controller {
 
@@ -125,17 +127,28 @@ class AdminController extends Controller {
         $instcat = $request->query->get('instcat');
         $institution = $request->query->get('institution');
         $bank = $request->query->get('bank');
+        $cols = $request->query->get('col');
+        $frotooption = $request->query->get('frotochoice');
+        $froto = $request->query->get('froto');
 
-        $records = $rep->fetchApplicantSummary(
-                array(
-                    'lga' => $lga,
-                    'ward' => $ward,
-                    'instcat' => $instcat,
-                    'institution' => $institution,
-                    'bank' => $bank)
-        );
-
+        if (!isset($cols) || count($cols) == 0) {
+            $arr_data['data'] = array();
+        } else {
+            $records = $rep->fetchApplicantSummary(
+                    array(
+                        'lga' => $lga,
+                        'ward' => $ward,
+                        'instcat' => $instcat,
+                        'institution' => $institution,
+                        'bank' => $bank,
+                        'cols' => $cols,
+                        'frotooption' => $frotooption,
+                        'froto' => $froto
+                    )
+            );
+        }
         $arr_data['data'] = $records['data'];
+        $arr_data['cols'] = $cols;
 
         return $this->render('admin/summarysheet.html.twig', $arr_data);
     }
@@ -265,7 +278,9 @@ class AdminController extends Controller {
         $sheet = $spreadsheet->setActiveSheetIndex(0);
         $i = 1;
         foreach ($records as $record) {
-            $sheet->setCellValueExplicit('A' . $i++, $record[(($info == 'email') ? ('email') : (($info == 'gsm') ? ('gsm') : ('regno')))], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValueExplicit('A' . $i, strtoupper($record['surname']) . " " . ucfirst(strtolower($record['firstName'])) . " " . ucfirst(strtolower($record['otherNames'])), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValueExplicit('B' . $i, "" . $record[(($info == 'email') ? ('email') : (($info == 'gsm') ? ('gsm') : ('regno')))] . "", \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $i++;
         }
 
 // Rename worksheet
@@ -274,6 +289,7 @@ class AdminController extends Controller {
 
 
 // Redirect output to a client’s web browser (Xlsx)
+
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . (($info == 'email') ? ('emails') : (($info == 'gsm') ? ('gsm') : ('regno'))) . '.' . $format . '"');
         header('Cache-Control: max-age=0');
@@ -296,6 +312,254 @@ class AdminController extends Controller {
         $writer->setDelimiter(',');
         $writer->setEnclosure('');
         $writer->setLineEnding("\r\n");
+        $writer->save('php://output');
+        exit;
+
+        return new Response("");
+    }
+
+    /**
+     * @Route("/kssbadmin/applicant/data/summarysheet/excel", name="summarysheetexcel")
+     */
+    public function summarySheetExcel(Request $request) {
+        $rep = $this->getDoctrine()->getRepository(\App\Entity\User::class);
+        $arr_data = array();
+        $invalidCharacters = ['*', ':', '/', '\\', '?', '[', ']'];
+        $lga = $request->query->get('lga');
+        $ward = $request->query->get('ward');
+        $instcat = $request->query->get('instcat');
+        $institution = $request->query->get('institution');
+        $bank = $request->query->get('bank');
+        $cols = $request->query->get('col');
+        $grouping = $request->query->get('grouping');
+        $frotooption = $request->query->get('frotochoice');
+        $froto = $request->query->get('froto');
+        $draw = 0;
+        $queryoptions = array(
+            'lga' => $lga,
+            'ward' => $ward,
+            'instcat' => $instcat,
+            'institution' => $institution,
+            'bank' => $bank,
+            'cols' => $cols,
+            'grouping' => $grouping,
+            'frotooption' => $frotooption,
+            'froto' => $froto,
+            'draw' => $draw);
+        if (!isset($cols) || count($cols) == 0) {
+            $records = array();
+        } else {
+            $records = $rep->fetchApplicantSummary($queryoptions);
+            $records = $records['data'];
+        }
+
+        // echo count($records); exit();
+        // Create new Spreadsheet object
+        //$pool = new \Cache\Adapter\Apcu\ApcuCachePool();
+        //$simpleCache = new \Cache\Bridge\SimpleCache\SimpleCacheBridge($pool);
+        //\PhpOffice\PhpSpreadsheet\Settings::setCache($simpleCache);
+        $spreadsheet = new Spreadsheet();
+
+        // Set document properties
+        $spreadsheet->getProperties()->setCreator('Kogi State Scholarship Board')
+                ->setLastModifiedBy('Kogi State Scholarship Board')
+                ->setTitle('Summary Sheet of Registered Candidates')
+                ->setSubject('Summary Sheet of Registered Candidates')
+                ->setDescription('Summary Sheet of Registered Candidates')
+                ->setKeywords('kssb 2007 openxml kogi scholarship')
+                ->setCategory('Summary Sheet');
+
+// Add some data
+        $sheet = $spreadsheet->setActiveSheetIndex(0);
+        $i = 1;
+        $group = '';
+        $groupcol = '';
+        $row = 2;
+        $col = 1;
+        $terminal = false;
+        while (!$terminal) {
+            if(count($records) < 1000){
+                $terminal = true;
+            }
+            foreach ($records as $record) {
+                set_time_limit(180);
+                if ($group == '' && $grouping != "none") {
+                    switch ($grouping) {
+                        case 'bank':
+                            $groupcol = 'bankName';
+                            break;
+                        case 'lga':
+                            $groupcol = 'lgaName';
+                            break;
+                        case 'ward':
+                            $groupcol = 'wardName';
+                            break;
+                        case 'inst':
+                            $groupcol = 'institutionName';
+                            break;
+                        case 'inst_cat':
+                            $groupcol = 'institutionCategory';
+                            break;
+                    }
+                    $group = $record[$groupcol];
+                    $sheet->setTitle(str_replace("_", " ", strtoupper(str_replace($invalidCharacters, '_', $group))));
+                }
+
+                if ($grouping != 'none' && $record[$groupcol] != $group) {
+                    //reset row coordinates
+                    $row = 2;
+                    //change group
+                    $group = $record[$groupcol];
+                    //create new sheet
+                    $sheet = $spreadsheet->createSheet($spreadsheet->getSheetCount());
+
+                    //Give it a title
+                    $sheet->setTitle(str_replace("_", " ", strtoupper(str_replace($invalidCharacters, '_', $group))));
+                }
+
+                if (in_array('appid', $cols)) {
+                    $sheet->setCellValueExplicitByColumnAndRow($col, $row, $record['appId'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+
+                    if ($row == 2) {
+                        $sheet->setCellValueExplicitByColumnAndRow($col, $row - 1, "AppId", \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                    }
+                    $col++;
+                }
+                if (in_array('name', $cols)) {
+                    $sheet->setCellValueExplicitByColumnAndRow($col, $row, strtoupper($record['surname']) . " " . ucfirst(strtolower($record['firstName'])) . " " . ucfirst(strtolower($record['otherNames'])), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+
+                    if ($row == 2) {
+                        $sheet->setCellValueExplicitByColumnAndRow($col, $row - 1, "Name", \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                    }
+                    $col++;
+                }
+                if (in_array('sex', $cols)) {
+                    $sheet->setCellValueExplicitByColumnAndRow($col, $row, $record['gender'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+
+                    if ($row == 2) {
+                        $sheet->setCellValueExplicitByColumnAndRow($col, $row - 1, "Sex", \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                    }
+                    $col++;
+                }
+                if (in_array('matricno', $cols)) {
+                    $sheet->setCellValueExplicitByColumnAndRow($col, $row, $record['matricNo'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+
+                    if ($row == 2) {
+                        $sheet->setCellValueExplicitByColumnAndRow($col, $row - 1, "MatricNo.", \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                    }
+                    $col++;
+                }
+                if (in_array('gsm', $cols)) {
+                    $sheet->setCellValueExplicitByColumnAndRow($col, $row, $record['mobileNo'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+
+                    if ($row == 2) {
+                        $sheet->setCellValueExplicitByColumnAndRow($col, $row - 1, "Mobile No", \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                    }
+                    $col++;
+                }
+                if (in_array('email', $cols)) {
+                    $sheet->setCellValueExplicitByColumnAndRow($col, $row, $record['email'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+
+                    if ($row == 2) {
+                        $sheet->setCellValueExplicitByColumnAndRow($col, $row - 1, "Email", \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                    }
+                    $col++;
+                }
+                if (in_array('bank', $cols)) {
+                    $sheet->setCellValueExplicitByColumnAndRow($col, $row, $record['bankName'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+
+                    if ($row == 2) {
+                        $sheet->setCellValueExplicitByColumnAndRow($col, $row - 1, "Bank", \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                    }
+                    $col++;
+                }
+                if (in_array('accno', $cols)) {
+                    $sheet->setCellValueExplicitByColumnAndRow($col, $row, $record['accountNo'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+
+                    if ($row == 2) {
+                        $sheet->setCellValueExplicitByColumnAndRow($col, $row - 1, "AccountNo", \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                    }
+                    $col++;
+                }
+                if (in_array('bvn', $cols)) {
+                    $sheet->setCellValueExplicitByColumnAndRow($col, $row, $record['bvn'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+
+                    if ($row == 2) {
+                        $sheet->setCellValueExplicitByColumnAndRow($col, $row - 1, "BVN", \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                    }
+                    $col++;
+                }
+                if (in_array('institution', $cols)) {
+                    $sheet->setCellValueExplicitByColumnAndRow($col, $row, $record['institutionName'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+
+                    if ($row == 2) {
+                        $sheet->setCellValueExplicitByColumnAndRow($col, $row - 1, "Institution", \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                    }
+                    $col++;
+                }
+                if (in_array('inst_cat', $cols)) {
+                    $sheet->setCellValueExplicitByColumnAndRow($col, $row, $record['institutionCategory'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+
+                    if ($row == 2) {
+                        $sheet->setCellValueExplicitByColumnAndRow($col, $row - 1, "InstitutionCategory", \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                    }
+                    $col++;
+                }
+                if (in_array('course', $cols)) {
+                    $sheet->setCellValueExplicitByColumnAndRow($col, $row, $record['courseOfStudy'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+
+                    if ($row == 2) {
+                        $sheet->setCellValueExplicitByColumnAndRow($col, $row - 1, "Course", \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                    }
+                    $col++;
+                }
+                if (in_array('level', $cols)) {
+                    $sheet->setCellValueExplicitByColumnAndRow($col, $row, $record['level'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+
+                    if ($row == 2) {
+                        $sheet->setCellValueExplicitByColumnAndRow($col, $row - 1, "Level", \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                    }
+                    $col++;
+                }
+                if (in_array('lga', $cols)) {
+                    $sheet->setCellValueExplicitByColumnAndRow($col, $row, $record['lgaName'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+
+                    if ($row == 2) {
+                        $sheet->setCellValueExplicitByColumnAndRow($col, $row - 1, "LGA", \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                    }
+                    $col++;
+                }
+                if (in_array('ward', $cols)) {
+                    $sheet->setCellValueExplicitByColumnAndRow($col, $row, $record['wardName'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+
+                    if ($row == 2) {
+                        $sheet->setCellValueExplicitByColumnAndRow($col, $row - 1, "Ward", \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                    }
+                    $col++;
+                }
+                //move to the next row
+                $row++;
+                //reset column coordinate
+                $col = 1;
+            }
+            $draw++;
+            $records = $rep->fetchApplicantSummary($queryoptions);
+            $records = $records['data'];
+        }
+// Redirect output to a client’s web browser (Xlsx)
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="summarysheet.xlsx"');
+        header('Cache-Control: max-age=0');
+// If you're serving to IE 9, then the following may be needed
+        header('Cache-Control: max-age=1');
+
+// If you're serving to IE over SSL, then the following may be needed
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+        header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+        header('Pragma: public'); // HTTP/1.0
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
         $writer->save('php://output');
         exit;
 
